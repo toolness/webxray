@@ -1,62 +1,49 @@
-(function() {
-  function getAncestor(element, generation) {
-    var ancestor = element;
+(function(jQuery) {
+  var $ = jQuery;
 
-    for (var i = 0; i < generation; i++)
-      if (ancestor.parentNode)
-        ancestor = ancestor.parentNode;
-      else
-        return null;
+  jQuery.fn.extend({
+    ancestor: function ancestor(generation) {
+      var ancestor = this[0];
+      
+      for (var i = 0; i < generation; i++)
+        if (ancestor.parentNode)
+          ancestor = ancestor.parentNode;
+        else
+          return null;
 
-    return ancestor;
-  }
-  
-  function addClass(element, className) {
-    var parts = element.className.split(" ");
-    if (parts.indexOf(className) == -1) {
-      parts.push(className);
-      element.className = parts.join(" ");
+      return ancestor;      
     }
-  }
-
-  function removeClass(element, className) {
-    var parts = element.className.split(" ");
-    var index = parts.indexOf(className);
-    if (index != -1) {
-      parts.splice(index, 1);
-      element.className = parts.join(" ");      
-    }
-  }
+  });
 
   function makeFocused(element) {
     var ancestor = element;
     var ancestorIndex = 0;
-    
-    addClass(element, "webexplode-focus");
-    
+
+    $(element).addClass("webexplode-focus");
+
     return {
       upfocus: function upfocus() {
-        var ancestorParent = getAncestor(element, ancestorIndex + 1);
+        var ancestorParent = $(element).ancestor(ancestorIndex + 1);
 
         if (ancestorParent && ancestorParent != document) {
-          removeClass(ancestor, "webexplode-ancestor");
+          $(ancestor).removeClass("webexplode-ancestor");
           ancestorIndex++;
           ancestor = ancestorParent;
-          addClass(ancestor, "webexplode-ancestor");
+          $(ancestor).addClass("webexplode-ancestor");
         }
       },
       downfocus: function downfocus() {
         if (ancestorIndex > 0) {
           ancestorIndex--;
-          removeClass(ancestor, "webexplode-ancestor");
-          ancestor = getAncestor(element, ancestorIndex);
+          $(ancestor).removeClass("webexplode-ancestor");
+          ancestor = $(element).ancestor(ancestorIndex);
           if (ancestorIndex > 0)
-            addClass(ancestor, "webexplode-ancestor");
+            $(ancestor).addClass("webexplode-ancestor");
         }
       },
       unfocus: function unfocus() {
-        removeClass(element, "webexplode-focus");
-        removeClass(ancestor, "webexplode-ancestor");
+        $(element).removeClass("webexplode-focus");
+        $(ancestor).removeClass("webexplode-ancestor");
       }
     };
   }
@@ -95,4 +82,4 @@
     begin();
   else
     console.error("odd, document readyState is " + document.readyState);
-})();
+})(jQuery);
