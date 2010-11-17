@@ -15,35 +15,51 @@
     }
   });
 
-  function makeFocused(element) {
-    var ancestor = element;
-    var ancestorIndex = 0;
+  function makeOverlay(element, subclass) {
+    var pos = $(element).position();
+    var overlay = $('<div class="webexplode-overlay">&nbsp;</div>');
+    overlay.addClass(subclass);
+    overlay.css({
+      top: pos.top,
+      left: pos.left,
+      height: $(element).outerHeight(),
+      width: $(element).outerWidth()
+    });
+    $(document.body).append(overlay);
+    return overlay;
+  }
 
-    $(element).addClass("webexplode-focus");
+  function makeFocused(element) {
+    var ancestorIndex = 0;
+    var ancestorOverlay = null;
+    var overlay = makeOverlay(element, "webexplode-focus");
 
     return {
+      element: element,
       upfocus: function upfocus() {
-        var ancestorParent = $(element).ancestor(ancestorIndex + 1);
+        var ancestor = $(element).ancestor(ancestorIndex + 1);
 
-        if (ancestorParent && ancestorParent != document) {
-          $(ancestor).removeClass("webexplode-ancestor");
+        if (ancestor && ancestor != document) {
           ancestorIndex++;
-          ancestor = ancestorParent;
-          $(ancestor).addClass("webexplode-ancestor");
+          if (ancestorOverlay)
+            ancestorOverlay.remove();
+          ancestorOverlay = makeOverlay(ancestor, "webexplode-ancestor");
         }
       },
       downfocus: function downfocus() {
+        if (ancestorOverlay)
+          ancestorOverlay.remove();
         if (ancestorIndex > 0) {
           ancestorIndex--;
-          $(ancestor).removeClass("webexplode-ancestor");
-          ancestor = $(element).ancestor(ancestorIndex);
+          var ancestor = $(element).ancestor(ancestorIndex);
           if (ancestorIndex > 0)
-            $(ancestor).addClass("webexplode-ancestor");
+            ancestorOverlay = makeOverlay(ancestor, "webexplode-ancestor");
         }
       },
       unfocus: function unfocus() {
-        $(element).removeClass("webexplode-focus");
-        $(ancestor).removeClass("webexplode-ancestor");
+        overlay.remove();
+        if (ancestorOverlay)
+          ancestorOverlay.remove();
       }
     };
   }
@@ -60,21 +76,20 @@
         event.stopPropagation();
       }
     }, true);
-
+    
     document.addEventListener("mouseout", function(event) {
       event.stopPropagation();
       if (focused)
         focused.unfocus();
       focused = null;
     }, true);
-
+    
     document.addEventListener("mouseover", function(event) {
       event.stopPropagation();
       if (focused)
         focused.unfocus();
       focused = makeFocused(event.target);
-    }, true);
-    
+    }, true);    
     console.log("inspector loaded.");
   }
   
