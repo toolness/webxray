@@ -16,7 +16,7 @@
   });
 
   function makeOverlay(element, subclass) {
-    var pos = $(element).position();
+    var pos = $(element).offset();
     var overlay = $('<div class="webexplode-overlay">&nbsp;</div>');
     overlay.addClass(subclass);
     overlay.css({
