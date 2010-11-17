@@ -76,10 +76,13 @@
     var focused = null;
 
     document.addEventListener("keydown", function(event) {
-      if (event.keyCode == 65 && focused) {
+      const KEY_A = 65;
+      const KEY_Z = 90;
+      
+      if (event.keyCode == KEY_A && focused) {
         focused.upfocus();
         event.stopPropagation();
-      } else if (event.keyCode == 90 && focused) {
+      } else if (event.keyCode == KEY_Z && focused) {
         focused.downfocus();
         event.stopPropagation();
       }
