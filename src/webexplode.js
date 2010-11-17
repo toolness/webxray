@@ -2,6 +2,7 @@
   var $ = jQuery;
 
   jQuery.fn.extend({
+    // Return the nth ancestor of the first matched element.
     ancestor: function ancestor(generation) {
       var ancestor = this[0];
       
@@ -11,55 +12,62 @@
         else
           return null;
 
-      return ancestor;      
+      return $(ancestor);
+    },
+    // Create and return a div that floats above the first
+    // matched element.
+    overlay: function overlay() {
+      var pos = this.offset();
+      var overlay = $('<div class="webexplode-overlay">&nbsp;</div>');
+      overlay.css({
+        top: pos.top,
+        left: pos.left,
+        height: this.outerHeight(),
+        width: this.outerWidth()
+      });
+      $(document.body).append(overlay);
+      return overlay;
     }
   });
-
-  function makeOverlay(element, subclass) {
-    var pos = $(element).offset();
-    var overlay = $('<div class="webexplode-overlay">&nbsp;</div>');
-    overlay.addClass(subclass);
-    overlay.css({
-      top: pos.top,
-      left: pos.left,
-      height: $(element).outerHeight(),
-      width: $(element).outerWidth()
-    });
-    $(document.body).append(overlay);
-    return overlay;
-  }
 
   function makeFocused(element) {
     var ancestorIndex = 0;
     var ancestorOverlay = null;
-    var overlay = makeOverlay(element, "webexplode-focus");
+    var overlay = $(element).overlay().addClass("webexplode-focus");
+
+    function setAncestorOverlay(ancestor) {
+      if (ancestorOverlay) {
+        ancestorOverlay.remove();
+        ancestorOverlay = null;
+      }
+      if (ancestor) {
+        ancestorOverlay = $(ancestor).overlay();
+        ancestorOverlay.addClass("webexplode-ancestor");
+      }
+    }
 
     return {
       element: element,
       upfocus: function upfocus() {
         var ancestor = $(element).ancestor(ancestorIndex + 1);
 
-        if (ancestor && ancestor != document) {
+        if (ancestor.length && ancestor[0] != document) {
           ancestorIndex++;
-          if (ancestorOverlay)
-            ancestorOverlay.remove();
-          ancestorOverlay = makeOverlay(ancestor, "webexplode-ancestor");
+          setAncestorOverlay(ancestor);
         }
       },
       downfocus: function downfocus() {
-        if (ancestorOverlay)
-          ancestorOverlay.remove();
+        setAncestorOverlay(null);
         if (ancestorIndex > 0) {
           ancestorIndex--;
           var ancestor = $(element).ancestor(ancestorIndex);
           if (ancestorIndex > 0)
-            ancestorOverlay = makeOverlay(ancestor, "webexplode-ancestor");
+            setAncestorOverlay(ancestor);
         }
       },
       unfocus: function unfocus() {
         overlay.remove();
-        if (ancestorOverlay)
-          ancestorOverlay.remove();
+        setAncestorOverlay(null);
       }
     };
   }
