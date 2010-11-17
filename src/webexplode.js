@@ -64,7 +64,7 @@
     };
   }
 
-  function begin() {
+  $(window).ready(function() {
     var focused = null;
 
     document.addEventListener("keydown", function(event) {
@@ -89,12 +89,9 @@
       if (focused)
         focused.unfocus();
       focused = makeFocused(event.target);
-    }, true);    
-    console.log("inspector loaded.");
-  }
-  
-  if (document.readyState == "complete")
-    begin();
-  else
-    console.error("odd, document readyState is " + document.readyState);
+    }, true);
+    
+    if (window.console)
+      window.console.log("inspector loaded.");
+  });
 })(jQuery);
