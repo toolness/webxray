@@ -75,35 +75,53 @@
   $(window).ready(function() {
     var focused = null;
 
-    document.addEventListener("keydown", function(event) {
-      const KEY_UP = 38;
-      const KEY_DOWN = 40;
-      
-      if (event.shiftKey && event.keyCode == KEY_UP && focused) {
-        focused.upfocus();
-        event.preventDefault();
+    var listeners = {
+      keydown: function(event) {
+        const KEY_UP = 38;
+        const KEY_DOWN = 40;
+        const KEY_ESC = 27;
+
+        if (event.shiftKey && event.keyCode == KEY_UP && focused) {
+          focused.upfocus();
+          event.preventDefault();
+          event.stopPropagation();
+        } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
+          focused.downfocus();
+          event.preventDefault();
+          event.stopPropagation();
+        } else if (event.keyCode == KEY_ESC) {
+          $(window).trigger('unload');
+          event.preventDefault();
+          event.stopPropagation();
+        }
+      },
+      mouseout: function(event) {
         event.stopPropagation();
-      } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
-        focused.downfocus();
-        event.preventDefault();
+        if (focused)
+          focused.unfocus();
+        focused = null;
+      },
+      mouseover: function(event) {
         event.stopPropagation();
+        if (focused)
+          focused.unfocus();
+        focused = makeFocused(event.target);
       }
-    }, true);
-    
-    document.addEventListener("mouseout", function(event) {
-      event.stopPropagation();
+    };
+
+    for (var eventName in listeners)
+      document.addEventListener(eventName, listeners[eventName], true);
+
+    $(window).unload(function() {
       if (focused)
         focused.unfocus();
       focused = null;
-    }, true);
-    
-    document.addEventListener("mouseover", function(event) {
-      event.stopPropagation();
-      if (focused)
-        focused.unfocus();
-      focused = makeFocused(event.target);
-    }, true);
-    
+      for (var eventName in listeners)
+        document.removeEventListener(eventName, listeners[eventName], true);
+      if (window.console)
+        window.console.log("inspector unloaded.");
+    });
+
     if (window.console)
       window.console.log("inspector loaded.");
   });
