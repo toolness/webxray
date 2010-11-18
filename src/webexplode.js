@@ -76,14 +76,16 @@
     var focused = null;
 
     document.addEventListener("keydown", function(event) {
-      const KEY_A = 65;
-      const KEY_Z = 90;
+      const KEY_UP = 38;
+      const KEY_DOWN = 40;
       
-      if (event.keyCode == KEY_A && focused) {
+      if (event.shiftKey && event.keyCode == KEY_UP && focused) {
         focused.upfocus();
+        event.preventDefault();
         event.stopPropagation();
-      } else if (event.keyCode == KEY_Z && focused) {
+      } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
         focused.downfocus();
+        event.preventDefault();
         event.stopPropagation();
       }
     }, true);
