@@ -6,6 +6,23 @@
     background-color: rgba(0, 0, 0, 0.1);    
 }
 
+.webexplode-hud {
+    position: fixed;
+    bottom: 0px;
+    right: 0px;
+    padding: 0.5em;
+    color: white;
+    font-family: "Helvetica Neue", sans-serif;
+    font-size: 9pt;
+    background-color: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+    z-index: 1001;
+}
+
+.webexplode-hud code {
+    font-family: Monaco, monospace;
+}
+
 .webexplode-overlay {
     position: absolute;
     pointer-events: none;

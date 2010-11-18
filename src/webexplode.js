@@ -106,11 +106,20 @@
         if (focused)
           focused.unfocus();
         focused = makeFocused(event.target);
+
+        hud.html("You are on a <code></code> element.");
+        hud.find("code").text("<" + event.target.nodeName.toLowerCase() +
+                              ">");
       }
     };
 
     for (var eventName in listeners)
       document.addEventListener(eventName, listeners[eventName], true);
+
+    var hud = $('<div class="webexplode-hud"></div>');
+    $(document.body).append(hud);
+
+    hud.text("Welcome to WebExplode Inspector.");
 
     $(window).unload(function() {
       if (focused)
@@ -118,11 +127,7 @@
       focused = null;
       for (var eventName in listeners)
         document.removeEventListener(eventName, listeners[eventName], true);
-      if (window.console)
-        window.console.log("inspector unloaded.");
+      hud.remove();
     });
-
-    if (window.console)
-      window.console.log("inspector loaded.");
   });
 })(jQuery);
