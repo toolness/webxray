@@ -41,13 +41,16 @@
         ancestorOverlay = null;
       }
       if (ancestor) {
-        ancestorOverlay = $(ancestor).overlay();
+        ancestorOverlay = ancestor.overlay();
         ancestorOverlay.addClass("webexplode-ancestor");
-      }
+        instance.ancestor = ancestor[0];
+      } else
+        instance.ancestor = null;
     }
 
-    return {
+    var instance = {
       element: element,
+      ancestor: null,
       upfocus: function upfocus() {
         var ancestor = $(element).ancestor(ancestorIndex + 1);
 
@@ -58,11 +61,9 @@
       },
       downfocus: function downfocus() {
         setAncestorOverlay(null);
-        if (ancestorIndex > 0) {
-          ancestorIndex--;
+        if (ancestorIndex > 0 && --ancestorIndex > 0) {
           var ancestor = $(element).ancestor(ancestorIndex);
-          if (ancestorIndex > 0)
-            setAncestorOverlay(ancestor);
+          setAncestorOverlay(ancestor);
         }
       },
       unfocus: function unfocus() {
@@ -70,6 +71,8 @@
         setAncestorOverlay(null);
       }
     };
+    
+    return instance;
   }
 
   $(window).ready(function() {
@@ -81,18 +84,24 @@
         const KEY_DOWN = 40;
         const KEY_ESC = 27;
 
-        if (event.shiftKey && event.keyCode == KEY_UP && focused) {
-          focused.upfocus();
+        function handleKey(event) {
+          if (event.shiftKey && event.keyCode == KEY_UP && focused) {
+            focused.upfocus();
+            return true;
+          } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
+            focused.downfocus();
+            return true;
+          } else if (event.keyCode == KEY_ESC) {
+            $(window).trigger('unload');
+            return true;
+          }
+          return false;
+        }
+
+        if (handleKey(event)) {
           event.preventDefault();
           event.stopPropagation();
-        } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
-          focused.downfocus();
-          event.preventDefault();
-          event.stopPropagation();
-        } else if (event.keyCode == KEY_ESC) {
-          $(window).trigger('unload');
-          event.preventDefault();
-          event.stopPropagation();
+          updateHUDText();
         }
       },
       mouseout: function(event) {
@@ -100,16 +109,14 @@
         if (focused)
           focused.unfocus();
         focused = null;
+        updateHUDText();
       },
       mouseover: function(event) {
         event.stopPropagation();
         if (focused)
           focused.unfocus();
         focused = makeFocused(event.target);
-
-        hud.html("You are on a <code></code> element.");
-        hud.find("code").text("<" + event.target.nodeName.toLowerCase() +
-                              ">");
+        updateHUDText();
       }
     };
 
@@ -119,7 +126,25 @@
     var hud = $('<div class="webexplode-hud"></div>');
     $(document.body).append(hud);
 
-    hud.text("Welcome to WebExplode Inspector.");
+    function updateHUDText() {
+      if (focused) {
+        hud.html("<span>You are on a <code></code> element.</span>");
+        hud.find("code").text("<" + focused.element.nodeName.toLowerCase() +
+                              ">");
+        if (focused.ancestor) {
+          var aHTML = $('<span> It is inside a <code></code> ' +
+                        'element.</span>');
+          aHTML.find("code").text("<" +
+                                  focused.ancestor.nodeName.toLowerCase() +
+                                  ">");
+          hud.append(aHTML);
+        }
+      } else {
+        hud.html("<span>Welcome to WebExplode Inspector.</span>");
+      }
+    }
+
+    updateHUDText();
 
     $(window).unload(function() {
       if (focused)
