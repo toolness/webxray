@@ -21,6 +21,7 @@
 
 .webexplode-hud code {
     font-family: Monaco, monospace;
+    color: inherit;
 }
 
 .webexplode-overlay {
