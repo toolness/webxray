@@ -25,6 +25,25 @@
     font-size: 8pt;
 }
 
+.webexplode-overlay-label {
+    position: absolute;
+    font-family: Monaco, monospace;
+    color: white;
+    font-size: 8pt;
+    background-color: rgba(0, 0, 0, 0.7);
+    pointer-events: none;
+}
+
+.webexplode-overlay-label-top {
+    top: 0px;
+    left: 0px;
+}
+
+.webexplode-overlay-label-bottom {
+    bottom: 0px;
+    right: 0px;
+}
+
 .webexplode-overlay {
     position: absolute;
     pointer-events: none;
