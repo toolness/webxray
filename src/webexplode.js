@@ -27,6 +27,16 @@
       });
       $(document.body).append(overlay);
       return overlay;
+    },
+    // Like jQuery.append(), but accepts an arbitrary number of arguments,
+    // and automatically converts string arguments into text nodes.
+    emit: function emit() {
+      for (var i = 0; i < arguments.length; i++) {
+        var arg = arguments[i];
+        if (typeof(arg) == "string")
+          arg = document.createTextNode(arg);
+        this.append(arg);
+      }
     }
   });
 
@@ -127,10 +137,6 @@
     $(document.body).append(hud);
 
     function updateHUDText() {
-      function text(string) {
-        return document.createTextNode(string);
-      }
-
       function code(string) {
         return $("<code></code>").text(string);
       }
@@ -138,30 +144,25 @@
       function elementDesc(element) {
         var span = $("<span></span>");
         var tagName = "<" + element.nodeName.toLowerCase() + ">";
-        span.append(code(tagName)).append(text(" element"));
+        
+        span.emit(code(tagName), " element");
         if (element.id)
-          span.append(text(" with id ")).append(code(element.id));
-        if (element.className) {
-          span.append(element.id ? text(" and") : text(" with"))
-              .append(text(" class "))
-              .append(code(element.className));
-        }
+          span.emit(" with id ", code(element.id));
+        if (element.className)
+          span.emit(element.id ? " and" : " with", " class ",
+                    code(element.className));
         return span;
       }
 
       if (focused) {
-        hud.html("<span>You are on a </span>");
-        hud.find("span").append(elementDesc(focused.element))
-                        .append(text("."));
-        if (focused.ancestor) {
-          var aHTML = $('<span> It is inside a </span>');
-          aHTML.append(elementDesc(focused.ancestor))
-               .append(text("."));
-          hud.append(aHTML);
-        }
-      } else {
+        var span = $("<span></span>");
+        span.emit("You are on a ", elementDesc(focused.element), ".");
+        if (focused.ancestor)
+          span.emit(" It is inside a ", elementDesc(focused.ancestor),
+                    ".");
+        hud.empty().append(span);
+      } else
         hud.html("<span>Welcome to WebExplode Inspector.</span>");
-      }
     }
 
     updateHUDText();
