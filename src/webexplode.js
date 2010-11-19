@@ -2,7 +2,11 @@
   var $ = jQuery;
 
   $(window).ready(function() {
+    var hud = jQuery.hudOverlay();
     var focused = jQuery.focusedOverlay();
+
+    $(document.body).append(hud.overlay);
+    focused.on('change', hud.onFocusChange);
 
     var listeners = {
       keydown: function(event) {
@@ -27,64 +31,28 @@
         if (handleKey(event)) {
           event.preventDefault();
           event.stopPropagation();
-          updateHUDText();
         }
       },
       mouseout: function(event) {
         event.stopPropagation();
         focused.unfocus();
-        updateHUDText();
       },
       mouseover: function(event) {
         event.stopPropagation();
         focused.set(event.target);
-        updateHUDText();
       }
     };
 
     for (var eventName in listeners)
       document.addEventListener(eventName, listeners[eventName], true);
 
-    var hud = $('<div class="webexplode-hud"></div>');
-    $(document.body).append(hud);
-
-    function updateHUDText() {
-      function code(string) {
-        return $("<code></code>").text(string);
-      }
-
-      function elementDesc(element) {
-        var span = $("<span></span>");
-        var tagName = "<" + element.nodeName.toLowerCase() + ">";
-        
-        span.emit(code(tagName), " element");
-        if (element.id)
-          span.emit(" with id ", code(element.id));
-        if (element.className)
-          span.emit(element.id ? " and" : " with", " class ",
-                    code(element.className));
-        return span;
-      }
-
-      if (focused && focused.element) {
-        var span = $("<span></span>");
-        span.emit("You are on a ", elementDesc(focused.element), ".");
-        if (focused.ancestor)
-          span.emit(" It is inside a ", elementDesc(focused.ancestor),
-                    ".");
-        hud.empty().append(span);
-      } else
-        hud.html("<span>Welcome to WebExplode Inspector.</span>");
-    }
-
-    updateHUDText();
-
     $(window).unload(function() {
-      focused.unfocus();
+      focused.destroy();
       focused = null;
       for (var eventName in listeners)
         document.removeEventListener(eventName, listeners[eventName], true);
-      hud.remove();
+      hud.destroy();
+      hud = null;
     });
   });
 })(jQuery);

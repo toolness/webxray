@@ -25,7 +25,9 @@ var COMPILED_FILE_PARTS = [
 , 'jquery/src/offset.js'
 , 'jquery/src/dimensions.js'
 , 'src/utils.js'
+, 'src/event-emitter.js'
 , 'src/focused-overlay.js'
+, 'src/hud-overlay.js'
 , 'src/webexplode.js'
 , 'src/outro.js'
 ];

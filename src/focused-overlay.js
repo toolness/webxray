@@ -20,7 +20,7 @@
         instance.ancestor = null;
     }
 
-    var instance = {
+    var instance = jQuery.eventEmitter({
       element: null,
       ancestor: null,
       upfocus: function upfocus() {
@@ -32,6 +32,7 @@
           ancestorIndex++;
           setAncestorOverlay(ancestor);
         }
+        this.emit('change', this);
       },
       downfocus: function downfocus() {
         if (!element)
@@ -41,6 +42,7 @@
           var ancestor = $(element).ancestor(ancestorIndex);
           setAncestorOverlay(ancestor);
         }
+        this.emit('change', this);
       },
       unfocus: function unfocus() {
         if (!element)
@@ -49,13 +51,19 @@
         overlay = null;
         element = this.element = null;
         setAncestorOverlay(null);
+        this.emit('change', this);
       },
       set: function set(newElement) {
         this.unfocus();
         element = this.element = newElement;
         overlay = $(element).overlay().addClass("webexplode-focus");
+        this.emit('change', this);
+      },
+      destroy: function destroy() {
+        this.unfocus();
+        this.removeAllListeners('change');
       }
-    };
+    });
     
     return instance;
   }
