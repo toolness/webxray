@@ -127,16 +127,36 @@
     $(document.body).append(hud);
 
     function updateHUDText() {
+      function text(string) {
+        return document.createTextNode(string);
+      }
+
+      function code(string) {
+        return $("<code></code>").text(string);
+      }
+
+      function elementDesc(element) {
+        var span = $("<span></span>");
+        var tagName = "<" + element.nodeName.toLowerCase() + ">";
+        span.append(code(tagName)).append(text(" element"));
+        if (element.id)
+          span.append(text(" with id ")).append(code(element.id));
+        if (element.className) {
+          span.append(element.id ? text(" and") : text(" with"))
+              .append(text(" class "))
+              .append(code(element.className));
+        }
+        return span;
+      }
+
       if (focused) {
-        hud.html("<span>You are on a <code></code> element.</span>");
-        hud.find("code").text("<" + focused.element.nodeName.toLowerCase() +
-                              ">");
+        hud.html("<span>You are on a </span>");
+        hud.find("span").append(elementDesc(focused.element))
+                        .append(text("."));
         if (focused.ancestor) {
-          var aHTML = $('<span> It is inside a <code></code> ' +
-                        'element.</span>');
-          aHTML.find("code").text("<" +
-                                  focused.ancestor.nodeName.toLowerCase() +
-                                  ">");
+          var aHTML = $('<span> It is inside a </span>');
+          aHTML.append(elementDesc(focused.ancestor))
+               .append(text("."));
           hud.append(aHTML);
         }
       } else {
