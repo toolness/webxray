@@ -1,10 +1,11 @@
 (function(jQuery) {
   var $ = jQuery;
   
-  jQuery.focusedOverlay = function focusedOverlay(element) {
+  jQuery.focusedOverlay = function focusedOverlay() {
     var ancestorIndex = 0;
     var ancestorOverlay = null;
-    var overlay = $(element).overlay().addClass("webexplode-focus");
+    var overlay = null;
+    var element = null;
 
     function setAncestorOverlay(ancestor) {
       if (ancestorOverlay) {
@@ -20,9 +21,11 @@
     }
 
     var instance = {
-      element: element,
+      element: null,
       ancestor: null,
       upfocus: function upfocus() {
+        if (!element)
+          return;
         var ancestor = $(element).ancestor(ancestorIndex + 1);
 
         if (ancestor.length && ancestor[0] != document) {
@@ -31,6 +34,8 @@
         }
       },
       downfocus: function downfocus() {
+        if (!element)
+          return;
         setAncestorOverlay(null);
         if (ancestorIndex > 0 && --ancestorIndex > 0) {
           var ancestor = $(element).ancestor(ancestorIndex);
@@ -38,8 +43,17 @@
         }
       },
       unfocus: function unfocus() {
+        if (!element)
+          return;
         overlay.remove();
+        overlay = null;
+        element = this.element = null;
         setAncestorOverlay(null);
+      },
+      set: function set(newElement) {
+        this.unfocus();
+        element = this.element = newElement;
+        overlay = $(element).overlay().addClass("webexplode-focus");
       }
     };
     

@@ -2,7 +2,7 @@
   var $ = jQuery;
 
   $(window).ready(function() {
-    var focused = null;
+    var focused = jQuery.focusedOverlay();
 
     var listeners = {
       keydown: function(event) {
@@ -11,10 +11,10 @@
         const KEY_ESC = 27;
 
         function handleKey(event) {
-          if (event.shiftKey && event.keyCode == KEY_UP && focused) {
+          if (event.shiftKey && event.keyCode == KEY_UP) {
             focused.upfocus();
             return true;
-          } else if (event.shiftKey && event.keyCode == KEY_DOWN && focused) {
+          } else if (event.shiftKey && event.keyCode == KEY_DOWN) {
             focused.downfocus();
             return true;
           } else if (event.keyCode == KEY_ESC) {
@@ -32,16 +32,12 @@
       },
       mouseout: function(event) {
         event.stopPropagation();
-        if (focused)
-          focused.unfocus();
-        focused = null;
+        focused.unfocus();
         updateHUDText();
       },
       mouseover: function(event) {
         event.stopPropagation();
-        if (focused)
-          focused.unfocus();
-        focused = jQuery.focusedOverlay(event.target);
+        focused.set(event.target);
         updateHUDText();
       }
     };
@@ -70,7 +66,7 @@
         return span;
       }
 
-      if (focused) {
+      if (focused && focused.element) {
         var span = $("<span></span>");
         span.emit("You are on a ", elementDesc(focused.element), ".");
         if (focused.ancestor)
@@ -84,8 +80,7 @@
     updateHUDText();
 
     $(window).unload(function() {
-      if (focused)
-        focused.unfocus();
+      focused.unfocus();
       focused = null;
       for (var eventName in listeners)
         document.removeEventListener(eventName, listeners[eventName], true);
