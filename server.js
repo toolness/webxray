@@ -24,6 +24,7 @@ var COMPILED_FILE_PARTS = [
 , 'jquery/src/effects.js'
 , 'jquery/src/offset.js'
 , 'jquery/src/dimensions.js'
+, 'src/utils.js'
 , 'src/webexplode.js'
 , 'src/outro.js'
 ];
