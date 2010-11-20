@@ -8,6 +8,7 @@
       overlay: hud[0],
       destroy: function destroy() {
         this.overlay = null;
+        hud.remove();
         hud = null;
       },
       onFocusChange: function handleEvent(focused) {
