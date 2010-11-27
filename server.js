@@ -28,7 +28,7 @@ var COMPILED_FILE_PARTS = [
 , 'src/event-emitter.js'
 , 'src/focused-overlay.js'
 , 'src/hud-overlay.js'
-, 'src/webexplode.js'
+, 'src/main.js'
 , 'src/outro.js'
 ];
 
