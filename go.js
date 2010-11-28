@@ -7,8 +7,9 @@ var PORT = 8000;
 var STATIC_FILES_DIR = './static-files'
 var INDEX_FILE = '/index.html';
 
-var COMPILED_FILENAME = 'webexplode.js';
-var COMPILED_FILE = '/' + COMPILED_FILENAME;
+var COMPILED_FILE = '/webexplode.js';
+var COMPILED_FILENAME = STATIC_FILES_DIR + COMPILED_FILE;
+
 var COMPILED_FILE_PARTS = [
   'src/intro.js'
 , 'jquery/src/core.js'
@@ -79,7 +80,7 @@ function showHelp() {
     "commands:",
     "",
     "  serve - run web server on port " + PORT,
-    "  compile - compile single " + COMPILED_FILENAME + " file",
+    "  compile - generate " + COMPILED_FILENAME,
     ""
   ];
 
