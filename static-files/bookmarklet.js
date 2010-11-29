@@ -3,10 +3,10 @@
 
   var link = document.createElement("link");
   link.setAttribute("rel", "stylesheet");
-  link.setAttribute("href", base + "webexplode.css");
+  link.setAttribute("href", base + "webxray.css");
   document.documentElement.appendChild(link);
 
   var script = document.createElement("script");
-  script.src = base + "webexplode.js";
+  script.src = base + "webxray.js";
   document.documentElement.appendChild(script);
 })();

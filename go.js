@@ -7,7 +7,7 @@ var PORT = 8000;
 var STATIC_FILES_DIR = './static-files'
 var INDEX_FILE = '/index.html';
 
-var COMPILED_FILE = '/webexplode.js';
+var COMPILED_FILE = '/webxray.js';
 var COMPILED_FILENAME = STATIC_FILES_DIR + COMPILED_FILE;
 
 var COMPILED_FILE_PARTS = [
@@ -36,7 +36,7 @@ var COMPILED_FILE_PARTS = [
 
 var STATIC_FILES = {
   '/index.html': 'text/html'
-, '/webexplode.css': 'text/css'
+, '/webxray.css': 'text/css'
 , '/bookmarklet.js': 'application/javascript'
 };
 

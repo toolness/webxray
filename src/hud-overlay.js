@@ -2,7 +2,7 @@
   var $ = jQuery;
 
   jQuery.hudOverlay = function hudOverlay() {
-    var hud = $('<div class="webexplode-hud"></div>');
+    var hud = $('<div class="webxray-hud"></div>');
 
     return {
       overlay: hud[0],
@@ -37,7 +37,7 @@
                       ".");
           hud.empty().append(span);
         } else
-          hud.html("<span>Welcome to WebExplode Inspector.</span>");
+          hud.html("<span>Welcome to Web X-Ray Goggles.</span>");
       }
     };
   };

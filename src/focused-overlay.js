@@ -9,8 +9,8 @@
 
     function labelOverlay(overlay, target) {
       ["top", "bottom"].forEach(function(className) {
-        var part = $('<div class="webexplode-overlay-label"></div>');
-        part.addClass("webexplode-overlay-label-" + className);
+        var part = $('<div class="webxray-overlay-label"></div>');
+        part.addClass("webxray-overlay-label-" + className);
         part.text("<" + (className == "bottom" ? "/" : "") +
                   target.nodeName.toLowerCase() + ">");
         overlay.append(part);
@@ -24,7 +24,7 @@
       }
       if (ancestor) {
         ancestorOverlay = ancestor.overlay();
-        ancestorOverlay.addClass("webexplode-ancestor");
+        ancestorOverlay.addClass("webxray-ancestor");
         labelOverlay(ancestorOverlay, ancestor[0]);
         instance.ancestor = ancestor[0];
       } else
@@ -67,7 +67,7 @@
       set: function set(newElement) {
         this.unfocus();
         element = this.element = newElement;
-        overlay = $(element).overlay().addClass("webexplode-focus");
+        overlay = $(element).overlay().addClass("webxray-focus");
         labelOverlay(overlay, element);
         this.emit('change', this);
       },

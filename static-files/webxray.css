@@ -1,12 +1,12 @@
-.webexplode-focus {
+.webxray-focus {
     background-color: rgba(0, 255, 0, 0.5);
 }
 
-.webexplode-ancestor {
+.webxray-ancestor {
     background-color: rgba(0, 0, 0, 0.1);    
 }
 
-.webexplode-hud {
+.webxray-hud {
     position: fixed;
     bottom: 0px;
     right: 0px;
@@ -19,13 +19,13 @@
     z-index: 1001;
 }
 
-.webexplode-hud code {
+.webxray-hud code {
     font-family: Monaco, monospace;
     color: inherit;
     font-size: 8pt;
 }
 
-.webexplode-overlay-label {
+.webxray-overlay-label {
     position: absolute;
     font-family: Monaco, monospace;
     color: white;
@@ -34,17 +34,17 @@
     pointer-events: none;
 }
 
-.webexplode-overlay-label-top {
+.webxray-overlay-label-top {
     top: 0px;
     left: 0px;
 }
 
-.webexplode-overlay-label-bottom {
+.webxray-overlay-label-bottom {
     bottom: 0px;
     right: 0px;
 }
 
-.webexplode-overlay {
+.webxray-overlay {
     position: absolute;
     pointer-events: none;
     z-index: 1000;
