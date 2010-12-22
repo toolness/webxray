@@ -36,6 +36,12 @@ Alternatively, if you want to compile the `static-files/webxray.js` file, run:
 
   [https://secure.toolness.com/webxray/]: https://secure.toolness.com/webxray/
 
+## Reporting Bugs
+
+If you have any bugs to report, please file them in [Lighthouse][].
+
+  [Lighthouse]: http://hackasaurus.lighthouseapp.com/projects/66492-hackasaurus/
+
 ## LICENSE
 
 All files that are part of this project are covered by the following
