@@ -1,0 +1,34 @@
+{
+  "port": 8000,
+  "staticFilesDir": "./static-files",
+  "indexFile": "/index.html",
+  "compiledFile": "/webxray.js",
+  "compiledFileParts": [
+    "src/intro.js"
+  , "jquery/src/core.js"
+  , "jquery/src/support.js"
+  , "jquery/src/data.js"
+  , "jquery/src/queue.js"
+  , "jquery/src/attributes.js"
+  , "jquery/src/event.js"
+  , "jquery/src/selector.js"
+  , "jquery/src/traversing.js"
+  , "jquery/src/manipulation.js"
+  , "jquery/src/css.js"
+  , "jquery/src/ajax.js"
+  , "jquery/src/effects.js"
+  , "jquery/src/offset.js"
+  , "jquery/src/dimensions.js"
+  , "src/utils.js"
+  , "src/event-emitter.js"
+  , "src/focused-overlay.js"
+  , "src/hud-overlay.js"
+  , "src/main.js"
+  , "src/outro.js"
+  ],
+  "staticFiles": {
+    "/index.html": "text/html"
+  , "/webxray.css": "text/css"
+  , "/bookmarklet.js": "application/javascript"
+  }
+}
