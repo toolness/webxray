@@ -10,9 +10,11 @@
     function labelOverlay(overlay, target) {
       ["top", "bottom"].forEach(function(className) {
         var part = $('<div class="webxray-overlay-label"></div>');
+        var tag = target.nodeName.toLowerCase();
         part.addClass("webxray-overlay-label-" + className);
+        part.addClass(tag + "-tag-label");
         part.text("<" + (className == "bottom" ? "/" : "") +
-                  target.nodeName.toLowerCase() + ">");
+                  tag + ">");
         overlay.append(part);
       });
     }
