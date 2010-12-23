@@ -67,9 +67,12 @@
         this.emit('change', this);
       },
       set: function set(newElement) {
+        var tagName = newElement.nodeName.toLowerCase();
+
         this.unfocus();
         element = this.element = newElement;
         overlay = $(element).overlay().addClass("webxray-focus");
+        overlay.addClass(tagName + "-tag-overlay");
         labelOverlay(overlay, element);
         this.emit('change', this);
       },
