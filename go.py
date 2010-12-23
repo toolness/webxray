@@ -42,7 +42,7 @@ def make_app(cfg):
     return app
 
 if __name__ == "__main__":
-    cfg = json.loads(open('go.json', 'r').read())
+    cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
 
     if len(sys.argv) < 2:
