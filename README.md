@@ -11,7 +11,7 @@ The build system for Web X-Ray Goggles was inspired by jQuery. In fact, Web X-Ra
 To develop the goggles, you'll need:
 
 * git
-* node.js
+* python
 * make, rake, or ant (to build jQuery)
 
 ## Installation
@@ -28,11 +28,11 @@ Now enter that directory and type `make`, or use one of jQuery's other build opt
 
 To start a web server that dynamically serves the Web X-Ray Goggles bookmarklet, run:
 
-    node go.js serve
+    python go.py serve
 
 Alternatively, if you want to compile the `static-files/webxray.js` file, run:
 
-    node go.js compile
+    python go.py compile
 
   [https://secure.toolness.com/webxray/]: https://secure.toolness.com/webxray/
 
