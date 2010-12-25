@@ -1,10 +1,11 @@
-.webxray-focus {
-    background-color: rgba(0, 255, 0, 0.5);
-}
+/* Cascading Style Sheet (CSS) for Web X- Ray Goggles */
 
+/* Style for when you SHIFT + up to inspect parent and grandparent associations */
 .webxray-ancestor {
     background-color: rgba(0, 0, 0, 0.1);    
 }
+
+/*Style for the message that appears in footer explaining the action */
 
 .webxray-hud {
     position: fixed;
@@ -25,14 +26,17 @@
     font-size: 8pt;
 }
 
+/*Style for the tag label*/
+
 .webxray-overlay-label {
     position: absolute;
     font-family: Monaco, monospace;
     color: white;
     font-size: 8pt;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #000000;
     pointer-events: none;
 }
+
 
 .webxray-overlay-label-top {
     top: 0px;
@@ -49,3 +53,65 @@
     pointer-events: none;
     z-index: 1000;
 }
+
+/*Tag Colors*/
+
+.img-tag-overlay{
+background-color:#C60C46;
+opacity:.7;
+}
+
+.p-tag-overlay{
+background-color:#00AEEF;
+opacity:.7;
+}
+
+.html-tag-overlay{
+background-color:#00FF00;
+opacity:.7;
+}
+
+.div-tag-overlay{
+background-color:#F3739B;
+opacity:.7;
+}
+
+.a-tag-overlay{
+background-color:#FF66FF;
+opacity:.7;
+}
+
+.span-tag-overlay{
+background-color:#E66124;
+opacity:.7;
+}
+
+.body-tag-overlay{
+background-color:#FFC328;
+opacity:.7;
+}
+
+.h1-tag-overlay{
+background-color:#b2e725;
+opacity:.7;
+}
+
+.html-tag-overlay{
+background-color:#660066;
+opacity:.7;
+}
+
+.footer-tag-overlay{
+background-color:#FF9900;
+opacity:.7;
+}
+
+.webxray-focus {
+background-color: rgba(0, 255, 0, 0.5);
+}
+
+
+
+
+
+
