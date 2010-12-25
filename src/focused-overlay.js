@@ -1,5 +1,35 @@
 (function(jQuery) {
   var $ = jQuery;
+
+  var OVERLAY_OPACITY = 0.7;
+  var NUM_TAG_COLORS = 9;
+  var TAG_COLOR_MAP = {
+    img: 1,
+    p: 2,
+    div: 3,
+    a: 4,
+    span: 5,
+    body: 6,
+    h1: 7,
+    html: 8,
+    footer: 9
+  };
+
+  function tagNameToNumber(tagName) {
+    var total = 0;
+    for (var i = 0; i < tagName.length; i++)
+      total += tagName.charCodeAt(i);
+    return total;
+  }
+
+  function applyAlphaToColor(color, alpha) {
+    var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    return "rgba(" + 
+           match[1] + ", " +
+           match[2] + ", " +
+           match[3] + ", " +
+           alpha + ")";
+  }
   
   jQuery.focusedOverlay = function focusedOverlay() {
     var ancestorIndex = 0;
@@ -12,7 +42,6 @@
         var part = $('<div class="webxray-overlay-label"></div>');
         var tag = target.nodeName.toLowerCase();
         part.addClass("webxray-overlay-label-" + className);
-        part.addClass(tag + "-tag-label");
         part.text("<" + (className == "bottom" ? "/" : "") +
                   tag + ">");
         overlay.append(part);
@@ -68,12 +97,30 @@
       },
       set: function set(newElement) {
         var tagName = newElement.nodeName.toLowerCase();
-
+        var colorNumber;
+        var bgColor;
+        
         this.unfocus();
         element = this.element = newElement;
-        overlay = $(element).overlay().addClass("webxray-focus");
-        overlay.addClass(tagName + "-tag-overlay");
+        overlay = $(element).overlay();
         labelOverlay(overlay, element);
+
+        if (tagName in TAG_COLOR_MAP)
+          colorNumber = TAG_COLOR_MAP[tagName];
+        else
+          colorNumber = (tagNameToNumber(tagName) % NUM_TAG_COLORS) + 1;
+
+        // Temporarily apply the color class to the overlay so we
+        // can retrieve the actual color and apply alpha transparency
+        // to it. Ideally we should be able to do this via the CSS DOM API,
+        // but for now we'll use this hack.
+        overlay.addClass("webxray-color-" + colorNumber);
+        bgColor = applyAlphaToColor(overlay.css("color"), OVERLAY_OPACITY);
+        console.log(overlay.css("color"), bgColor);
+        overlay.removeClass("webxray-color-" + colorNumber);
+
+        overlay.css({backgroundColor: bgColor});
+
         this.emit('change', this);
       },
       destroy: function destroy() {

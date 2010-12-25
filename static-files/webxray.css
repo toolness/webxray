@@ -39,7 +39,6 @@
     pointer-events: none;
 }
 
-
 .webxray-overlay-label-top {
     top: 0px;
     left: 0px;
@@ -56,53 +55,40 @@
     z-index: 1000;
 }
 
-/* Tag colors */
+/* Our palette for tag colors */
 
-.img-tag-overlay {
-    background-color: #C60C46;
-    opacity: .7;
+.webxray-color-1 {
+    color: #C60C46;
 }
 
-.p-tag-overlay {
-    background-color: #00AEEF;
-    opacity: .7;
+.webxray-color-2 {
+    color: #00AEEF;
 }
 
-.div-tag-overlay {
-    background-color: #F3739B;
-    opacity: .7;
+.webxray-color-3 {
+    color: #F3739B;
 }
 
-.a-tag-overlay {
-    background-color: #FF66FF;
-    opacity: .7;
+.webxray-color-4 {
+    color: #FF66FF;
 }
 
-.span-tag-overlay {
-    background-color: #E66124;
-    opacity: .7;
+.webxray-color-5 {
+    color: #E66124;
 }
 
-.body-tag-overlay {
-    background-color: #FFC328;
-    opacity: .7;
+.webxray-color-6 {
+    color: #FFC328;
 }
 
-.h1-tag-overlay{
-    background-color: #b2e725;
-    opacity: .7;
+.webxray-color-7 {
+    color: #B2E725;
 }
 
-.html-tag-overlay {
-    background-color: #660066;
-    opacity: .7;
+.webxray-color-8 {
+    color: #660066;
 }
 
-.footer-tag-overlay {
-    background-color: #FF9900;
-    opacity: .7;
-}
-
-.webxray-focus {
-    background-color: rgba(0, 255, 0, 0.5);
+.webxray-color-9 {
+    color: #FF9900;
 }
