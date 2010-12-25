@@ -4,6 +4,13 @@
   jQuery.hudOverlay = function hudOverlay() {
     var hud = $('<div class="webxray-hud"></div>');
 
+    function showDefaultContent() {
+      hud.html("<span>Web X-Ray Goggles activated! " +
+               "Press ESC to deactivate.</span>");
+    }
+
+    showDefaultContent();
+
     return {
       overlay: hud[0],
       destroy: function destroy() {
@@ -37,7 +44,7 @@
                       ".");
           hud.empty().append(span);
         } else
-          hud.html("<span>Welcome to Web X-Ray Goggles.</span>");
+          showDefaultContent();
       }
     };
   };
