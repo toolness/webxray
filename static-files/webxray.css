@@ -1,11 +1,12 @@
-/* Cascading Style Sheet (CSS) for Web X- Ray Goggles */
+/*Cascading Style Sheet (CSS) for Web X- Ray Goggles*/
 
-/* Style for when you SHIFT + up to inspect parent and grandparent associations */
+/*Style for when you SHIFT + up to inspect parent and grandparent associations*/
+
 .webxray-ancestor {
     background-color: rgba(0, 0, 0, 0.1);    
 }
 
-/*Style for the message that appears in footer explaining the action */
+/*Style for the message that appears in footer explaining the action*/
 
 .webxray-hud {
     position: fixed;
