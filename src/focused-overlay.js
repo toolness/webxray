@@ -38,7 +38,7 @@
     var element = null;
 
     function labelOverlay(overlay, target) {
-      ["top", "bottom"].forEach(function(className) {
+      ["bottom", "top"].forEach(function(className) {
         var part = $('<div class="webxray-overlay-label"></div>');
         var tag = target.nodeName.toLowerCase();
         part.addClass("webxray-overlay-label-" + className);
