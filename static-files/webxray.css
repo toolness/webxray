@@ -25,7 +25,9 @@
 .webxray-hud code {
     font-family: Monaco, monospace;
     color: inherit;
+    background: inherit;
     font-size: 8pt;
+    display: inline;
 }
 
 /* Style for the tag label */
