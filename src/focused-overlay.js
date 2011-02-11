@@ -116,7 +116,6 @@
         // but for now we'll use this hack.
         overlay.addClass("webxray-color-" + colorNumber);
         bgColor = applyAlphaToColor(overlay.css("color"), OVERLAY_OPACITY);
-        console.log(overlay.css("color"), bgColor);
         overlay.removeClass("webxray-color-" + colorNumber);
 
         overlay.css({backgroundColor: bgColor});
