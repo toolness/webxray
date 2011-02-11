@@ -22,7 +22,7 @@
             focused.downfocus();
             return true;
           } else if (event.keyCode == KEY_ESC) {
-            $(window).trigger('unload');
+            $(window.document).trigger('unload');
             return true;
           }
           return false;
@@ -46,7 +46,7 @@
     for (var eventName in listeners)
       document.addEventListener(eventName, listeners[eventName], true);
 
-    $(window).unload(function() {
+    $(window.document).unload(function() {
       focused.destroy();
       focused = null;
       for (var eventName in listeners)
