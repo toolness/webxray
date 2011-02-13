@@ -23,7 +23,18 @@
   }
 
   function applyAlphaToColor(color, alpha) {
+    // WebKit and Gecko use this.
     var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (!match) {
+      // This is what Opera uses.
+      var hexMatch = color.match(/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/);
+      if (hexMatch) {
+        match = [null];
+        for (var i = 1; i <= 3; i++)
+          match.push(parseInt(hexMatch[i], 16));
+      } else
+        throw new Error("Couldn't parse " + color);
+    }
     return "rgba(" + 
            match[1] + ", " +
            match[2] + ", " +
