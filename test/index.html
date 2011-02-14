@@ -38,25 +38,7 @@ jQuery.noConflict();
 
 <script src="../jquery/test/qunit/qunit/qunit.js"></script>
 
-<script>
-jQuery(document).ready(function() {
-  // Right now, this is our test suite. We can move it into its own
-  // separate file later.
-  test("utils tests", function() {
-    ok(jQuery("#qunit-header").ancestor(1).get(0) === window.document.body,
-       "jQuery.ancestor() works w/ non-null result");
-    ok(jQuery("#qunit-header").ancestor(30) === null,
-       "jQuery.ancestor() works w/ null result");
-    jQuery("#qunit-header").overlay().remove();
-    ok(true, "jQuery.overlay() does not throw, and returns a jQuery");
-
-    var stuff = jQuery("<div></div>");
-    stuff.emit("hello ", jQuery("<em>there</em>"), " dude");
-    equal(stuff.html(), "hello <em>there</em> dude",
-          "jQuery.emit() works");
-  });
-});
-</script>
+<script src="unit/utils.js"></script>
 
 <h1 id="qunit-header">Web X-Ray Goggles Unit Tests</h1>
 <h2 id="qunit-banner"></h2>
