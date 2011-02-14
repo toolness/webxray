@@ -1,28 +1,28 @@
 module("utils");
 
-test("$.emit() tests", function() {
+test("emit()", function() {
   var stuff = jQuery("<div></div>");
   stuff.emit("hello ", jQuery("<em>there</em>"), " dude");
   equal(stuff.html(), "hello <em>there</em> dude",
-        "jQuery.emit() works");
+        "emit() appends text nodes and HTML");
 });
 
-test("$.overlay() tests", function() {
+test("overlay()", function() {
   var overlay = jQuery("#qunit-header").overlay();
   ok(overlay.hasClass("webxray-overlay"),
      "overlay has the 'webxray-overlay' class");
-  ok(true, "overlay() does not throw, and returns a jQuery");
+  ok(true, "overlay() does not throw");
   overlay.remove();
 });
 
-test("$.ancestor() tests", function() {
+test("ancestor()", function() {
   ok(jQuery("#qunit-header").ancestor(1).get(0) === window.document.body,
-     "jQuery.ancestor() works w/ non-null result");
+     "ancestor() works w/ non-null result");
   ok(jQuery("#qunit-header").ancestor(30) === null,
-     "jQuery.ancestor() works w/ null result");
+     "ancestor() works w/ null result");
 });
 
-test("$.makeRGBA() tests", function() {
+test("jQuery.makeRGBA()", function() {
   equals(jQuery.makeRGBA("rgb(120, 255, 255)", 0.5),
          "rgba(120, 255, 255, 0.5)",
          "works w/ rgb() triples");

@@ -1,6 +1,6 @@
 module("event-emitter");
 
-test("$.eventEmitter() tests", function() {
+test("jQuery.eventEmitter()", function() {
   var emitter = jQuery.eventEmitter({
     myMethod: function() { return 1; }
   });

@@ -1,6 +1,6 @@
 module("focused-overlay");
 
-test("$.focusedOverlay() tests", function() {
+test("jQuery.focusedOverlay()", function() {
   var timesCalled = 0;
   var overlay = jQuery.focusedOverlay();
 
