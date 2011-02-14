@@ -21,3 +21,14 @@ test("$.ancestor() tests", function() {
   ok(jQuery("#qunit-header").ancestor(30) === null,
      "jQuery.ancestor() works w/ null result");
 });
+
+test("$.makeRGBA() tests", function() {
+  equals(jQuery.makeRGBA("rgb(120, 255, 255)", 0.5),
+         "rgba(120, 255, 255, 0.5)",
+         "works w/ rgb() triples");
+  equals(jQuery.makeRGBA("rgb(120,255,255)", 0.5),
+         "rgba(120, 255, 255, 0.5)",
+         "works w/ rgb() triples w/o whitespace");
+  equals(jQuery.makeRGBA("#ffaaff", 1.0), "rgba(255, 170, 255, 1)",
+         "works with hex colors");
+});

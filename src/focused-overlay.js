@@ -21,26 +21,6 @@
       total += tagName.charCodeAt(i);
     return total;
   }
-
-  function applyAlphaToColor(color, alpha) {
-    // WebKit and Gecko use this.
-    var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
-    if (!match) {
-      // This is what Opera uses.
-      var hexMatch = color.match(/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/);
-      if (hexMatch) {
-        match = [null];
-        for (var i = 1; i <= 3; i++)
-          match.push(parseInt(hexMatch[i], 16));
-      } else
-        throw new Error("Couldn't parse " + color);
-    }
-    return "rgba(" + 
-           match[1] + ", " +
-           match[2] + ", " +
-           match[3] + ", " +
-           alpha + ")";
-  }
   
   jQuery.focusedOverlay = function focusedOverlay() {
     var ancestorIndex = 0;
@@ -126,7 +106,7 @@
         // to it. Ideally we should be able to do this via the CSS DOM API,
         // but for now we'll use this hack.
         overlay.addClass("webxray-color-" + colorNumber);
-        bgColor = applyAlphaToColor(overlay.css("color"), OVERLAY_OPACITY);
+        bgColor = $.makeRGBA(overlay.css("color"), OVERLAY_OPACITY);
         overlay.removeClass("webxray-color-" + colorNumber);
 
         overlay.css({backgroundColor: bgColor});
