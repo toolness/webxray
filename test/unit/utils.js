@@ -31,4 +31,11 @@ test("$.makeRGBA() tests", function() {
          "works w/ rgb() triples w/o whitespace");
   equals(jQuery.makeRGBA("#ffaaff", 1.0), "rgba(255, 170, 255, 1)",
          "works with hex colors");
+         
+  var div = jQuery('<div class="webxray-color-1"></div>');
+  jQuery(document.body).append(div);
+  equals(jQuery.makeRGBA(div.css("color"), "0.5"),
+         "rgba(198, 12, 70, 0.5)",
+         "works with css('color') on this browser");
+  div.remove();
 });
