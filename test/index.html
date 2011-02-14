@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Web X-Ray Goggles Unit Tests</title>
+<link rel="stylesheet" href="../jquery/test/qunit/qunit/qunit.css">
+<link rel="stylesheet" href="../static-files/webxray.css">
+
+<script>
+var jQuery = {};
+</script>
+
+<script src="../jquery/src/core.js"></script>
+<script src="../jquery/src/support.js"></script>
+<script src="../jquery/src/data.js"></script>
+<script src="../jquery/src/queue.js"></script>
+<script src="../jquery/src/attributes.js"></script>
+<script src="../jquery/src/event.js"></script>
+<script src="../jquery/src/sizzle/sizzle.js"></script>
+<script src="../jquery/src/sizzle-jquery.js"></script>
+<script src="../jquery/src/traversing.js"></script>
+<script src="../jquery/src/manipulation.js"></script>
+<script src="../jquery/src/css.js"></script>
+<script src="../jquery/src/ajax.js"></script>
+<script src="../jquery/src/ajax/jsonp.js"></script>
+<script src="../jquery/src/ajax/script.js"></script>
+<script src="../jquery/src/ajax/xhr.js"></script>
+<script src="../jquery/src/effects.js"></script>
+<script src="../jquery/src/offset.js"></script>
+<script src="../jquery/src/dimensions.js"></script>
+
+<script src="../src/utils.js"></script>
+<script src="../src/event-emitter.js"></script>
+<script src="../src/focused-overlay.js"></script>
+<script src="../src/hud-overlay.js"></script>
+
+<script>
+jQuery.noConflict();
+</script>
+
+<script src="../jquery/test/qunit/qunit/qunit.js"></script>
+
+<script>
+jQuery(document).ready(function() {
+  // Right now, this is our test suite. We can move it into its own
+  // separate file later.
+  test("utils tests", function() {
+    ok(jQuery("#qunit-header").ancestor(1).get(0) === window.document.body,
+       "jQuery.ancestor() works w/ non-null result");
+    ok(jQuery("#qunit-header").ancestor(30) === null,
+       "jQuery.ancestor() works w/ null result");
+    jQuery("#qunit-header").overlay().remove();
+    ok(true, "jQuery.overlay() does not throw, and returns a jQuery");
+
+    var stuff = jQuery("<div></div>");
+    stuff.emit("hello ", jQuery("<em>there</em>"), " dude");
+    equal(stuff.html(), "hello <em>there</em> dude",
+          "jQuery.emit() works");
+  });
+});
+</script>
+
+<h1 id="qunit-header">Web X-Ray Goggles Unit Tests</h1>
+<h2 id="qunit-banner"></h2>
+<div id="qunit-testrunner-toolbar"></div>
+<h2 id="qunit-userAgent"></h2>
+<ol id="qunit-tests"></ol>
+<div id="qunit-fixture">test markup, will be hidden</div>
