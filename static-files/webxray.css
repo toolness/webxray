@@ -53,8 +53,17 @@
 
 .webxray-overlay {
     position: absolute;
+    opacity: 0;
+    -webkit-transition-property: opacity;
+    -webkit-transition-duration: 0.25s;
     pointer-events: none;
     z-index: 1000;
+}
+
+/* This style is applied once the overlay is ready to be shown,
+ * and triggers a CSS transition on awesome browsers. */
+.webxray-overlay-visible {
+    opacity: 1.0;
 }
 
 /* Our palette for tag colors */

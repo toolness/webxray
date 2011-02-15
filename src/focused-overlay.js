@@ -49,6 +49,7 @@
         ancestorOverlay.addClass("webxray-ancestor");
         labelOverlay(ancestorOverlay, ancestor[0]);
         instance.ancestor = ancestor[0];
+        ancestorOverlay.addClass("webxray-overlay-visible");
       } else
         instance.ancestor = null;
     }
@@ -110,6 +111,7 @@
         overlay.removeClass("webxray-color-" + colorNumber);
 
         overlay.css({backgroundColor: bgColor});
+        overlay.addClass("webxray-overlay-visible");
 
         this.emit('change', this);
       },
