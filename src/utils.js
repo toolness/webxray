@@ -39,7 +39,9 @@
       return $(ancestor);
     },
     // Create and return a div that floats above the first
-    // matched element.
+    // matched element. The returned element must have the
+    // webxray-overlay-visible class added to it in order
+    // to become visible.
     overlay: function overlay() {
       var pos = this.offset();
       var overlay = $('<div class="webxray-overlay">&nbsp;</div>');
