@@ -54,8 +54,9 @@
 .webxray-overlay {
     position: absolute;
     opacity: 0;
-    -webkit-transition-property: opacity;
-    -webkit-transition-duration: 0.25s;
+    -webkit-transition: opacity 0.25s linear;
+    -moz-transition: opacity 0.25s linear;
+    -o-transition: opacity 0.25s linear;
     pointer-events: none;
     z-index: 1000;
 }
