@@ -1,11 +1,15 @@
 (function(jQuery) {
   var $ = jQuery;
 
-  jQuery.hudOverlay = function hudOverlay() {
+  jQuery.hudOverlay = function hudOverlay(options) {
     var hud = $('<div class="webxray-hud"></div>');
 
+    if (options === undefined)
+      options = {};
+
     function showDefaultContent() {
-      hud.html("<span>Web X-Ray Goggles activated! " +
+      hud.html(options.defaultContent ||
+               "<span>Web X-Ray Goggles activated! " +
                "Press ESC to deactivate.</span>");
     }
 
