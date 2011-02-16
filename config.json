@@ -20,6 +20,7 @@
   , "jquery/src/offset.js"
   , "jquery/src/dimensions.js"
   , "src/utils.js"
+  , "src/tag-colors.js"
   , "src/event-emitter.js"
   , "src/focused-overlay.js"
   , "src/hud-overlay.js"

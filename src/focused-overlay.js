@@ -2,25 +2,6 @@
   var $ = jQuery;
 
   var OVERLAY_OPACITY = 0.7;
-  var NUM_TAG_COLORS = 9;
-  var TAG_COLOR_MAP = {
-    img: 1,
-    p: 2,
-    div: 3,
-    a: 4,
-    span: 5,
-    body: 6,
-    h1: 7,
-    html: 8,
-    footer: 9
-  };
-
-  function tagNameToNumber(tagName) {
-    var total = 0;
-    for (var i = 0; i < tagName.length; i++)
-      total += tagName.charCodeAt(i);
-    return total;
-  }
   
   jQuery.focusedOverlay = function focusedOverlay() {
     var ancestorIndex = 0;
@@ -88,29 +69,11 @@
         this.emit('change', this);
       },
       set: function set(newElement) {
-        var tagName = newElement.nodeName.toLowerCase();
-        var colorNumber;
-        var bgColor;
-        
         this.unfocus();
         element = this.element = newElement;
-        overlay = $(element).overlay();
+        overlay = $(element).overlayWithTagColor(OVERLAY_OPACITY);
         labelOverlay(overlay, element);
 
-        if (tagName in TAG_COLOR_MAP)
-          colorNumber = TAG_COLOR_MAP[tagName];
-        else
-          colorNumber = (tagNameToNumber(tagName) % NUM_TAG_COLORS) + 1;
-
-        // Temporarily apply the color class to the overlay so we
-        // can retrieve the actual color and apply alpha transparency
-        // to it. Ideally we should be able to do this via the CSS DOM API,
-        // but for now we'll use this hack.
-        overlay.addClass("webxray-color-" + colorNumber);
-        bgColor = $.makeRGBA(overlay.css("color"), OVERLAY_OPACITY);
-        overlay.removeClass("webxray-color-" + colorNumber);
-
-        overlay.css({backgroundColor: bgColor});
         overlay.addClass("webxray-overlay-visible");
 
         this.emit('change', this);
