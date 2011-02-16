@@ -5,7 +5,7 @@ test("jQuery.colorForTag()", function() {
 
   equals($.colorForTag("img"), "#C60C46",
          "existing hard-coded tag names work");
-  equals($.colorForTag("apoengeg"), "#F3739B",
+  equals($.colorForTag("apoengeg"), "#00AEEF",
          "random unknown tag names work");
 });
 
