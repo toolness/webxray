@@ -1,7 +1,5 @@
 (function(jQuery) {
   var $ = jQuery;
-
-  var OVERLAY_OPACITY = 0.7;
   
   jQuery.focusedOverlay = function focusedOverlay() {
     var ancestorIndex = 0;
@@ -71,7 +69,7 @@
       set: function set(newElement) {
         this.unfocus();
         element = this.element = newElement;
-        overlay = $(element).overlayWithTagColor(OVERLAY_OPACITY);
+        overlay = $(element).overlayWithTagColor();
         labelOverlay(overlay, element);
 
         overlay.addClass("webxray-overlay-visible");

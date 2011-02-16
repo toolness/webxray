@@ -27,6 +27,8 @@
     footer: 8
   };
 
+  var DEFAULT_OVERLAY_OPACITY = 0.7;
+
   function tagNameToNumber(tagName) {
     var total = 0;
     for (var i = 0; i < tagName.length; i++)
@@ -53,10 +55,14 @@
   jQuery.fn.extend({
     // Like $.overlay(), but applies the "official" Web X-Ray color
     // for the element type being overlaid, with the given opacity.
+    // A default opacity is used if none is provided.
     overlayWithTagColor: function overlayWithTagColor(opacity) {
       var bgColor;
       var overlay = $(this).overlay();
       var baseColor = $.colorForTag($(this).get(0).nodeName);
+
+      if (opacity === undefined)
+        opacity = DEFAULT_OVERLAY_OPACITY;
 
       bgColor = $.makeRGBA(baseColor, opacity);
 
