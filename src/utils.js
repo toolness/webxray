@@ -1,15 +1,17 @@
 (function(jQuery) {
   var $ = jQuery;
+  var HEX_REGEXP = /#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i;
+  var RGB_REGEXP = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
   jQuery.extend({
     // Return an rgba()-style CSS color string given a color and an
     // alpha value.
     makeRGBA: function makeRGBA(color, alpha) {
       // WebKit and Gecko use this.
-      var match = color.match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+      var match = color.match(RGB_REGEXP);
       if (!match) {
         // This is what Opera uses.
-        var hexMatch = color.match(/#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/);
+        var hexMatch = color.match(HEX_REGEXP);
         if (hexMatch) {
           match = [null];
           for (var i = 1; i <= 3; i++)
@@ -52,6 +54,12 @@
         width: this.outerWidth()
       });
       $(document.body).append(overlay);
+
+      // This seems like a no-op, but it somehow makes CSS transitions
+      // work. Perhaps it forces jQuery to actually apply CSS styles that 
+      // may have been cached within jQuery, or something?
+      overlay.css("color");
+
       return overlay;
     },
     // Like jQuery.append(), but accepts an arbitrary number of arguments,

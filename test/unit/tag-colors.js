@@ -1,11 +1,11 @@
 module("tag-colors");
 
-test("jQuery.colorClassForTag()", function() {
+test("jQuery.colorForTag()", function() {
   var $ = jQuery;
 
-  equals($.colorClassForTag("img"), "webxray-color-1",
+  equals($.colorForTag("img"), "#C60C46",
          "existing hard-coded tag names work");
-  equals($.colorClassForTag("apoengeg"), "webxray-color-2",
+  equals($.colorForTag("apoengeg"), "#F3739B",
          "random unknown tag names work");
 });
 
