@@ -90,7 +90,7 @@
         var promptText = "Enter the HTML to replace this <" + 
                          elementToReplace.nodeName.toLowerCase() +
                          "> element with.";
-        var html = window.prompt(promptText);
+        var html = prompt(promptText);
         if (html !== null && html != "") {
           if (html[0] != '<') {
             html = '<span>' + html + '</span>';
