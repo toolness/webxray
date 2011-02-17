@@ -5,12 +5,68 @@
    * functionality to the goggles, at least until we have the
    * real MixMaster tool ready. */
 
-  function temporaryHandleMixMasterEvent(focused, event) {
+  function CommandManager(focused) {
+    var undoStack = [];
+    var redoStack = [];
+
+    var self = {
+      run: function(command) {
+        focused.unfocus();
+        undoStack.push(command);
+        redoStack.splice(0);
+        command.execute();
+      },
+      undo: function() {
+        if (undoStack.length) {
+          focused.unfocus();
+          var undoneCommand = undoStack.pop();
+          redoStack.push(undoneCommand);
+          undoneCommand.undo();
+        }
+      },
+      redo: function() {
+        if (redoStack.length) {
+          focused.unfocus();
+          var redoneCommand = redoStack.pop();
+          undoStack.push(redoneCommand);
+          redoneCommand.execute();
+        }
+      }
+    };
+    
+    return self;
+  }
+
+  function ReplaceWithCmd(elementToReplace, newContent) {
+    return {
+      execute: function() {
+        $(elementToReplace).replaceWith(newContent);
+      },
+      undo: function() {
+        $(newContent).replaceWith(elementToReplace);
+      }
+    };
+  }
+
+  function temporaryHandleMixMasterEvent(focused, commandManager, event) {
     const KEY_R = 82;
     const KEY_DELETE = 8;
+    const KEY_LEFT = 37;
+    const KEY_RIGHT = 39;
 
-    if (event.shiftKey || event.altKey || event.ctrlKey ||
+    if (event.altKey || event.ctrlKey ||
         event.altGraphKey || event.metaKey) {
+      return false;
+    }
+
+    if (event.shiftKey) {
+      if (event.keyCode == KEY_LEFT) {
+        commandManager.undo();
+        return true;
+      } else if (event.keyCode == KEY_RIGHT) {
+        commandManager.redo();
+        return true;        
+      }
       return false;
     }
 
@@ -23,21 +79,20 @@
                          "> element with.";
         var html = window.prompt(promptText);
         if (html !== null && html != "") {
-          focused.unfocus();
           if (html[0] != '<') {
-            html = '<span>' + html + '</span>'
+            html = '<span>' + html + '</span>';
           }
           var newContent = $(html);
-          $(elementToReplace).replaceWith(newContent);
+          commandManager.run(ReplaceWithCmd(elementToReplace, newContent));
         }
       }
       return true;
-      
+
       case KEY_DELETE:
       var elementToDelete = focused.ancestor || focused.element;
       if (elementToDelete) {
-        focused.unfocus();
-        $(elementToDelete).remove();
+        var placeholder = $('<span style="display: none;"></span>');
+        commandManager.run(ReplaceWithCmd(elementToDelete, placeholder));
       }
       return true;
     }
@@ -48,6 +103,7 @@
   $(window).ready(function() {
     var hud = jQuery.hudOverlay();
     var focused = jQuery.focusedOverlay();
+    var commandManager = CommandManager(focused);
 
     $(document.body).append(hud.overlay);
     focused.on('change', hud.onFocusChange);
@@ -69,7 +125,8 @@
             $(window.document).trigger('unload');
             return true;
           } else
-            return temporaryHandleMixMasterEvent(focused, event);
+            return temporaryHandleMixMasterEvent(focused, commandManager,
+                                                 event);
         }
 
         if (handleKey(event)) {
