@@ -1,6 +1,50 @@
 (function(jQuery) {
   var $ = jQuery;
 
+  /* This is some temporary code to provide some kind of 'remix'
+   * functionality to the goggles, at least until we have the
+   * real MixMaster tool ready. */
+
+  function temporaryHandleMixMasterEvent(focused, event) {
+    const KEY_R = 82;
+    const KEY_DELETE = 8;
+
+    if (event.shiftKey || event.altKey || event.ctrlKey ||
+        event.altGraphKey || event.metaKey) {
+      return false;
+    }
+
+    switch (event.keyCode) {
+      case KEY_R:
+      var elementToReplace = focused.ancestor || focused.element;
+      if (elementToReplace) {
+        var promptText = "Enter the HTML to replace this <" + 
+                         elementToReplace.nodeName.toLowerCase() +
+                         "> element with.";
+        var html = window.prompt(promptText);
+        if (html !== null && html != "") {
+          focused.unfocus();
+          if (html[0] != '<') {
+            html = '<span>' + html + '</span>'
+          }
+          var newContent = $(html);
+          $(elementToReplace).replaceWith(newContent);
+        }
+      }
+      return true;
+      
+      case KEY_DELETE:
+      var elementToDelete = focused.ancestor || focused.element;
+      if (elementToDelete) {
+        focused.unfocus();
+        $(elementToDelete).remove();
+      }
+      return true;
+    }
+
+    return false;
+  }
+
   $(window).ready(function() {
     var hud = jQuery.hudOverlay();
     var focused = jQuery.focusedOverlay();
@@ -24,8 +68,8 @@
           } else if (event.keyCode == KEY_ESC) {
             $(window.document).trigger('unload');
             return true;
-          }
-          return false;
+          } else
+            return temporaryHandleMixMasterEvent(focused, event);
         }
 
         if (handleKey(event)) {
