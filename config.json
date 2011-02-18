@@ -24,6 +24,7 @@
   , "src/event-emitter.js"
   , "src/focused-overlay.js"
   , "src/hud-overlay.js"
+  , "src/mix-master.js"
   , "src/main.js"
   , "src/outro.js"
   ],
