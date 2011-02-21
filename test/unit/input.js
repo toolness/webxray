@@ -18,40 +18,79 @@ test("jQuery.xRayInput()", function() {
 
   var event = {
     type: 'keydown',
+    shiftKey: false,
+    altKey: false,
     keyCode: -1,
     preventDefault: function() { prevented = true; },
     stopPropagation: function() { stopped = true; }
   };
 
-  var wasFocusedElementReplaced = false;
-  var wasUndone = false;
+  var log = [];
+  
+  function MockObject(options) {
+    var obj = {};
+    options.methods.forEach(function(name) {
+      obj[name] = function() {
+        log.push(options.name + "." + name +
+                 "() called w/ " + arguments.length + " args");
+      }
+    });
+    return obj;
+  }
+
+  function checkLog(expectedLogMessages, message) {
+    deepEqual(expectedLogMessages, log, message);
+    log.splice(0);
+  }
 
   var input = $.xRayInput({
-    mixMaster: {
-      undo: function() {
-        wasUndone = true;
-      },
-      replaceFocusedElement: function() {
-        wasFocusedElementReplaced = true;
-      }
-    }
+    mixMaster: MockObject({
+      name: 'mixMaster',
+      methods: ['undo', 'redo', 'deleteFocusedElement',
+                'replaceFocusedElement']
+    }),
+    focusedOverlay: MockObject({
+      name: 'focusedOverlay',
+      methods: ['upfocus', 'downfocus']
+    })
   });
 
   input.handleEvent(event);
   ok(!prevented, "Typing invalid key doesn't prevent default event handling");
   ok(!stopped, "Typing valid key doesn't stop event propagation");
-
+  checkLog([], 'nothing happens when invalid key pressed');
+  
   event.keyCode = input.keys.R;
   input.handleEvent(event);
   ok(prevented, "Typing valid key prevents default event handling");
   ok(stopped, "Typing valid key stops event propagation");
-  ok(wasFocusedElementReplaced, "Simulating replace focused element works");
+  checkLog(['mixMaster.replaceFocusedElement() called w/ 0 args'])
+
+  event.keyCode = input.keys.DELETE;
+  input.handleEvent(event);
+  checkLog(['mixMaster.deleteFocusedElement() called w/ 0 args'])
 
   event.shiftKey = true;
   event.keyCode = input.keys.LEFT;
   input.handleEvent(event);
-  ok(wasUndone, "Simulating undo works");
-  
+  checkLog(['mixMaster.undo() called w/ 0 args']);
+
+  event.keyCode = input.keys.RIGHT;
+  input.handleEvent(event);
+  checkLog(['mixMaster.redo() called w/ 0 args']);
+
+  event.keyCode = input.keys.UP;
+  input.handleEvent(event);
+  checkLog(['focusedOverlay.upfocus() called w/ 0 args']);
+
+  event.keyCode = input.keys.DOWN;
+  input.handleEvent(event);
+  checkLog(['focusedOverlay.downfocus() called w/ 0 args']);
+
+  event.altKey = true;
+  input.handleEvent(event);
+  checkLog([], 'nothing happens when added modifier key is held down');
+
   event.type = "boop";
   raises(function() {
     input.handleEvent(event);
