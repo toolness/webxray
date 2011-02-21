@@ -24,11 +24,11 @@
         if (event.shiftKey) {
           switch (event.keyCode) {
             case KEY_LEFT:
-            mixMaster.commandManager.undo();
+            mixMaster.undo();
             return true;
 
             case KEY_RIGHT:
-            mixMaster.commandManager.redo();
+            mixMaster.redo();
             return true;        
 
             case KEY_UP:

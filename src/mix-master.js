@@ -67,7 +67,8 @@
     var commandManager = CommandManager(options.hud, focused);
 
     var self = {
-      commandManager: commandManager,
+      undo: function() { commandManager.undo(); },
+      redo: function() { commandManager.redo(); },
       replaceFocusedElement: function replaceFocusedElement() {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {

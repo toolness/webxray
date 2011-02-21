@@ -23,12 +23,17 @@ test("jQuery.mixMaster()", function() {
   mm.replaceFocusedElement();
   equal(element.html(), '<em>hello</em>', "Simulating replacement works");
 
-  mm.commandManager.undo();
+  mm.undo();
   equal(element.find("#mixmastertest").length, 1,
         "Simulating undo works");
 
   ok(element.find("#mixmastertest").get(0) === domNode,
      "Undo restores original DOM node, not just HTML.");
+
+  mm.redo();
+
+  equal(element.find("#mixmastertest").length, 0,
+        "Simulating redo works");
 
   $(element).remove();
 });

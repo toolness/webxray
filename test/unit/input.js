@@ -27,10 +27,8 @@ test("jQuery.xRayInput()", function() {
 
   var input = $.xRayInput({
     mixMaster: {
-      commandManager: {
-        undo: function() {
-          wasUndone = true;
-        }
+      undo: function() {
+        wasUndone = true;
       },
       replaceFocusedElement: function() {
         wasFocusedElementReplaced = true;
