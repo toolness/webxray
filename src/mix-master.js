@@ -62,34 +62,13 @@
   }
 
   function MixMaster(options) {
-    const KEY_R = 82;
-    const KEY_DELETE = 8;
-    const KEY_LEFT = 37;
-    const KEY_RIGHT = 39;
-
     var promptFunction = options.prompt || prompt;
     var focused = options.focusedOverlay;
     var commandManager = CommandManager(options.hud, focused);
-    
-    function maybeHandleEvent(event) {
-      if (event.altKey || event.ctrlKey ||
-          event.altGraphKey || event.metaKey) {
-        return false;
-      }
 
-      if (event.shiftKey) {
-        if (event.keyCode == KEY_LEFT) {
-          commandManager.undo();
-          return true;
-        } else if (event.keyCode == KEY_RIGHT) {
-          commandManager.redo();
-          return true;        
-        }
-        return false;
-      }
-
-      switch (event.keyCode) {
-        case KEY_R:
+    var self = {
+      commandManager: commandManager,
+      replaceFocusedElement: function replaceFocusedElement() {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {
           var promptText = "Enter the HTML to replace this <" + 
@@ -106,26 +85,13 @@
                                               newContent));
           }
         }
-        return true;
-
-        case KEY_DELETE:
+      },
+      deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.ancestor || focused.element;
         if (elementToDelete) {
           var placeholder = $('<span style="display: none;"></span>');
           commandManager.run(ReplaceWithCmd('deletion', elementToDelete,
                                             placeholder));
-        }
-        return true;
-      }
-
-      return false;        
-    }
-    
-    var self = {
-      handleEvent: function handleEvent(event) {
-        if (maybeHandleEvent(event)) {
-          event.preventDefault();
-          event.stopPropagation();
         }
       }
     };

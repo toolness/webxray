@@ -8,54 +8,20 @@
       hud: hud,
       focusedOverlay: focused
     });
+    var input = jQuery.xRayInput({
+      hud: hud,
+      focusedOverlay: focused,
+      mixMaster: mixMaster
+    });
 
     $(document.body).append(hud.overlay);
     focused.on('change', hud.onFocusChange);
-
-    var listeners = {
-      keydown: function(event) {
-        const KEY_UP = 38;
-        const KEY_DOWN = 40;
-        const KEY_ESC = 27;
-
-        function handleKey(event) {
-          if (event.shiftKey && event.keyCode == KEY_UP) {
-            focused.upfocus();
-            return true;
-          } else if (event.shiftKey && event.keyCode == KEY_DOWN) {
-            focused.downfocus();
-            return true;
-          } else if (event.keyCode == KEY_ESC) {
-            $(window.document).trigger('unload');
-            return true;
-          }
-          return false;
-        }
-
-        if (handleKey(event)) {
-          event.preventDefault();
-          event.stopPropagation();
-        } else
-          mixMaster.handleEvent(event);
-      },
-      mouseout: function(event) {
-        event.stopPropagation();
-        focused.unfocus();
-      },
-      mouseover: function(event) {
-        event.stopPropagation();
-        focused.set(event.target);
-      }
-    };
-
-    for (var eventName in listeners)
-      document.addEventListener(eventName, listeners[eventName], true);
+    input.activate();
 
     $(window.document).unload(function() {
       focused.destroy();
       focused = null;
-      for (var eventName in listeners)
-        document.removeEventListener(eventName, listeners[eventName], true);
+      input.deactivate();
       hud.destroy();
       hud = null;
     });
