@@ -1,5 +1,6 @@
 (function(jQuery) {
   var $ = jQuery;
+  var MAX_URL_LENGTH = 35;
 
   jQuery.hudOverlay = function hudOverlay(options) {
     var hud = $('<div class="webxray-hud"></div>');
@@ -37,6 +38,13 @@
           if (element.className)
             span.emit(element.id ? " and" : " with", " class ",
                       code(element.className));
+          if (element.href || element.src) {
+            var url = element.href || element.src;
+            if (url.length > MAX_URL_LENGTH)
+              url = url.substring(0, MAX_URL_LENGTH) + '\u2026';
+            span.emit((element.id || element.className) ? "," : "",
+                      " pointing at ", code(url));
+          }
           return span;
         }
 

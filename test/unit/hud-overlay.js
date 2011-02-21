@@ -45,5 +45,18 @@ test("onFocusChange()", function() {
          "span&gt;</code> element with id <code>barg</code> and " +
          "class <code>boop</code></span>.</span>");
 
+  focused.element = document.createElement('a');
+  focused.element.href = "http://goop.com/";
+  hud.onFocusChange(focused);
+  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
+         "a&gt;</code> element pointing at <code>http://goop.com/</code>' +
+         '</span>.</span>");
+
+  focused.element.id = "barg";
+  hud.onFocusChange(focused);
+  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
+         "a&gt;</code> element with id <code>barg</code>, pointing at " +
+         "<code>http://goop.com/</code></span>.</span>");
+
   hud.destroy();
 });
