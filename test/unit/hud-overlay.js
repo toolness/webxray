@@ -25,7 +25,7 @@ test("onFocusChange()", function() {
          "span&gt;</code> element with id <code>barg</code>" +
          "</span>.</span>");
 
-  focused.element.id = null;
+  focused.element.id = '';
   focused.ancestor = document.createElement('div');
   hud.onFocusChange(focused);
   equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
