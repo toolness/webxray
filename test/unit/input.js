@@ -17,6 +17,7 @@ test("jQuery.xRayInput()", function() {
   var stopped = false;
 
   var event = {
+    type: 'keydown',
     keyCode: 0,
     preventDefault: function() { prevented = true; },
     stopPropagation: function() { stopped = true; }
@@ -36,18 +37,23 @@ test("jQuery.xRayInput()", function() {
     }
   });
 
-  input._listeners.keydown(event);
+  input.handleEvent(event);
   ok(!prevented, "Typing invalid key doesn't prevent default event handling");
   ok(!stopped, "Typing valid key doesn't stop event propagation");
 
   event.keyCode = 82;
-  input._listeners.keydown(event);
+  input.handleEvent(event);
   ok(prevented, "Typing valid key prevents default event handling");
   ok(stopped, "Typing valid key stops event propagation");
   ok(wasFocusedElementReplaced, "Simulating replace focused element works");
 
   event.shiftKey = true;
   event.keyCode = 37;
-  input._listeners.keydown(event);
+  input.handleEvent(event);
   ok(wasUndone, "Simulating undo works");
+  
+  event.type = "boop";
+  raises(function() {
+    input.handleEvent(event);
+  }, "unexpected event type throws error");
 });

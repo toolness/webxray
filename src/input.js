@@ -76,8 +76,12 @@
       };
 
       var self = {
-        // We're exposing listeners for unit tests only.
-        _listeners: listeners,
+        handleEvent: function handleEvent(event) {
+          if (event.type in listeners)
+            listeners[event.type](event);
+          else
+            throw new Error("Unexpected event type: " + event.type);
+        },
         activate: function() {
           // We're listening during the capture phase to intercept
           // any events at the earliest point before they're
@@ -85,11 +89,11 @@
           // appear to allow for listening during the capture phase,
           // we're using document.addEventListener() directly.
           for (var name in listeners)
-            document.addEventListener(name, listeners[name], true);
+            document.addEventListener(name, self, true);
         },
         deactivate: function() {
           for (var name in listeners)
-            document.removeEventListener(name, listeners[name], true);
+            document.removeEventListener(name, self, true);
         }
       };
       
