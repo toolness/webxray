@@ -98,6 +98,15 @@
           commandManager.run(ReplaceWithCmd('deletion', elementToDelete,
                                             placeholder));
         }
+      },
+      infoForFocusedElement: function infoForFocusedElement(open) {
+        var element = focused.ancestor || focused.element;
+        open = open || window.open;
+        if (element) {
+          var url = 'https://developer.mozilla.org/en/HTML/Element/' +
+                    element.nodeName.toLowerCase();
+          open(url, 'info');
+        }
       }
     };
     return self;

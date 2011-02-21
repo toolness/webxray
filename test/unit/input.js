@@ -47,7 +47,8 @@ test("jQuery.xRayInput()", function() {
     mixMaster: MockObject({
       name: 'mixMaster',
       methods: ['undo', 'redo', 'deleteFocusedElement',
-                'replaceFocusedElement']
+                'replaceFocusedElement',
+                'infoForFocusedElement']
     }),
     focusedOverlay: MockObject({
       name: 'focusedOverlay',
@@ -69,6 +70,10 @@ test("jQuery.xRayInput()", function() {
   event.keyCode = input.keys.DELETE;
   input.handleEvent(event);
   checkLog(['mixMaster.deleteFocusedElement() called w/ 0 args'])
+
+  event.keyCode = input.keys.I;
+  input.handleEvent(event);
+  checkLog(['mixMaster.infoForFocusedElement() called w/ 0 args']);
 
   event.shiftKey = true;
   event.keyCode = input.keys.LEFT;

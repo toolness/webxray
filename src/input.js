@@ -2,6 +2,7 @@
   var $ = jQuery;
 
   var keys = {
+    I: 73,
     R: 82,
     DELETE: 8,
     LEFT: 37,
@@ -54,6 +55,10 @@
           
           case keys.DELETE:
           mixMaster.deleteFocusedElement();
+          return true;
+          
+          case keys.I:
+          mixMaster.infoForFocusedElement();
           return true;
         }
         return false;

@@ -37,6 +37,13 @@ test("jQuery.mixMaster()", function() {
 
   mm.undo();
   focused.set(domNode);
+
+  var infoURL;
+  focused.set(domNode);
+  mm.infoForFocusedElement(function open(url) { infoURL = url; });
+  equal(infoURL, 'https://developer.mozilla.org/en/HTML/Element/div',
+        'info URL is correct');
+
   mm.deleteFocusedElement();
   equal(element.html(), '<span style="display: none;"></span>',
         "Simulating deletion works");
