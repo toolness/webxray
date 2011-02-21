@@ -9,7 +9,6 @@
       focusedOverlay: focused
     });
     var input = jQuery.xRayInput({
-      hud: hud,
       focusedOverlay: focused,
       mixMaster: mixMaster
     });

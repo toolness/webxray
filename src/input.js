@@ -13,7 +13,6 @@
 
   jQuery.extend({
     xRayInput: function xRayInput(options) {
-      var hud = options.hud;
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
 
