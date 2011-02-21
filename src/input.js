@@ -1,13 +1,15 @@
 (function(jQuery) {
   var $ = jQuery;
 
-  const KEY_R = 82;
-  const KEY_DELETE = 8;
-  const KEY_LEFT = 37;
-  const KEY_RIGHT = 39;
-  const KEY_UP = 38;
-  const KEY_DOWN = 40;
-  const KEY_ESC = 27;
+  var keys = {
+    R: 82,
+    DELETE: 8,
+    LEFT: 37,
+    UP: 38,
+    RIGHT: 39,
+    DOWN: 40,
+    ESC: 27
+  };
 
   jQuery.extend({
     xRayInput: function xRayInput(options) {
@@ -23,19 +25,19 @@
 
         if (event.shiftKey) {
           switch (event.keyCode) {
-            case KEY_LEFT:
+            case keys.LEFT:
             mixMaster.undo();
             return true;
 
-            case KEY_RIGHT:
+            case keys.RIGHT:
             mixMaster.redo();
             return true;        
 
-            case KEY_UP:
+            case keys.UP:
             focused.upfocus();
             return true;
 
-            case KEY_DOWN:
+            case keys.DOWN:
             focused.downfocus();
             return true;            
           }
@@ -43,15 +45,15 @@
         }
 
         switch (event.keyCode) {
-          case KEY_ESC:
+          case keys.ESC:
           $(document).trigger('unload');
           return true;
           
-          case KEY_R:
+          case keys.R:
           mixMaster.replaceFocusedElement();
           return true;
           
-          case KEY_DELETE:
+          case keys.DELETE:
           mixMaster.deleteFocusedElement();
           return true;
         }
@@ -76,6 +78,7 @@
       };
 
       var self = {
+        keys: keys,
         handleEvent: function handleEvent(event) {
           if (event.type in listeners)
             listeners[event.type](event);
