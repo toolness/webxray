@@ -4,6 +4,15 @@
   var RGB_REGEXP = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
   jQuery.extend({
+    // Return a string that is shortened to be the given maximum
+    // length, with a trailing ellipsis at the end. If the string
+    // isn't longer than the maximum length, the string is returned
+    // unaltered.
+    shortenText: function shortenText(text, maxLength) {
+      if (text.length > maxLength)
+        return text.substring(0, maxLength) + '\u2026';
+      return text;
+    },
     // Return an rgba()-style CSS color string given a color and an
     // alpha value.
     makeRGBA: function makeRGBA(color, alpha) {

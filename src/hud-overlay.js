@@ -39,9 +39,8 @@
             span.emit(element.id ? " and" : " with", " class ",
                       code(element.className));
           if (element.href || element.src) {
-            var url = element.href || element.src;
-            if (url.length > MAX_URL_LENGTH)
-              url = url.substring(0, MAX_URL_LENGTH) + '\u2026';
+            var url = $.shortenText(element.href || element.src,
+                                    MAX_URL_LENGTH);
             span.emit((element.id || element.className) ? "," : "",
                       " pointing at ", code(url));
           }

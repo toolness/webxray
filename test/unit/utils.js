@@ -22,6 +22,12 @@ test("ancestor()", function() {
      "ancestor() works w/ null result");
 });
 
+test("jQuery.shortenText()", function() {
+  equals(jQuery.shortenText('hello', 3), 'hel\u2026');
+  equals(jQuery.shortenText('hello', 5), 'hello');
+  equals(jQuery.shortenText('hello', 200), 'hello');
+});
+
 test("jQuery.makeRGBA()", function() {
   equals(jQuery.makeRGBA("rgb(120, 255, 255)", 0.5),
          "rgba(120, 255, 255, 0.5)",
