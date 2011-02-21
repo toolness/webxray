@@ -90,6 +90,10 @@
       deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.ancestor || focused.element;
         if (elementToDelete) {
+          // Replacing the element with a zero-length invisible
+          // span is a lot easier than actually deleting the element,
+          // since it allows us to place a "bookmark" in the DOM
+          // that can easily be undone if the user wishes.
           var placeholder = $('<span style="display: none;"></span>');
           commandManager.run(ReplaceWithCmd('deletion', elementToDelete,
                                             placeholder));

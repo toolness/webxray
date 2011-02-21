@@ -35,5 +35,11 @@ test("jQuery.mixMaster()", function() {
   equal(element.find("#mixmastertest").length, 0,
         "Simulating redo works");
 
+  mm.undo();
+  focused.set(domNode);
+  mm.deleteFocusedElement();
+  equal(element.html(), '<span style="display: none;"></span>',
+        "Simulating deletion works");
+
   $(element).remove();
 });
