@@ -15,6 +15,9 @@
         part.text("<" + (className == "bottom" ? "/" : "") +
                   tag + ">");
         overlay.append(part);
+        if (part.width() > overlay.width() ||
+            part.height() > overlay.height())
+          part.hide();
       });
     }
 
