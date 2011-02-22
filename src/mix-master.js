@@ -94,7 +94,7 @@
           // span is a lot easier than actually deleting the element,
           // since it allows us to place a "bookmark" in the DOM
           // that can easily be undone if the user wishes.
-          var placeholder = $('<span style="display: none;"></span>');
+          var placeholder = $('<span class="webxray-deleted"></span>');
           commandManager.run(ReplaceWithCmd('deletion', elementToDelete,
                                             placeholder));
         }

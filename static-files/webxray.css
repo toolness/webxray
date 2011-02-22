@@ -70,3 +70,10 @@
 .webxray-overlay-visible {
     opacity: 1.0;
 }
+
+/* A DOM element that has been deleted by the user, but which
+ * we'd like to remember just in case the user decides to undo
+ * the deletion. */
+.webxray-deleted {
+    display: none;
+}
