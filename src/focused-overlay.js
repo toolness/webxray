@@ -64,6 +64,7 @@
         overlay = null;
         element = this.element = null;
         setAncestorOverlay(null);
+        ancestorIndex = 0;
         this.emit('change', this);
       },
       set: function set(newElement) {

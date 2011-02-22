@@ -1,5 +1,25 @@
 module("focused-overlay");
 
+test("ancestor index is reset properly on unfocus", function() {
+  var $ = jQuery;
+  var overlay = jQuery.focusedOverlay();
+  var cDiv = $("#qunit-fixture #focused-overlay .c").get(0);
+
+  overlay.set(cDiv);
+  equals(overlay.element.className, 'c');
+  overlay.upfocus();
+  equals(overlay.ancestor.className, 'b');
+  overlay.upfocus();
+  equals(overlay.ancestor.className, 'a');
+  overlay.unfocus();
+
+  overlay.set(cDiv);
+  overlay.upfocus();
+  equals(overlay.ancestor.className, 'b');  
+
+  overlay.destroy();
+});
+
 test("jQuery.focusedOverlay()", function() {
   var timesCalled = 0;
   var overlay = jQuery.focusedOverlay();
