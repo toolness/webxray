@@ -38,7 +38,8 @@
           if (element.className)
             span.emit(element.id ? " and" : " with", " class ",
                       code(element.className));
-          var url = element.href || element.src || element.action;
+          var url = element.href || element.src || element.action ||
+                    element.currentSrc;
           if (url && url.length) {
             url = $.shortenText(url, MAX_URL_LENGTH);
             span.emit((element.id || element.className) ? "," : "",
