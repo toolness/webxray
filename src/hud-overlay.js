@@ -42,7 +42,8 @@
             var url = $.shortenText(element.href || element.src,
                                     MAX_URL_LENGTH);
             span.emit((element.id || element.className) ? "," : "",
-                      " pointing at ", code(url));
+                      " pointing at ",
+                      $('<span class="webxray-url"></span>').text(url));
           }
           return span;
         }

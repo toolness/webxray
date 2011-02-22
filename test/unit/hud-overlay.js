@@ -49,14 +49,15 @@ test("onFocusChange()", function() {
   focused.element.href = "http://goop.com/";
   hud.onFocusChange(focused);
   equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "a&gt;</code> element pointing at <code>http://goop.com/</code>" +
+         "a&gt;</code> element pointing at " +
+         '<span class="webxray-url">http://goop.com/</span>' +
          "</span>.</span>");
 
   focused.element.id = "barg";
   hud.onFocusChange(focused);
   equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
          "a&gt;</code> element with id <code>barg</code>, pointing at " +
-         "<code>http://goop.com/</code></span>.</span>");
+         '<span class="webxray-url">http://goop.com/</span></span>.</span>');
 
   hud.destroy();
 });
