@@ -38,9 +38,9 @@
           if (element.className)
             span.emit(element.id ? " and" : " with", " class ",
                       code(element.className));
-          if (element.href || element.src) {
-            var url = $.shortenText(element.href || element.src,
-                                    MAX_URL_LENGTH);
+          var url = element.href || element.src || element.action;
+          if (url && url.length) {
+            url = $.shortenText(url, MAX_URL_LENGTH);
             span.emit((element.id || element.className) ? "," : "",
                       " pointing at ",
                       $('<span class="webxray-url"></span>').text(url));

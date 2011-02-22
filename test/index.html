@@ -86,8 +86,16 @@ jQuery.noConflict();
       <div class="expect"><span>You are on a <span><code>&lt;a&gt;</code> element pointing at <span class="webxray-url">http://goop.com/</span></span>.</span></div>
     </div>
     <div class="test-case">
+      <div class="element"><iframe src="data:text/plain,hi"></iframe></div>
+      <div class="expect"><span>You are on a <span><code>&lt;iframe&gt;</code> element pointing at <span class="webxray-url">data:text/plain,hi</span></span>.</span></div>
+    </div>
+    <div class="test-case">
       <div class="element"><a id="barg" href="http://goop.com/">hi</a></div>
       <div class="expect"><span>You are on a <span><code>&lt;a&gt;</code> element with id <code>barg</code>, pointing at <span class="webxray-url">http://goop.com/</span></span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><form action="http://goop.com/submit" method="post"></form></div>
+      <div class="expect"><span>You are on a <span><code>&lt;form&gt;</code> element pointing at <span class="webxray-url">http://goop.com/submit</span></span>.</span></div>
     </div>
   </div>
 </div>
