@@ -59,7 +59,7 @@ test("jQuery.mixMaster()", function() {
 
   mixTest(function(mixMaster, element, hud) {
     mixMaster.deleteFocusedElement();
-    equal(element.html(), '<span style="display: none;"></span>',
+    equal(element.html(), '<span class="webxray-deleted"></span>',
           "Simulating deletion works");
     equal($(hud.overlay).text(), 'Busted deletion.');
   });
