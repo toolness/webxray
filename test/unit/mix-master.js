@@ -21,22 +21,24 @@ test("jQuery.mixMaster()", function() {
       }
     });
 
-    fn(mixMaster, element);
+    fn(mixMaster, element, hud);
 
     $(element).remove();
     focused.destroy();
     hud.destroy();
   }
 
-  mixTest(function(mixMaster, element) {
+  mixTest(function(mixMaster, element, hud) {
     var domNode = element.find("#mixmastertest").get(0);
 
     mixMaster.replaceFocusedElement();
     equal(element.html(), '<em>hello</em>', "Simulating replacement works");
+    equal($(hud.overlay).text(), 'Busted replacement.');
 
     mixMaster.undo();
     equal(element.find("#mixmastertest").length, 1,
           "Simulating undo works");
+    equal($(hud.overlay).text(), 'Unbusted replacement.');
 
     ok(element.find("#mixmastertest").get(0) === domNode,
        "Undo restores original DOM node, not just HTML.");
@@ -45,6 +47,7 @@ test("jQuery.mixMaster()", function() {
 
     equal(element.find("#mixmastertest").length, 0,
           "Simulating redo works");
+    equal($(hud.overlay).text(), 'Rebusted replacement.');
   });
 
   mixTest(function(mixMaster) {
@@ -54,9 +57,10 @@ test("jQuery.mixMaster()", function() {
           'info URL is correct');
   });
 
-  mixTest(function(mixMaster, element) {
+  mixTest(function(mixMaster, element, hud) {
     mixMaster.deleteFocusedElement();
     equal(element.html(), '<span style="display: none;"></span>',
           "Simulating deletion works");
+    equal($(hud.overlay).text(), 'Busted deletion.');
   });
 });
