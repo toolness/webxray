@@ -54,4 +54,37 @@ jQuery.noConflict();
 <div id="qunit-testrunner-toolbar"></div>
 <h2 id="qunit-userAgent"></h2>
 <ol id="qunit-tests"></ol>
-<div id="qunit-fixture">test markup, will be hidden</div>
+<div id="qunit-fixture">
+  <!-- hud-overlay.js test fixture -->
+  <div id="hud-overlay">
+    <div class="test-case">
+      <div class="element"><span></span></div>
+      <div class="expect"><span>You are on a <span><code>&lt;span&gt;</code> element</span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><span id="barg"></span></div>
+      <div class="expect"><span>You are on a <span><code>&lt;span&gt;</code> element with id <code>barg</code></span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><span class="boop"></span></div>
+      <div class="expect"><span>You are on a <span><code>&lt;span&gt;</code> element with class <code>boop</code></span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><span id="barg" class="boop"></span></div>
+      <div class="expect"><span>You are on a <span><code>&lt;span&gt;</code> element with id <code>barg</code> and class <code>boop</code></span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><span></span></div>
+      <div class="ancestor"><div></div></div>
+      <div class="expect"><span>You are on a <span><code>&lt;span&gt;</code> element</span>. It is inside a <span><code>&lt;div&gt;</code> element</span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><a href="http://goop.com/">hi</a></div>
+      <div class="expect"><span>You are on a <span><code>&lt;a&gt;</code> element pointing at <span class="webxray-url">http://goop.com/</span></span>.</span></div>
+    </div>
+    <div class="test-case">
+      <div class="element"><a id="barg" href="http://goop.com/">hi</a></div>
+      <div class="expect"><span>You are on a <span><code>&lt;a&gt;</code> element with id <code>barg</code>, pointing at <span class="webxray-url">http://goop.com/</span></span>.</span></div>
+    </div>
+  </div>
+</div>

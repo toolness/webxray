@@ -10,54 +10,15 @@ test("jQuery.hudOverlay() defaultContent works", function() {
 test("onFocusChange()", function() {
   var $ = jQuery;
   var hud = $.hudOverlay();
-  var focused = {
-    element: document.createElement('span'),
-    ancestor: null
-  };
-
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "span&gt;</code> element</span>.</span>");
-
-  focused.element.id = "barg";
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "span&gt;</code> element with id <code>barg</code>" +
-         "</span>.</span>");
-
-  focused.element.id = '';
-  focused.ancestor = document.createElement('div');
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "span&gt;</code> element</span>. It is inside a <span>" +
-         "<code>&lt;div&gt;</code> element</span>.</span>");
-
-  focused.element.className = "boop";
-  focused.ancestor = null;
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "span&gt;</code> element with class <code>boop</code>" +
-         "</span>.</span>");
-
-  focused.element.id = "barg";
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "span&gt;</code> element with id <code>barg</code> and " +
-         "class <code>boop</code></span>.</span>");
-
-  focused.element = document.createElement('a');
-  focused.element.href = "http://goop.com/";
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "a&gt;</code> element pointing at " +
-         '<span class="webxray-url">http://goop.com/</span>' +
-         "</span>.</span>");
-
-  focused.element.id = "barg";
-  hud.onFocusChange(focused);
-  equals($(hud.overlay).html(), "<span>You are on a <span><code>&lt;" +
-         "a&gt;</code> element with id <code>barg</code>, pointing at " +
-         '<span class="webxray-url">http://goop.com/</span></span>.</span>');
-
+  $("#qunit-fixture #hud-overlay .test-case").each(function() {
+    var element = $(this).find(".element").children();
+    var ancestor = $(this).find(".ancestor").children();
+    var focused = {
+      element: element.length ? element.get(0) : null,
+      ancestor: ancestor.length ? ancestor.get(0) : null
+    };
+    hud.onFocusChange(focused);
+    equals($(this).find(".expect").html(), $(hud.overlay).html());
+  });
   hud.destroy();
 });
