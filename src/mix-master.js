@@ -121,37 +121,51 @@
         var focusedHTML = trivialParent.html();
 
         if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
-          focusedHTML = "<span>The HTML source for your selected <code>&lt;" + tagName + "&gt;</code> element could make your head explode.</span>";
+          focusedHTML = "<span>The HTML source for your selected " +
+                        "<code>&lt;" + tagName + "&gt;</code> element " +
+                        "could make your head explode.</span>";
 
         input.deactivate();
         var dialogURL = "http://labs.toolness.com/dom-tutorial/";
         //var dialogURL = "http://localhost:8001/";
-        var div = $('<div class="webxray-dialog-overlay"><div class="webxray-dialog-outer"><div class="webxray-dialog-middle"><div class="webxray-dialog-inner"><iframe src="' + dialogURL + '#dialog"></iframe></div></div></div></div>');
+        var div = $('<div class="webxray-dialog-overlay">' +
+                    '<div class="webxray-dialog-outer">' +
+                    '<div class="webxray-dialog-middle">' +
+                    '<div class="webxray-dialog-inner">' +
+                    '<iframe src="' + dialogURL + '#dialog"></iframe>' +
+                    '</div></div></div></div>');
         $(document.body).append(div);
-        // We need to use document.defaultView here because 'window' is a trivial
-        // window subclass rather than window itself, which confuses Safari.
-        document.defaultView.addEventListener("message", function onMessage(event) {
+        
+        // We need to use document.defaultView here because 'window' is a 
+        // trivial window subclass rather than window itself, which
+        // confuses Safari.
+        var window = document.defaultView;
+        
+        window.addEventListener("message", function onMessage(event) {
           if (event.data && event.data.length && event.data[0] == '{') {
             var data = JSON.parse(event.data);
             div.fadeOut(function() {
               div.remove();
               input.activate();
               if (data.msg == "ok") {
+
                 // The dialog may have decided to replace all our spaces
                 // with non-breaking ones, so we'll undo that.
                 var html = data.endHTML.replace(/\u00a0/g, " ");
+
                 self.replaceFocusedElement(html);
               }
-              document.defaultView.removeEventListener("message", onMessage,
-                                                       false);
-              $(document.defaultView).focus();
+              window.removeEventListener("message", onMessage, false);
+              $(window).focus();
             });
           }
         }, false);
         div.find("iframe").hide().load(function onLoad() {
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
-            instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
+            instructions: "<span>When you're done composing your " +
+                          "replacement HTML, press the " +
+                          "<strong>Ok</strong> button.",
             startHTML: focusedHTML,
             baseURI: document.location.href
           }), "*");
