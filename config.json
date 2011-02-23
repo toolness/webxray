@@ -33,5 +33,6 @@
     "/index.html": "text/html"
   , "/webxray.css": "text/css"
   , "/bookmarklet.js": "application/javascript"
+  , "/github-ribbon.png" : "image/png"
   }
 }
