@@ -111,11 +111,18 @@
         }
       },
       replaceFocusedElementWithAwesomeDialog: function(input) {
-        var focusedElement = focused.element || focused.ancestor;
+        var MAX_HTML_LENGTH = 1000;
+        var focusedElement =  focused.ancestor || focused.element;
         if (!focusedElement)
           return;
         var tagName = focusedElement.nodeName.toLowerCase();
-        
+        var clonedElement = $(focusedElement).clone();
+        var trivialParent = $('<div></div>').append(clonedElement);
+        var focusedHTML = trivialParent.html();
+
+        if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
+          focusedHTML = "<span>The HTML source for your selected <code>&lt;" + tagName + "&gt;</code> element could make your head explode.</span>";
+
         input.deactivate();
         var dialogURL = "http://labs.toolness.com/dom-tutorial/";
         //var dialogURL = "http://localhost:8001/";
@@ -138,7 +145,10 @@
               div.remove();
               input.activate();
               if (data.msg == "ok") {
-                self.replaceFocusedElement(data.endHTML);
+                // The dialog may have decided to replace all our spaces
+                // with non-breaking ones, so we'll undo that.
+                var html = data.endHTML.replace(/\u00a0/g, " ");
+                self.replaceFocusedElement(html);
               }
               $(document.defaultView).focus();
             });
@@ -149,7 +159,7 @@
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
-            startHTML: "<span>This will replace your selected <code>&lt;" + tagName + "&gt;</code> element.</span>"
+            startHTML: focusedHTML
           }), "*");
           $(this).fadeIn();
         });
