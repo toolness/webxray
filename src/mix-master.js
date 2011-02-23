@@ -69,13 +69,15 @@
     var self = {
       undo: function() { commandManager.undo(); },
       redo: function() { commandManager.redo(); },
-      replaceFocusedElement: function replaceFocusedElement() {
+      replaceFocusedElement: function replaceFocusedElement(html) {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {
-          var promptText = "Enter the HTML to replace this <" + 
-                           elementToReplace.nodeName.toLowerCase() +
-                           "> element with.";
-          var html = promptFunction(promptText);
+          if (typeof(html) != "string") {
+            var promptText = "Enter the HTML to replace this <" + 
+                             elementToReplace.nodeName.toLowerCase() +
+                             "> element with.";
+            html = promptFunction(promptText);
+          }
           if (html !== null && html != "") {
             if (html[0] != '<') {
               html = '<span>' + html + '</span>';
@@ -107,6 +109,46 @@
                     element.nodeName.toLowerCase();
           open(url, 'info');
         }
+      },
+      replaceFocusedElementWithAwesomeDialog: function(input) {
+        var focusedElement = focused.element || focused.ancestor;
+        if (!focusedElement)
+          return;
+        var tagName = focusedElement.nodeName.toLowerCase();
+        
+        input.deactivate();
+        var dialogURL = "http://labs.toolness.com/dom-tutorial/";
+        //var dialogURL = "http://localhost:8001/";
+        var div = $('<div class="webxray-dialog-overlay"><div class="webxray-dialog-outer"><div class="webxray-dialog-middle"><div class="webxray-dialog-inner"><iframe src="' + dialogURL + '#dialog"></iframe></div></div></div></div>');
+        function resize() {
+          div.css({
+            width: $(document).width(),
+            height: $(document).height(),
+          });
+        }
+        resize();
+        $(window).resize(resize);
+        $(document.body).append(div);
+        window.addEventListener("message", function onMessage(event) {
+          if (event.data && event.data.length && event.data[0] == '{') {
+            var data = JSON.parse(event.data);
+            div.fadeOut(function() {
+              div.remove();
+              input.activate();
+              if (data.msg == "ok") {
+                self.replaceFocusedElement(data.endHTML);
+              }
+            });
+          }
+        }, false);
+        div.find("iframe").hide().load(function() {
+          this.contentWindow.postMessage(JSON.stringify({
+            title: "Compose A Replacement",
+            instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
+            startHTML: "<span>This will replace your selected <code>&lt;" + tagName + "&gt;</code> element.</span>"
+          }), "*");
+          $(this).fadeIn();
+        });
       }
     };
     return self;

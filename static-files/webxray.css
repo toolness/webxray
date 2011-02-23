@@ -77,3 +77,38 @@
 .webxray-deleted {
     display: none;
 }
+
+.webxray-dialog-overlay {
+    z-index: 9999;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.webxray-dialog-outer {
+    width: 100%;
+    height: 100%;
+    display: table;
+    position: static;
+}
+
+.webxray-dialog-middle {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.webxray-dialog-inner {
+    width: 1024px;
+    height: 66%;
+    text-align: left;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.webxray-dialog-inner iframe {
+    width: 1024px;
+    height: 100%;
+    border: none;
+}

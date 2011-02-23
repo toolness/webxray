@@ -48,7 +48,8 @@ test("jQuery.xRayInput()", function() {
       name: 'mixMaster',
       methods: ['undo', 'redo', 'deleteFocusedElement',
                 'replaceFocusedElement',
-                'infoForFocusedElement']
+                'infoForFocusedElement',
+                'replaceFocusedElementWithAwesomeDialog']
     }),
     focusedOverlay: MockObject({
       name: 'focusedOverlay',
@@ -65,7 +66,7 @@ test("jQuery.xRayInput()", function() {
   input.handleEvent(event);
   ok(prevented, "Typing valid key prevents default event handling");
   ok(stopped, "Typing valid key stops event propagation");
-  checkLog(['mixMaster.replaceFocusedElement() called w/ 0 args'])
+  checkLog(['mixMaster.replaceFocusedElementWithAwesomeDialog() called w/ 1 args'])
 
   event.keyCode = input.keys.DELETE;
   input.handleEvent(event);

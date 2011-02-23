@@ -50,7 +50,8 @@
           return true;
           
           case keys.R:
-          mixMaster.replaceFocusedElement();
+          //mixMaster.replaceFocusedElement();
+          mixMaster.replaceFocusedElementWithAwesomeDialog(self);
           return true;
           
           case keys.DELETE:
