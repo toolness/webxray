@@ -151,7 +151,8 @@
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
-            startHTML: focusedHTML
+            startHTML: focusedHTML,
+            baseURI: document.location.href
           }), "*");
           $(this).fadeIn();
         });
