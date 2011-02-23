@@ -109,6 +109,7 @@
 
 .webxray-dialog-inner iframe {
     width: 1024px;
+    min-height: 480px;
     height: 100%;
     border: none;
 }

@@ -127,9 +127,11 @@
           });
         }
         resize();
-        $(window).resize(resize);
+        $(window.document).resize(resize);
         $(document.body).append(div);
-        window.addEventListener("message", function onMessage(event) {
+        var iframe = div.find("iframe");
+        document.defaultView.addEventListener("message", {
+          handleEvent: function onMessage(event) {
           if (event.data && event.data.length && event.data[0] == '{') {
             var data = JSON.parse(event.data);
             div.fadeOut(function() {
@@ -138,10 +140,12 @@
               if (data.msg == "ok") {
                 self.replaceFocusedElement(data.endHTML);
               }
+              $(document.defaultView).focus();
             });
           }
+        }
         }, false);
-        div.find("iframe").hide().load(function() {
+        iframe.hide().load(function() {
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
