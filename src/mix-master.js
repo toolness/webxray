@@ -128,9 +128,9 @@
         //var dialogURL = "http://localhost:8001/";
         var div = $('<div class="webxray-dialog-overlay"><div class="webxray-dialog-outer"><div class="webxray-dialog-middle"><div class="webxray-dialog-inner"><iframe src="' + dialogURL + '#dialog"></iframe></div></div></div></div>');
         $(document.body).append(div);
-        var iframe = div.find("iframe");
-        document.defaultView.addEventListener("message", {
-          handleEvent: function onMessage(event) {
+        // We need to use document.defaultView here because 'window' is a trivial
+        // window subclass rather than window itself, which confuses Safari.
+        document.defaultView.addEventListener("message", function onMessage(event) {
           if (event.data && event.data.length && event.data[0] == '{') {
             var data = JSON.parse(event.data);
             div.fadeOut(function() {
@@ -142,18 +142,20 @@
                 var html = data.endHTML.replace(/\u00a0/g, " ");
                 self.replaceFocusedElement(html);
               }
+              document.defaultView.removeEventListener("message", onMessage,
+                                                       false);
               $(document.defaultView).focus();
             });
           }
-        }
         }, false);
-        iframe.hide().load(function() {
+        div.find("iframe").hide().load(function onLoad() {
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.",
             startHTML: focusedHTML,
             baseURI: document.location.href
           }), "*");
+          $(this).unbind("load", onLoad);
           $(this).fadeIn();
         });
       }
