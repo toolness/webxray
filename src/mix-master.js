@@ -127,14 +127,6 @@
         var dialogURL = "http://labs.toolness.com/dom-tutorial/";
         //var dialogURL = "http://localhost:8001/";
         var div = $('<div class="webxray-dialog-overlay"><div class="webxray-dialog-outer"><div class="webxray-dialog-middle"><div class="webxray-dialog-inner"><iframe src="' + dialogURL + '#dialog"></iframe></div></div></div></div>');
-        function resize() {
-          div.css({
-            width: $(document).width(),
-            height: $(document).height(),
-          });
-        }
-        resize();
-        $(window.document).resize(resize);
         $(document.body).append(div);
         var iframe = div.find("iframe");
         document.defaultView.addEventListener("message", {
