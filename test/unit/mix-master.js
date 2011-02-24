@@ -1,7 +1,8 @@
 module("mix-master");
 
 function testAsyncDialog(options) {
-  test(options.name, function() {
+  var name = "replaceFocusedElementWithAwesomeDialog() " + options.name;
+  test(name, function() {
     var $ = jQuery;
 
     var eventLog = [];
@@ -53,7 +54,7 @@ function testAsyncDialog(options) {
 }
 
 testAsyncDialog({
-  name: 'dialog response "Ok" works',
+  name: 'response "Ok" works',
   resultType: 'ok',
   focusedParent: "#mix-master .to-replace",
   test: function($, focusedParent, eventLog) {
@@ -65,7 +66,7 @@ testAsyncDialog({
 });
 
 testAsyncDialog({
-  name: 'dialog response "Nevermind" works',
+  name: 'response "Nevermind" works',
   resultType: 'nevermind',
   focusedParent: "#mix-master .to-replace",
   test: function($, focusedParent, eventLog) {
