@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>mix-master replaceFocusedElementWithAwesomeDialog() dialog</title>
+<p>This file is used to test the <code>mixMaster.replaceFocusedElementWithAwesomeDialog()</code> method.</p>
+<script>
+window.addEventListener("message", function(event) {
+  var data = JSON.parse(event.data);
+  window.parent.postMessage(JSON.stringify({
+    msg: 'ok',
+    endHTML: '<p>hi from dialog.html, source text is ' +
+             data.startHTML + '</p>'
+  }), '*');
+}, false);
+</script>

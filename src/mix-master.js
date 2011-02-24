@@ -110,7 +110,8 @@
           open(url, 'info');
         }
       },
-      replaceFocusedElementWithAwesomeDialog: function(input) {
+      replaceFocusedElementWithAwesomeDialog: function(input, dialogURL,
+                                                       body) {
         var MAX_HTML_LENGTH = 1000;
         var focusedElement =  focused.ancestor || focused.element;
         if (!focusedElement)
@@ -126,15 +127,15 @@
                         "could make your head explode.</span>";
 
         input.deactivate();
-        var dialogURL = "http://labs.toolness.com/dom-tutorial/";
-        //var dialogURL = "http://localhost:8001/";
+        dialogURL = dialogURL || "http://labs.toolness.com/dom-tutorial/";
+        body = body || document.body;
         var div = $('<div class="webxray-dialog-overlay">' +
                     '<div class="webxray-dialog-outer">' +
                     '<div class="webxray-dialog-middle">' +
                     '<div class="webxray-dialog-inner">' +
                     '<iframe src="' + dialogURL + '#dialog"></iframe>' +
                     '</div></div></div></div>');
-        $(document.body).append(div);
+        $(body).append(div);
         
         // We need to use document.defaultView here because 'window' is a 
         // trivial window subclass rather than window itself, which

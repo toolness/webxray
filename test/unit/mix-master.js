@@ -1,5 +1,48 @@
 module("mix-master");
 
+asyncTest("replaceFocusedElementWithAwesomeDialog()", function() {
+  var $ = jQuery;
+
+  var eventLog = [];
+  var hud = $.hudOverlay();
+  var toReplace = $("#mix-master .to-replace");
+  var focused = {
+    element: toReplace.children().get(0),
+    unfocus: function() {
+      eventLog.push("focused overlay unfocused");
+    }
+  };
+  
+  var mixMaster = $.mixMaster({
+    hud: hud,
+    focusedOverlay: focused
+  });
+  
+  var input = {
+    activate: function() {
+      eventLog.push("input activated");
+      setTimeout(function() {
+        container.remove();
+        equals(toReplace.html(), $("#mix-master .expect").html());
+        deepEqual(eventLog, ['input deactivated', 'input activated',
+                             'focused overlay unfocused']);
+        start();
+      }, 0);
+    },
+    deactivate: function() {
+      eventLog.push("input deactivated");
+    }
+  };
+
+  var container = $('<div></div>');
+  $(document.body).append(container);
+  container.hide();
+  
+  mixMaster.replaceFocusedElementWithAwesomeDialog(input,
+                                                   'mix-master-dialog.html',
+                                                   container);
+});
+
 test("jQuery.mixMaster()", function() {
   var $ = jQuery;
 
