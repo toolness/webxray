@@ -3,12 +3,25 @@
 <title>mix-master replaceFocusedElementWithAwesomeDialog() dialog</title>
 <p>This file is used to test the <code>mixMaster.replaceFocusedElementWithAwesomeDialog()</code> method.</p>
 <script>
+function respond(response) {
+  window.parent.postMessage(JSON.stringify(response), "*");
+}
+
 window.addEventListener("message", function(event) {
   var data = JSON.parse(event.data);
-  window.parent.postMessage(JSON.stringify({
-    msg: 'ok',
-    endHTML: '<p>hi from dialog.html, source text is ' +
-             data.startHTML + '</p>'
-  }), '*');
+  
+  switch (window.location.search) {
+    case "?test=ok":
+    respond({
+      msg: 'ok',
+      endHTML: '<p>hi from mix-master-dialog.html, source text is ' +
+               data.startHTML + '</p>'
+    });
+    break;
+
+    case "?test=nevermind":
+    respond({msg: 'nevermind'});
+    break;
+  }
 }, false);
 </script>

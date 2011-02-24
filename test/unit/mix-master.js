@@ -1,46 +1,78 @@
 module("mix-master");
 
-asyncTest("replaceFocusedElementWithAwesomeDialog()", function() {
-  var $ = jQuery;
+function testAsyncDialog(options) {
+  test(options.name, function() {
+    var $ = jQuery;
 
-  var eventLog = [];
-  var hud = $.hudOverlay();
-  var toReplace = $("#mix-master .to-replace");
-  var focused = {
-    element: toReplace.children().get(0),
-    unfocus: function() {
-      eventLog.push("focused overlay unfocused");
-    }
-  };
+    var eventLog = [];
+    var hud = $.hudOverlay();
+    var focusedParent = $(options.focusedParent).clone();
+
+    var container = $('<div></div>');
+    $(document.body).append(container);
+    container.append(focusedParent);
+    container.hide();
+
+    var focused = {
+      element: focusedParent.children().get(0),
+      unfocus: function() {
+        eventLog.push("focused overlay unfocused");
+      }
+    };
   
-  var mixMaster = $.mixMaster({
-    hud: hud,
-    focusedOverlay: focused
+    var mixMaster = $.mixMaster({
+      hud: hud,
+      focusedOverlay: focused
+    });
+  
+    var input = {
+      activate: function() {
+        eventLog.push("input activated");
+        setTimeout(function() {
+          options.test($, focusedParent, eventLog);
+          focusedParent.remove();
+          equals(container.children().length, 0, 'dialog is removed');
+          container.remove();
+          start();
+        }, 0);
+      },
+      deactivate: function() {
+        eventLog.push("input deactivated");
+      }
+    };
+
+    var url = 'mix-master-dialog.html?test=' + options.resultType;
+    mixMaster.replaceFocusedElementWithAwesomeDialog(input,
+                                                     url,
+                                                     container);
+    equals(container.find(".webxray-dialog-overlay").length, 1,
+           'dialog is added');
+           
+    stop(1000);
   });
-  
-  var input = {
-    activate: function() {
-      eventLog.push("input activated");
-      setTimeout(function() {
-        container.remove();
-        equals(toReplace.html(), $("#mix-master .expect").html());
-        deepEqual(eventLog, ['input deactivated', 'input activated',
-                             'focused overlay unfocused']);
-        start();
-      }, 0);
-    },
-    deactivate: function() {
-      eventLog.push("input deactivated");
-    }
-  };
+}
 
-  var container = $('<div></div>');
-  $(document.body).append(container);
-  container.hide();
-  
-  mixMaster.replaceFocusedElementWithAwesomeDialog(input,
-                                                   'mix-master-dialog.html',
-                                                   container);
+testAsyncDialog({
+  name: 'dialog response "Ok" works',
+  resultType: 'ok',
+  focusedParent: "#mix-master .to-replace",
+  test: function($, focusedParent, eventLog) {
+    equals(focusedParent.html(), $("#mix-master .expect").html(),
+           "focused element is changed");
+    deepEqual(eventLog, ['input deactivated', 'input activated',
+                         'focused overlay unfocused']);
+  }
+});
+
+testAsyncDialog({
+  name: 'dialog response "Nevermind" works',
+  resultType: 'nevermind',
+  focusedParent: "#mix-master .to-replace",
+  test: function($, focusedParent, eventLog) {
+    equals(focusedParent.html(), $("#mix-master .to-replace").html(),
+           "focused element is unaltered");
+    deepEqual(eventLog, ['input deactivated', 'input activated']);
+  }
 });
 
 test("jQuery.mixMaster()", function() {
