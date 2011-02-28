@@ -4,13 +4,22 @@
 <style>
 body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  size: 9pt;
+  font-size: 9pt;
   width: 512px;
   margin: 0 auto;
 }
 
 #try-goggles {
   display: none;
+}
+
+table {
+  padding-left: 1em;
+}
+
+td.key {
+  font-family: Monaco, monospace;
+  padding-right: 1em;
 }
 </style>
 <a href="https://github.com/toolness/webxray"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
@@ -25,6 +34,41 @@ body {
   <source src="https://secure.toolness.com/webxray/webxray-video-take-2.m4v" type="video/mp4">
   Your browser does not support the <code>video</code> element. Alas!
 </video>
+<h2>Keys</h2>
+<table>
+  <tr>
+    <td class="key">i</td>
+    <td>View <a href="http://developer.mozilla.org/" target="mdn">MDN</a> documentation for element</td>
+  </tr>
+  <tr>
+    <td class="key">r</td>
+    <td>Replace/remix selected element</td>
+  </tr>
+  <tr>
+    <td class="key">delete/backspace</td>
+    <td>Delete selected element</td>
+  </tr>
+  <tr>
+    <td class="key">shift + left arrow</td>
+    <td>Undo</td>
+  </tr>
+  <tr>
+    <td class="key">shift + right arrow</td>
+    <td>Redo</td>
+  </tr>
+  <tr>
+    <td class="key">shift + up arrow</td>
+    <td>Ascend to parent element</td>
+  </tr>
+  <tr>
+    <td class="key">shift + down arrow</td>
+    <td>Descend from parent element</td>
+  </tr>
+  <tr>
+    <td class="key">esc</td>
+    <td>Deactivate goggles</td>
+  </tr>
+</table>
 <script>
 onload = function() {
   var req = new XMLHttpRequest();
