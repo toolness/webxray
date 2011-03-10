@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title></title>
+<base href="../../">
+<style>
+@import url('missions/mission.css');
+
+#bookmarklet {
+    width: 50%;
+    margin: 0 auto;
+}
+#bookmarklet textarea {
+    width: 100%;
+    height: 15em;
+}
+</style>
+<script src="jquery.min.js"></script>
+<script src="bookmarklet.js"></script>
+<script src="missions/mission.js"></script>
+<body style="display: none;">
+<div id="header">
+  <div class="mission">Mission Two</div>
+  <div class="name">Bust a Hack.</div>
+</div>
+<div id="content">
+<p>Copy and paste the following text into your address bar:</p>
+<div id="bookmarklet"><textarea></textarea></div>
+</div>
+<div id="success" style="display: none;">
+  <div class="outer"><div class="middle"><div class="inner">
+  <div class="title">Mission Complete</div>
+  <div class="congrats">
+    <p>You just busted your first hack.</p>
+    <p>The code you just pasted into your address bar hacked our Web X-Ray Goggles into this page.</p>
+    <p>Try moving your mouse around this page to see through its surface and inspect its individual parts.</p>
+    <p>You can actually bust this hack anywhere on the Web. Try it out on your favorite website!</p>
+    <div id="next-mission"><a href="missions/three/">Click here for your next mission.</a></div>
+  </div>
+  </div></div></div>
+</div>
+<script>
+var intervalID = setInterval(function() {
+    if ($("div.webxray-hud").length) {
+        clearInterval(intervalID);
+        $("div#success").fadeIn();
+    }
+}, 500);
+
+$(window).ready(function() {
+  var textArea = $("#bookmarklet textarea");
+  textArea.val(getGogglesBookmarkletURL());
+  textArea.focus().select();
+});
+</script>
+</body>

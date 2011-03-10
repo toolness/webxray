@@ -2,12 +2,16 @@
 <meta charset="utf-8">
 <title>Web X-Ray Goggles</title>
 <script src="jquery.min.js"></script>
+<script src="bookmarklet.js"></script>
 <style>
 body {
+  background-color: #f0f0f0;
+  color: black;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 9pt;
-  width: 512px;
+  font-size: 10pt;
+  width: 40em;
   margin: 0 auto;
+  padding: 0;
 }
 
 table {
@@ -16,24 +20,31 @@ table {
 
 td.key {
   font-family: Monaco, monospace;
+  font-size: 9pt;
   padding-right: 1em;
+}
+
+a {
+  color: inherit;
+  text-decoration: underline;
+}
+
+a:hover {
+  background: yellow;
 }
 </style>
 <a href="https://github.com/toolness/webxray"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
 <h1>Web X-Ray Goggles</h1>
-<p>These goggles provide a simple, easy way for non-technical people to inspect Web pages and learn about how they are put together.</p>
+<p>These goggles provide a simple, easy way for non-technical people to inspect Web pages, learn about how they are put together, and remix them. They are part of the <a href="http://hackasaurus.org">Hackasaurus</a> backpack.</p>
 <div id="msie-fail" style="display: none;">
 <p>Unfortunately, the goggles don't yet work with Microsoft Internet Explorer, which seems to be what you're using. For now, please try viewing this page with <a href="http://www.mozilla.com/en-US/firefox/?from=getfirefox">Mozilla Firefox</a> or <a href="http://www.google.com/chrome">Google Chrome</a>.</p>
 </div>
-<div id="try-goggles" style="display: none;;">
-<p>Try the <a href="" id="bookmarklet-link">Web X-Ray Goggles</a> by dragging the link to your bookmarks bar. See the screencast below for more information.</p>
-<video width="512" height="384" controls>
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.webm" type="video/webm">
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.ogv" type="video/ogg">
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.m4v" type="video/mp4">
-  Your browser does not support the <code>video</code> element. Alas!
-</video>
-<h2>Keys</h2>
+<div id="try-goggles">
+<h2>Getting Started</h2>
+<p>If you've never used the goggles before, you should start out with <a href="missions/one/">Mission One</a>.</p>
+<h2>Reference</h2>
+<p>Here's the bookmarklet: <a href="" id="bookmarklet-link">Web X-Ray Goggles</a>.</p>
+<p>Once the goggles are activated, you can use the following keys.</p>
 <table>
   <tr>
     <td class="key">i</td>
@@ -68,19 +79,31 @@ td.key {
     <td>Deactivate goggles</td>
   </tr>
 </table>
+<h2>History</h2>
+<h3>March 2011</h3>
+<p>On March 10, two scaffolded solo missions designed for the <a href="http://dmlcentral.net/conference2011">Digital Media and Learning Conference</a> were added to the website for the goggles.</p>
+<h3>February 2011</h3>
+<p>On February 22, during a hack jam at the <a href="http://www.bavc.org/">Bay Area Video Coalition</a>, the remix interface was improved to provide syntax highlighting via the <a href="http://ace.ajax.org/">Ace</a> code editor, DOM visualization, and HTML preview on a per-keystroke basis.</p>
+<p>On February 17, prior to a hack jam at <a href="http://youmediachicago.org/">YouMedia Chicago</a>, primitive remix and element deletion functionality was added to the goggles, as well as undo/redo.</p>
+<h3>December 2010</h3>
+<p>In late December, a <a href="http://www.flickr.com/photos/jessicaklein/5290697410/in/pool-1590086@N21/">palette</a> was created and integrated into the goggles so that each HTML element type would be highlighted in a different color, making them easier to differentiate.</p>
+<p>On December 3, the following screencast was made to introduce the prototype goggles to Drumbeat community members.</p>
+<video width="512" height="384" controls>
+  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.webm" type="video/webm">
+  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.ogv" type="video/ogg">
+  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.m4v" type="video/mp4">
+  Your browser does not support the <code>video</code> element. Alas!
+</video>
+<h3>November 2010</h3>
+<p>After the <a href="http://learningfreedomandtheweb.org/">Drumbeat Festival</a> in Barcelona, work on the goggles began.</p>
 </div>
 <script>
 $(window).ready(function() {
-  if (window.navigator.userAgent.match(/MSIE/))
-    $("#msie-fail, footer").fadeIn();
-  else
-    jQuery.get("bookmarklet.js", function(code) {
-      code = code.replace("http://localhost:8000/",
-                          document.location.href);
-      $("#bookmarklet-link").attr("href", "javascript:" + code);
-      $("#try-goggles, footer").fadeIn();
-    }, "text");
+  if (window.navigator.userAgent.match(/MSIE/)) {
+    $("#try-goggles").hide();
+    $("#msie-fail").show();
+  } else {
+    $("#bookmarklet-link").attr("href", getGogglesBookmarkletURL());
+  }
 });
 </script>
-
-<footer style="display: none;"><p>This is a <a href="http://hackasaurus.org">Hackasaurus</a> project. Rawr.</p></footer>

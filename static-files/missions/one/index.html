@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title></title>
+<base href="../../">
+<style>
+@import url('missions/mission.css');
+</style>
+<script src="jquery.min.js"></script>
+<script src="missions/mission.js"></script>
+<body style="display: none;">
+<div id="header">
+  <div class="mission">Mission One</div>
+  <div class="name">Know Your Address Bar.</div>
+</div>
+<div id="content">
+<p>There should be a box above the top of this Web page. It should have this text in it:
+<div class="mock-address-bar"><span class="location bar-area"></span></div>
+<p>That’s called your <i>address bar</i>. You can type stuff in there to tell your computer where you want to go on the Web. You can also use it to hack the page you’re on.</p>
+<p>Your first mission, should you choose to accept it, is to hack that address bar so it says this instead:</p>
+<div class="mock-address-bar"><span class="bar-area">javascript:hack()</span></div>
+<p>When you’re done, press enter.</p>
+<p>Good luck, agent. We’ll rendevous with you upon the completion of your mission.</p>
+</div>
+<div id="success" style="display: none;">
+  <div class="outer"><div class="middle"><div class="inner">
+  <div class="title">Mission Complete</div>
+  <div class="congrats">
+    <p>Excellent work, agent.</p>
+    <p>That word you typed, <i>javascript</i>, is the name of a powerful language that makes up the brain and central nervous system of a Web page.</p>
+    <p>Typing something that starts with <em>javascript:</em> into your address bar is like injecting a syringe into the Website you’re looking at.</p>
+    <p>It gives you the power to reshape and remix the Web.</p>
+    <p>But it can also be used for great evil, so be careful when a stranger tells you to inject JavaScript through your browser’s address bar.</p>
+    <div id="next-mission"><a href="missions/two/">Click here for your next mission.</a></div>
+  </div>
+  </div></div></div>
+</div>
+<script>
+function getDocumentLocation() {
+  var location = window.document.location;
+  if (window.navigator.userAgent.match(/Chrome/)) {
+    if (location.protocol == "http:") {
+      if (location.pathname == "/")
+        return location.host;
+      else
+        return location.host + location.pathname;
+    }
+  }
+  return location.href;
+}
+function hack() {
+  $("#success").fadeIn();
+}
+$(window).ready(function() {
+  $(".location").text(getDocumentLocation());
+});
+</script>
+</body>

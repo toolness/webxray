@@ -1,0 +1,82 @@
+body {
+  background-color: #ffc328;
+  color: black;
+  font-family: Baskerville, Georgia, serif;
+  margin: 0;
+  padding: 0;
+}
+a {
+  color: inherit;
+}
+#header {
+  margin-top: 1em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  background: black;
+  color: white;
+  text-align: center;
+}
+#header .mission {
+  font-size: 36pt;
+}
+#content {
+  width: 40em;
+  margin: 0 auto;
+}
+div.mock-address-bar {
+  text-align: center;
+}
+div.mock-address-bar span.bar-area {
+  background: white;
+  color: black;
+  padding: 0.25em;
+  font-family: Helvetica, Arial, sans-serif;
+  border: 1px solid black;
+}
+#success {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  background: rgba(0, 0, 0, 0.9);
+}
+#success .outer {
+  display: table;
+  position: static;
+  height: 100%;
+  width: 100%;
+}
+#success .middle {
+  display: table-cell;
+  vertical-align: middle;
+  width: 100%;
+}
+#success .inner {
+  font-family: Helvetica, Arial, sans-serif;
+  color: white;
+  text-align: center;
+}
+#success .title {
+  font-size: 72pt;
+  color: #b2e725;
+}
+.congrats {
+  width: 40em;
+  margin: 0 auto;
+}
+#next-mission {
+  margin-top: 3em;
+}
+#next-mission a {
+  cursor: pointer;
+  background: #b2e725;
+  padding: 1em;
+  border: 1px solid black;
+  color: black;
+  text-decoration: none;
+}
+#next-mission a:hover {
+  color: white;
+  background: black;
+}

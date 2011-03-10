@@ -25,8 +25,8 @@ def build_compiled_file(cfg):
 def make_app(cfg):
     def app(environ, start_response):
         path = environ['PATH_INFO']
-        if path == '/':
-            path = '/index.html'
+        if path.endswith('/'):
+            path += 'index.html'
 
         if path in cfg['staticFiles']:
             start_response('200 OK', [('Content-Type',
