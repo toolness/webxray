@@ -37,6 +37,9 @@
   }
 
   jQuery.extend({
+    // This is only really exported so unit tests can use it.
+    NUM_TAG_COLORS: NUM_TAG_COLORS,
+
     // Returns the color hex for the "official" Web X-Ray color
     // for the given tag name, excluding angled brackets.
     colorForTag: function colorForTag(tagName) {
