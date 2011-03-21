@@ -16,11 +16,61 @@ div.lolcat-box img {
   width: 181px;
   height: 273px;
 }
-div.lolcat-box .description {
+div.lolcat-box p {
   display: table-cell;
   vertical-align: middle;
   padding: 1em;
   background: #ffc328;
+}
+code, div.source {
+  font-family: Monaco, monospace;
+  font-size: 9pt;  
+}
+div.source {
+  margin-left: 2em;
+  margin-right: 2em;
+  white-space: pre-wrap;
+}
+div.source span.p {
+  color: black;
+}
+div.source span.tag {
+  background: black;
+  color: white;
+}
+div.exercise {
+  display: table;
+  width: 100%;
+}
+div.exercise div.row {
+  display: table-row;
+}
+div.exercise div.column-header {
+  font-style: italic;
+}
+div.exercise div.column-header, div.exercise div.composition, div.exercise div.rendering {
+  display: table-cell;
+  padding-left: 1em;
+  padding-right: 1em;
+  width: 50%;
+}
+div.exercise div.composition, div.exercise div.rendering {
+  vertical-align: middle;
+  padding-top: 1em;
+}
+div.exercise textarea {
+  width: 100%;
+  height: 10em;
+  border: 1px solid black;
+}
+div.exercise textarea.success {
+  background: #b2e725;
+}
+div.exercise div.rendering {
+  color: gray;
+}
+div.exercise div.rendering p {
+  color: black;
 }
 </style>
 <script src="jquery.min.js"></script>
@@ -28,16 +78,44 @@ div.lolcat-box .description {
 <body style="display: none;">
 <div id="header">
   <div class="mission">Mission Three</div>
-  <div class="name">Elemental Investigations.</div>
+  <div class="name">Elementary Investigations.</div>
 </div>
 <div id="content">
   <p>All Web pages are made up of standard parts called <i>elements</i>.</p>
     <div class="lolcat-box">
       <img src="http://upload.wikimedia.org/wikipedia/commons/4/41/Harry_Whittier_Frees_-_What%27s_Delaying_My_Dinner.jpg">
-      <p class="description">This is a paragraph element. It’s sitting next to an image element containing an historic 1905 lolcat by Harry Whittier Frees.</p>
+      <p>This is a paragraph element. It’s sitting next to an image element containing an historic 1905 lolcat by Harry Whittier Frees.</p>
     </div>
-    <p>The Web X-Ray Goggles let you see through the surface of a Web page and explore its underlying elements by moving your mouse.</p>
-    <p>Try activating the goggles now and see if you can find the two elements in the box above. (Instructions for activating the goggles are back in <a href="missions/two/">Mission Two</a>.)</p>
+    <div id="step-1">
+      <p>The Web X-Ray Goggles let you see through the surface of a Web page and explore its underlying elements by moving your mouse.</p>
+      <p>Try activating the goggles now and see if you can find the two elements in the box above. (Instructions for activating the goggles are back in <a href="missions/two/">Mission Two</a>.)</p>
+    </div>
+    <div id="step-2" style="display: none;">
+      <p>Nice! These elements are expressed by the authors of Web pages in a special language called <i>HTML</i>. It’s like the blueprint for a Web page.</p>
+      <p>Here is the HTML source code for the paragraph in the above box:</p>
+      <div class="source"><span class="p"><span class="p tag">&lt;p&gt;</span>This is a paragraph element. It’s sitting next to an image element containing an historic 1905 lolcat by Harry Whittier Frees.<span class="p tag">&lt;/p&gt;</span></span></div>
+      <p>(HTML is just plain, unformatted text; the above source code has been highlighted to make it easier to understand how a computer interprets it.)</p>
+      <p>Now mouse over the original paragraph with the goggles activated. See the similarity between the X-Ray version of the paragraph and its source code?</p>
+      <p>Now, deactivate your goggles by pressing ESC.</p>
+      <div id="step-3" style="display: none;">
+        <p>A computer reads HTML like any plain text document, but it specially treats any text between angled brackets (<code>&lt;</code> and <code>&gt;</code>) as instructions, rather than content. In this case, <code>&lt;p&gt;</code> means “start a new paragraph”, while <code>&lt;/p&gt;</code> means “end the paragraph most recently started.”</p> 
+        <p>These instructions are also called <i>tags</i>. <code>&lt;p&gt;</code> is called a <i>start tag</i> because it tells the computer to start a new type of content, while <code>&lt;/p&gt;</code> is called an <i>end tag</i> because it tells the computer to end a type of content.</p>
+        <p>Once a computer reads the HTML “blueprint”, it constructs the elements of the page and displays them&mdash;much the same way a human might read a blueprint for a house and then build it.</p>
+        <h2>Now it’s your turn.</h2>
+        <p>In the box below, try writing some HTML that tells the computer to build a paragraph element containing the sentence “Behold, my first paragraph.”</p>
+        <div class="exercise">
+          <div class="header row">
+            <div class="column-header">Your HTML</div>
+            <div class="column-header">What Your Computer Builds From It</div>
+          </div>
+          <div class="content row">
+            <div class="composition"><textarea></textarea></div>
+            <div class="rendering"></div>
+          </div>
+        </div>
+        <p>Feel free to activate your goggles to take a closer look at what your computer is building from your HTML.</p>
+      </div>
+    </div>
   </div>
 </div>
 <div id="success" style="display: none;">
@@ -64,9 +142,32 @@ $(window).ready(function() {
   });
 
   jQuery.when(pFound, imgFound).then(function() {
-    window.setTimeout(function() {
-      $("div#success").show();
-    }, 1000);
+    $("div#step-1").fadeOut("slow", function() {
+      $("div#step-2").fadeIn("slow", function() {
+        var intervalID = window.setInterval(function() {
+          if (!MissionUtils.areGogglesActive()) {
+            window.clearInterval(intervalID);
+            $("div#step-3").slideDown();
+          }
+        }, 500);
+      });
+    });
+  });
+
+  $("div.exercise textarea").val('').keyup(function onKeyUp() {
+    var expect = '<p>behold, my first paragraph.</p>';
+    var html = $(this).val();
+    $("div.exercise div.rendering").html(html);
+    if (jQuery.trim(html.toLowerCase()) == expect) {
+      $(this).unbind("keyup", onKeyUp);
+      $(this).blur();
+      $(this).addClass("success");
+      window.setTimeout(function() {
+        $("div#content").fadeOut(function() {
+          $("div#success").fadeIn();
+        });
+      }, 1000);
+    }
   });
 });
 </script>
