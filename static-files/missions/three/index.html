@@ -9,12 +9,10 @@ div.lolcat-box {
   border: 1px solid black;
   margin: 1em;
   display: table;
-}
-div.lolcat-box .frame {
-  display: table-cell;
   background: #87816b;
 }
-div.lolcat-box .frame, div.lolcat-box .frame img {
+div.lolcat-box img {
+  display: table-cell;
   width: 181px;
   height: 273px;
 }
@@ -22,6 +20,7 @@ div.lolcat-box .description {
   display: table-cell;
   vertical-align: middle;
   padding: 1em;
+  background: #ffc328;
 }
 </style>
 <script src="jquery.min.js"></script>
@@ -34,7 +33,7 @@ div.lolcat-box .description {
 <div id="content">
   <p>All Web pages are made up of standard parts called <i>elements</i>.</p>
     <div class="lolcat-box">
-      <div class="frame"><img src="http://upload.wikimedia.org/wikipedia/commons/4/41/Harry_Whittier_Frees_-_What%27s_Delaying_My_Dinner.jpg"></div>
+      <img src="http://upload.wikimedia.org/wikipedia/commons/4/41/Harry_Whittier_Frees_-_What%27s_Delaying_My_Dinner.jpg">
       <p class="description">This is a paragraph element. It’s sitting next to an image element containing an historic 1905 lolcat by Harry Whittier Frees.</p>
     </div>
     <p>The Web X-Ray Goggles let you see through the surface of a Web page and explore its underlying elements by moving your mouse.</p>
