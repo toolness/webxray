@@ -12,6 +12,7 @@ from wsgiref.util import FileWrapper
 import os
 import sys
 import shutil
+import mimetypes
 
 try:
     import json
@@ -25,18 +26,28 @@ def build_compiled_file(cfg):
 def make_app(cfg):
     def app(environ, start_response):
         path = environ['PATH_INFO']
-        if path.endswith('/'):
-            path += 'index.html'
 
-        if path in cfg['staticFiles']:
-            start_response('200 OK', [('Content-Type',
-                                       str(cfg['staticFiles'][path]))])
-            return FileWrapper(open(cfg['staticFilesDir'] + path))
-        elif path == cfg['compiledFile']:
+        if path == cfg['compiledFile']:
             start_response('200 OK', [('Content-Type',
                                        'application/javascript')])
             return build_compiled_file(cfg)
-        
+
+        if path.endswith('/'):
+            path = '%sindex.html' % path
+        static_files_dir = os.path.abspath(cfg['staticFilesDir'])
+        fileparts = path[1:].split('/')
+        fullpath = os.path.join(static_files_dir, *fileparts)
+        fullpath = os.path.normpath(fullpath)
+        (mimetype, encoding) = mimetypes.guess_type(fullpath)
+        if (fullpath.startswith(static_files_dir) and
+            not '.git' in fullpath and
+            os.path.isfile(fullpath) and
+            mimetype):
+            filesize = os.stat(fullpath).st_size
+            start_response('200 OK', [('Content-Type', mimetype),
+                                      ('Content-Length', str(filesize))])
+            return FileWrapper(open(fullpath, 'rb'))
+
         start_response('404 Not Found', [('Content-Type', 'text/plain')])
         return ['Not Found: ', path]
 

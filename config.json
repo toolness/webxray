@@ -28,19 +28,5 @@
   , "src/input.js"
   , "src/main.js"
   , "src/outro.js"
-  ],
-  "staticFiles": {
-    "/index.html": "text/html"
-  , "/jquery.min.js": "application/javascript"
-  , "/webxray.css": "text/css"
-  , "/bookmarklet.js": "application/javascript"
-  , "/github-ribbon.png" : "image/png"
-  , "/missions/one/index.html": "text/html"
-  , "/missions/two/index.html": "text/html"
-  , "/missions/three/index.html": "text/html"
-  , "/missions/four/index.html": "text/html"
-  , "/missions/mission.js": "application/javascript"
-  , "/missions/mission.css": "text/css"
-  , "/missions/throbber.gif": "image/gif"
-  }
+  ]
 }
