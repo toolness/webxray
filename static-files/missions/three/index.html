@@ -4,24 +4,71 @@
 <base href="../../">
 <style>
 @import url('missions/mission.css');
+
+div.lolcat-box {
+  border: 1px solid black;
+  margin: 1em;
+  display: table;
+}
+div.lolcat-box .frame {
+  display: table-cell;
+  background: #87816b;
+}
+div.lolcat-box .frame, div.lolcat-box .frame img {
+  width: 181px;
+  height: 273px;
+}
+div.lolcat-box .description {
+  display: table-cell;
+  vertical-align: middle;
+  padding: 1em;
+}
 </style>
 <script src="jquery.min.js"></script>
 <script src="missions/mission.js"></script>
 <body style="display: none;">
 <div id="header">
   <div class="mission">Mission Three</div>
-  <div class="name">Coming Soon!</div>
+  <div class="name">Elemental Investigations.</div>
 </div>
 <div id="content">
-<p>Sorry, we haven’t built this mission yet! Watch <a href="http://twitter.com/hackasaurus">@hackasaurus</a> on Twitter to find out when it’s done.</p>
+  <p>All Web pages are made up of standard parts called <i>elements</i>.</p>
+    <div class="lolcat-box">
+      <div class="frame"><img src="http://upload.wikimedia.org/wikipedia/commons/4/41/Harry_Whittier_Frees_-_What%27s_Delaying_My_Dinner.jpg"></div>
+      <p class="description">This is a paragraph element. It’s sitting next to an image element containing an historic 1905 lolcat by Harry Whittier Frees.</p>
+    </div>
+    <p>The Web X-Ray Goggles let you see through the surface of a Web page and explore its underlying elements by moving your mouse.</p>
+    <p>Try activating the goggles now and see if you can find the two elements in the box above. (Instructions for activating the goggles are back in <a href="missions/two/">Mission Two</a>.)</p>
+  </div>
 </div>
 <div id="success" style="display: none;">
   <div class="outer"><div class="middle"><div class="inner">
   <div class="title">Mission Complete</div>
   <div class="congrats">
-    <p>Um, you should never see this.</p>
-    <div id="next-mission"><a href="missions/three/">Click here for your next mission.</a></div>
+    <p>Nice job, yo.</p>
+    <p>You can actually use these goggles anywhere on the Web. Try them out on your favorite sites to see what they’re made of!</p>
+    <div id="next-mission"><a href="missions/four/">Click here for your next mission.</a></div>
   </div>
   </div></div></div>
 </div>
+<script>
+$(window).ready(function() {
+  var pFound = jQuery.Deferred();
+  var imgFound = jQuery.Deferred();
+
+  MissionUtils.whenGogglesFocusOn("div.lolcat-box p", function() {
+    pFound.resolve();
+  });
+
+  MissionUtils.whenGogglesFocusOn("div.lolcat-box img", function() {
+    imgFound.resolve();
+  });
+
+  jQuery.when(pFound, imgFound).then(function() {
+    window.setTimeout(function() {
+      $("div#success").show();
+    }, 1000);
+  });
+});
+</script>
 </body>

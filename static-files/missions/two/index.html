@@ -34,7 +34,7 @@
     <p>You just busted your first hack!</p>
     <p>The code you just pasted into your address bar hacked our Web X-Ray Goggles into this page. </p>
     <p>Check out the white-on-gray text at the bottom-right of this page.</p>
-    <p>That shows information about whatever your mouse cursor is hovering over on the page, and we call it the <i>heads-up display</i>, or HUD for short. You know the goggles are activated when you see the HUD.</p>
+    <p>That shows status information related to the goggles, and we call it the <i>heads-up display</i>, or HUD for short. You know the goggles are activated when you see the HUD.</p>
     <p>To deactivate the goggles, just press your escape key. Try that now.</p>
   </div>
 </div>
@@ -59,7 +59,7 @@ var state = states.WAITING_FOR_SCRIPT_INJECTION;
 
 var intervalID = setInterval(function() {
   if (state == states.WAITING_FOR_SCRIPT_INJECTION) {
-    if ($('script.webxray').length) {
+    if (MissionUtils.wereGogglesInjected()) {
       state = states.WAITING_FOR_HUD;
       $("#step-1").slideUp();
       $("#transition-to-step-2").show();
@@ -67,7 +67,7 @@ var intervalID = setInterval(function() {
   }
 
   if (state == states.WAITING_FOR_HUD) {
-    if ($("div.webxray-hud").length) {
+    if (MissionUtils.areGogglesActive()) {
       $("#transition-to-step-2").hide();
       $("#step-2").slideDown();
       state = states.WAITING_FOR_DEACTIVATION;
@@ -75,7 +75,7 @@ var intervalID = setInterval(function() {
   }
 
   if (state == states.WAITING_FOR_DEACTIVATION) {
-    if ($("div.webxray-hud").length == 0) {
+    if (!MissionUtils.areGogglesActive()) {
       clearInterval(intervalID);
       $("div#success").fadeIn();
     }
