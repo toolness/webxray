@@ -23,26 +23,62 @@
   <div class="name">Bust a Hack.</div>
 </div>
 <div id="content">
-<p>Copy and paste the following text into your address bar:</p>
-<div id="bookmarklet"><textarea></textarea></div>
+  <div id="step-1">
+    <p>Copy and paste the following text into your address bar:</p>
+    <div id="bookmarklet"><textarea></textarea></div>
+  </div>
+  <div id="transition-to-step-2" style="display: none;">
+    <p class="throbber"></p>
+  </div>
+  <div id="step-2" style="display: none;">
+    <p>You just busted your first hack!</p>
+    <p>The code you just pasted into your address bar hacked our Web X-Ray Goggles into this page. </p>
+    <p>Check out the white-on-gray text at the bottom-right of this page.</p>
+    <p>That shows information about whatever your mouse cursor is hovering over on the page, and we call it the <i>heads-up display</i>, or HUD for short. You know the goggles are activated when you see the HUD.</p>
+    <p>To deactivate the goggles, just press your escape key. Try that now.</p>
+  </div>
 </div>
 <div id="success" style="display: none;">
   <div class="outer"><div class="middle"><div class="inner">
   <div class="title">Mission Complete</div>
   <div class="congrats">
-    <p>You just busted your first hack.</p>
-    <p>The code you just pasted into your address bar hacked our Web X-Ray Goggles into this page.</p>
-    <p>Try moving your mouse around this page to see through its surface and inspect its individual parts.</p>
-    <p>You can actually bust this hack anywhere on the Web. Try it out on your favorite website!</p>
+    <p>You now know how to activate and deactivate the X-Ray Goggles.</p>
+    <p>But what can you actually <em>do</em> with these goggles? That’s what we’ll find out next...</p>
     <div id="next-mission"><a href="missions/three/">Click here for your next mission.</a></div>
   </div>
   </div></div></div>
 </div>
 <script>
+var states = {
+  WAITING_FOR_SCRIPT_INJECTION: 0,
+  WAITING_FOR_HUD: 1,
+  WAITING_FOR_DEACTIVATION: 2
+};
+
+var state = states.WAITING_FOR_SCRIPT_INJECTION;
+
 var intervalID = setInterval(function() {
-  if ($("div.webxray-hud").length) {
-    clearInterval(intervalID);
-    $("div#success").fadeIn();
+  if (state == states.WAITING_FOR_SCRIPT_INJECTION) {
+    if ($('script.webxray').length) {
+      state = states.WAITING_FOR_HUD;
+      $("#step-1").slideUp();
+      $("#transition-to-step-2").show();
+    }
+  }
+
+  if (state == states.WAITING_FOR_HUD) {
+    if ($("div.webxray-hud").length) {
+      $("#transition-to-step-2").hide();
+      $("#step-2").slideDown();
+      state = states.WAITING_FOR_DEACTIVATION;
+    }
+  }
+
+  if (state == states.WAITING_FOR_DEACTIVATION) {
+    if ($("div.webxray-hud").length == 0) {
+      clearInterval(intervalID);
+      $("div#success").fadeIn();
+    }
   }
 }, 500);
 

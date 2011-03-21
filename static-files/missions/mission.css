@@ -80,3 +80,8 @@ div.mock-address-bar span.bar-area {
   color: white;
   background: black;
 }
+div.throbber, p.throbber {
+  min-width: 16px;
+  min-height: 16px;
+  background: url('./throbber.gif') no-repeat;
+}

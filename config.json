@@ -40,5 +40,6 @@
   , "/missions/three/index.html": "text/html"
   , "/missions/mission.js": "application/javascript"
   , "/missions/mission.css": "text/css"
+  , "/missions/throbber.gif": "image/gif"
   }
 }
