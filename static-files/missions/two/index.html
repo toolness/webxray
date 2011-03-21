@@ -40,10 +40,10 @@
 </div>
 <script>
 var intervalID = setInterval(function() {
-    if ($("div.webxray-hud").length) {
-        clearInterval(intervalID);
-        $("div#success").fadeIn();
-    }
+  if ($("div.webxray-hud").length) {
+    clearInterval(intervalID);
+    $("div#success").fadeIn();
+  }
 }, 500);
 
 $(window).ready(function() {
