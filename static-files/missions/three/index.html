@@ -74,6 +74,7 @@ div.exercise div.rendering p {
 }
 </style>
 <script src="jquery.min.js"></script>
+<script src="jquery.scrollTo-min.js"></script>
 <script src="missions/mission.js"></script>
 <body style="display: none;">
 <div id="header">
@@ -142,10 +143,13 @@ $(window).ready(function() {
   jQuery.when(pFound, imgFound).then(function() {
     $("div#step-1").fadeOut("slow", function() {
       $("div#step-2").fadeIn("slow", function() {
+        jQuery.scrollTo($("div#step-2"), 800);
         var intervalID = window.setInterval(function() {
           if (!MissionUtils.areGogglesActive()) {
             window.clearInterval(intervalID);
-            $("div#step-3").slideDown();
+            $("div#step-3").slideDown(function() {
+              jQuery.scrollTo($("div#step-3"), 800);
+            });
           }
         }, 500);
       });
