@@ -1,4 +1,6 @@
 (function(jQuery) {
+  "use strict";
+
   var $ = jQuery;
   var HEX_REGEXP = /#([0-9a-f]{2})([0-9a-f]{2})([0-9a-f]{2})/i;
   var RGB_REGEXP = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;

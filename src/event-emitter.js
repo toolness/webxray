@@ -1,4 +1,6 @@
 (function(jQuery) {
+  "use strict";
+
   jQuery.eventEmitter = function eventEmitter(object) {
     var handlers = {};
 

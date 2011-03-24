@@ -1,4 +1,6 @@
 (function(jQuery) {
+  "use strict";
+
   var $ = jQuery;
   
   jQuery.focusedOverlay = function focusedOverlay() {

@@ -1,4 +1,6 @@
 (function(jQuery) {
+  "use strict";
+
   var $ = jQuery;
 
   /* This is some temporary code to provide some kind of 'remix'
