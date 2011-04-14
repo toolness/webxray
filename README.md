@@ -35,6 +35,12 @@ If you have any bugs to report, please file them in [Lighthouse][].
 
   [Lighthouse]: http://hackasaurus.lighthouseapp.com/projects/66492-hackasaurus/
 
+## Updating JQuery
+
+Currently, the goggles build on JQuery 1.5. To update the repository's files to use a different version of JQuery, check out the [webxray-stable][] branch of JQuery and run the `export_to_webxray.py` script.
+
+  [webxray-stable]: https://github.com/toolness/jquery/tree/webxray-stable
+
 ## LICENSE
 
 All files that are part of this project are covered by the following
