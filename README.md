@@ -1,6 +1,6 @@
 These are Web X-Ray Goggles, which provide a simple, easy way for non-technical people to inspect Web pages and learn about how they are put together.
 
-For a four-minute screencast, and to play with the current version of the goggles, check out [https://secure.toolness.com/webxray/][].
+To play with the current version of the goggles, check out [https://secure.toolness.com/webxray/][].
 
 ## Build System
 
@@ -12,19 +12,12 @@ To develop the goggles, you'll need:
 
 * git
 * python
-* make, rake, or ant (to build jQuery)
 
 ## Installation
 
 First, check out the `webxray` repository:
 
     git clone https://github.com/toolness/webxray.git
-
-Then enter the newly-created `webxray` directory and get the jQuery source code:
-
-    git clone https://github.com/jquery/jquery.git
-    
-Now enter that directory and type `make`, or use one of jQuery's other build options to create it. Then go back into the `webxray` directory.
 
 To start a web server that dynamically serves the Web X-Ray Goggles bookmarklet, run:
 

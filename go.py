@@ -4,7 +4,7 @@
     commands:
     
       serve   - run web server on port %(port)s
-      compile - generate %(compiledFilename)s, copy jquery.min.js
+      compile - generate %(compiledFilename)s
 """
 
 from wsgiref.simple_server import make_server
@@ -68,9 +68,6 @@ if __name__ == "__main__":
         print "serving on port %d" % cfg['port']
         server.serve_forever()
     elif cmd == 'compile':
-        shutil.copy(os.path.join('jquery', 'dist', 'jquery.min.js'),
-                    cfg['staticFilesDir'])
-        print "copied jquery.min.js to %s" % cfg['staticFilesDir']
         f = open(cfg['compiledFilename'], 'w')
         for chunk in build_compiled_file(cfg):
             f.write(chunk)
