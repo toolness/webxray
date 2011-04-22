@@ -22,6 +22,8 @@
   , "jquery/src/effects.js"
   , "jquery/src/offset.js"
   , "jquery/src/dimensions.js"
+  , "src/settings.js"
+  , "src/settings.local.js"
   , "src/utils.js"
   , "src/tag-colors.js"
   , "src/event-emitter.js"

@@ -66,7 +66,7 @@ test("jQuery.xRayInput()", function() {
   input.handleEvent(event);
   ok(prevented, "Typing valid key prevents default event handling");
   ok(stopped, "Typing valid key stops event propagation");
-  checkLog(['mixMaster.replaceFocusedElementWithAwesomeDialog() called w/ 1 args'])
+  checkLog(['mixMaster.replaceFocusedElementWithAwesomeDialog() called w/ 2 args'])
 
   event.keyCode = input.keys.DELETE;
   input.handleEvent(event);

@@ -129,7 +129,6 @@
                         "could make your head explode.</span>";
 
         input.deactivate();
-        dialogURL = dialogURL || "http://labs.toolness.com/dom-tutorial/";
         body = body || document.body;
         var div = $('<div class="webxray-dialog-overlay">' +
                     '<div class="webxray-dialog-outer">' +

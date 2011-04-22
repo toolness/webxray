@@ -52,8 +52,10 @@
           return true;
           
           case keys.R:
-          //mixMaster.replaceFocusedElement();
-          mixMaster.replaceFocusedElementWithAwesomeDialog(self);
+          mixMaster.replaceFocusedElementWithAwesomeDialog(
+            self,
+            jQuery.webxraySettings.mixMasterDialogURL
+            );
           return true;
           
           case keys.DELETE:

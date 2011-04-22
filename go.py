@@ -21,7 +21,11 @@ except ImportError:
 
 def build_compiled_file(cfg):
     for filename in cfg['compiledFileParts']:
-        yield open(filename, 'r').read()
+        if '.local.' in filename:
+            if not os.path.exists(filename):
+                continue
+        contents = open(filename, 'r').read()
+        yield contents
 
 def make_app(cfg):
     def app(environ, start_response):
