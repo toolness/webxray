@@ -128,16 +128,14 @@
                         "<code>&lt;" + tagName + "&gt;</code> element " +
                         "could make your head explode.</span>";
 
-        input.deactivate();
-        body = body || document.body;
-        var div = $('<div class="webxray-dialog-overlay">' +
-                    '<div class="webxray-dialog-outer">' +
-                    '<div class="webxray-dialog-middle">' +
-                    '<div class="webxray-dialog-inner">' +
-                    '<iframe src="' + dialogURL + '#dialog"></iframe>' +
-                    '</div></div></div></div>');
-        $(body).append(div);
-        
+        var dialog = jQuery.modalDialog({
+          input: input,
+          body: body
+        });
+        var iframe = $('<iframe src="' + dialogURL + '#dialog"></iframe>');
+
+        dialog.content.append(iframe);
+
         // We need to use document.defaultView here because 'window' is a 
         // trivial window subclass rather than window itself, which
         // confuses Safari.
@@ -146,9 +144,7 @@
         window.addEventListener("message", function onMessage(event) {
           if (event.data && event.data.length && event.data[0] == '{') {
             var data = JSON.parse(event.data);
-            div.fadeOut(function() {
-              div.remove();
-              input.activate();
+            dialog.close(function() {
               if (data.msg == "ok") {
 
                 // The dialog may have decided to replace all our spaces
@@ -158,11 +154,10 @@
                 self.replaceFocusedElement(html);
               }
               window.removeEventListener("message", onMessage, false);
-              $(window).focus();
             });
           }
         }, false);
-        div.find("iframe").hide().load(function onLoad() {
+        iframe.hide().load(function onLoad() {
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your " +

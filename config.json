@@ -30,6 +30,7 @@
   , "src/focused-overlay.js"
   , "src/hud-overlay.js"
   , "src/mix-master.js"
+  , "src/modal-dialog.js"
   , "src/input.js"
   , "src/main.js"
   , "src/outro.js"
