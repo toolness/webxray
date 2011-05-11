@@ -1,0 +1,33 @@
+module("uproot", {
+  setup: function() {
+    var iframes = jQuery('<div id="iframes"></div>');
+    iframes.hide();
+    jQuery(document.body).append(iframes);
+  },
+  teardown: function() {
+    jQuery("#iframes").remove();
+  }
+});
+
+[
+  'basic-page'
+, 'basic-dynamic-page'
+].forEach(function(name) {
+  asyncTest(name, function() {
+    var prefix = 'unit/uproot/';
+    var iframe = jQuery("<iframe></iframe>");
+    iframe.attr("src", prefix + "source-pages/" + name + "/");
+    iframe.load(function() {
+      jQuery.get(prefix + 'expected-pages/' + name + '.html',
+      function(expected) {
+        var baseURI = document.location.href + iframe.attr('src');
+        expected = expected.replace("{{ BASE_HREF }}", baseURI);
+        iframe.uproot(function(actual) {
+          equal(actual, expected, "innerHTML matches.");
+          start();
+        });
+      }, 'text');
+    });
+    jQuery("#iframes").append(iframe);
+  });
+});

@@ -25,6 +25,7 @@
   , "src/settings.js"
   , "src/settings.local.js"
   , "src/utils.js"
+  , "src/uproot.js"
   , "src/tag-colors.js"
   , "src/event-emitter.js"
   , "src/focused-overlay.js"
