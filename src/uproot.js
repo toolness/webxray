@@ -5,20 +5,30 @@
   
   jQuery.fn.extend({
     uproot: function(cb) {
+      var options = {
+        ignore: $()
+      };
+      if (typeof(cb) == 'object') {
+        options = cb;
+        cb = options.success;
+      }
       var elem = this[0];
       var document = elem.contentDocument || elem;
       if (document.nodeName != "#document")
         throw new Error("first item of query must be a document or iframe");
-      var base = $('base', document);
-      if (base.length == 0) {
-        base = document.createElement('base');
+      var base = document.createElement('base');
+      if ($('base', document).length == 0) {
         $(base).attr('href', document.location.href);
         $(document.head).prepend(base);
       }
-      $('script', document).remove();
       if (cb)
         setTimeout(function() {
-          cb.call(elem, document.documentElement.innerHTML);
+          var ignore = options.ignore.add('script', document);
+          var removal = ignore.temporarilyRemove();
+          var html = document.documentElement.innerHTML;
+          removal.undo();
+          $(base).remove();
+          cb.call(elem, html);
         }, 0);
     }
   });

@@ -20,10 +20,13 @@ module("uproot", {
     iframe.load(function() {
       jQuery.get(prefix + 'expected-pages/' + name + '.html',
       function(expected) {
+        var docElem = iframe.get(0).contentDocument.documentElement;
+        var startHTML = docElem.innerHTML;
         var baseURI = document.location.href + iframe.attr('src');
         expected = expected.replace("{{ BASE_HREF }}", baseURI);
         iframe.uproot(function(actual) {
           equal(actual, expected, "innerHTML matches.");
+          equal(docElem.innerHTML, startHTML, "document is unmodified");
           start();
         });
       }, 'text');

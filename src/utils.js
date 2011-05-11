@@ -45,10 +45,11 @@
     temporarilyRemove: function temporarilyRemove() {
       var undoers = [];
       jQuery.each(this, function(i, element) {
+        var document = element.ownerDocument;
         var replacer = document.createTextNode('');
-        jQuery(element).replaceWith(replacer);
+        element.parentNode.replaceChild(replacer, element);
         undoers.push(function() {
-          jQuery(replacer).replaceWith(element);
+          replacer.parentNode.replaceChild(element, replacer);
         });
       });
       return {
