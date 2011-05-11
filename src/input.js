@@ -4,8 +4,6 @@
   var $ = jQuery;
 
   var keys = {
-    I: 73,
-    R: 82,
     DELETE: 8,
     LEFT: 37,
     UP: 38,
@@ -13,6 +11,11 @@
     DOWN: 40,
     ESC: 27
   };
+
+  var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  
+  for (var i = 0; i < alphabet.length; i++)
+    keys[alphabet[i]] = alphabet.charCodeAt(i);
 
   jQuery.extend({
     xRayInput: function xRayInput(options) {
