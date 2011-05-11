@@ -39,6 +39,28 @@
   });
   
   jQuery.fn.extend({
+    // Temporarily remove the set of matched elements,
+    // returning a removal object with one method,
+    // undo(), that can be used to undo the removal.
+    temporarilyRemove: function temporarilyRemove() {
+      var undoers = [];
+      jQuery.each(this, function(i, element) {
+        var replacer = document.createTextNode('');
+        jQuery(element).replaceWith(replacer);
+        undoers.push(function() {
+          jQuery(replacer).replaceWith(element);
+        });
+      });
+      return {
+        undo: function undo() {
+          jQuery.each(undoers, function(i, undoer) {
+            undoer();
+          });
+          undoers = null;
+        }
+      };
+    },
+    
     // Return the nth ancestor of the first matched element.
     ancestor: function ancestor(generation) {
       var ancestor = this[0];

@@ -22,6 +22,16 @@ test("ancestor()", function() {
      "ancestor() works w/ null result");
 });
 
+test("temporarilyRemove()", function() {
+  var div = jQuery("<div><p>hello</p><span>hi</span></div>");
+  var p = div.find("p").get(0);
+  var removal = jQuery(p).temporarilyRemove();
+  equals(div.html(), "<span>hi</span>");
+  removal.undo();
+  equals(div.html(), "<p>hello</p><span>hi</span>");
+  ok(p === div.find("p").get(0));
+});
+
 test("jQuery.shortenText()", function() {
   equals(jQuery.shortenText('hello', 3), 'hel\u2026');
   equals(jQuery.shortenText('hello', 5), 'hello');
