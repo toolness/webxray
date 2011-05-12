@@ -123,20 +123,13 @@
 
         var dialog = jQuery.modalDialog({
           input: input,
-          body: body
+          body: body,
+          url: dialogURL + "#dialog"
         });
-        var iframe = $('<iframe src="' + dialogURL + '#dialog"></iframe>');
 
-        dialog.content.append(iframe);
-
-        // We need to use document.defaultView here because 'window' is a 
-        // trivial window subclass rather than window itself, which
-        // confuses Safari.
-        var window = document.defaultView;
-        
-        window.addEventListener("message", function onMessage(event) {
-          if (event.data && event.data.length && event.data[0] == '{') {
-            var data = JSON.parse(event.data);
+        dialog.iframe.bind("message", function onMessage(event, data) {
+          if (data && data.length && data[0] == '{') {
+            var data = JSON.parse(data);
             dialog.close(function() {
               if (data.msg == "ok") {
 
@@ -146,11 +139,10 @@
 
                 self.replaceFocusedElement(html);
               }
-              window.removeEventListener("message", onMessage, false);
             });
           }
-        }, false);
-        iframe.hide().load(function onLoad() {
+        });
+        dialog.iframe.one("load", function onLoad() {
           this.contentWindow.postMessage(JSON.stringify({
             title: "Compose A Replacement",
             instructions: "<span>When you're done composing your " +
@@ -159,7 +151,6 @@
             startHTML: focusedHTML,
             baseURI: document.location.href
           }), "*");
-          $(this).unbind("load", onLoad);
           $(this).fadeIn();
         });
       }

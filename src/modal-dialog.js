@@ -7,16 +7,34 @@
     modalDialog: function(options) {
       var input = options.input;
       var body = options.body || document.body;
+      var url = options.url;
       var div = $('<div class="webxray-dialog-overlay">' +
                   '<div class="webxray-dialog-outer">' +
                   '<div class="webxray-dialog-middle">' +
                   '<div class="webxray-dialog-inner">' +
+                  '<iframe src="' + url + '"></iframe>' +
                   '</div></div></div></div>');
+      var iframe = div.find("iframe");
       
+      // We need to use document.defaultView here because 'window' is a 
+      // trivial window subclass rather than window itself, which
+      // confuses Safari.
+      var window = document.defaultView;
+
+      function onMessage(event) {
+        if (event.source == self.iframe.get(0).contentWindow) {
+          iframe.trigger("message", [event.data]);
+        }
+      }
+
+      window.addEventListener("message", onMessage, false);
+      iframe.hide();
+
       var self = {
-        content: div.find('.webxray-dialog-inner'),
+        iframe: iframe,
         close: function close(cb) {
           div.fadeOut(function() {
+            window.removeEventListener("message", onMessage, false);
             input.activate();
             div.remove();
             input = null;
