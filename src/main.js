@@ -18,6 +18,7 @@
     }
 
     removeOnUnload = removeOnUnload.add([cssLink.get(0), script.get(0)]);
+    jQuery.webxraySettings.baseURI = baseURI;
     cb();
   }
 
