@@ -12,6 +12,7 @@ module("uproot", {
 [
   'basic-page'
 , 'basic-dynamic-page'
+, 'complex-doctype'
 ].forEach(function(name) {
   asyncTest(name, function() {
     var prefix = 'unit/uproot/';

@@ -3,6 +3,15 @@
 
   var $ = jQuery;
   
+  function makeDoctypeTag(doctype) {
+    var tag = '<!DOCTYPE ' + doctype.name;
+    if (doctype.publicId.length)
+      tag += ' PUBLIC "' + doctype.publicId + '"';
+    if (doctype.systemId.length)
+      tag += ' "' + doctype.systemId + '"';
+    return tag += '>';
+  }
+  
   jQuery.fn.extend({
     uproot: function(cb) {
       var options = {
@@ -25,7 +34,9 @@
         setTimeout(function() {
           var ignore = options.ignore.add('script', document);
           var removal = ignore.temporarilyRemove();
-          var html = document.documentElement.innerHTML;
+          var doctype = makeDoctypeTag(document.doctype);
+          var html = doctype + '\n<html>' +
+                     document.documentElement.innerHTML + '</html>';
           removal.undo();
           $(base).remove();
           cb.call(elem, html);
