@@ -14,6 +14,27 @@
     return tag += '>';
   }
   
+  jQuery.extend({
+    openUprootDialog: function(input) {
+      $(document).uproot({
+        success: function(html) {
+          var dialog = jQuery.modalDialog({
+            input: input,
+            url: jQuery.webxraySettings.baseURI + "uproot-dialog.html"
+          });
+          dialog.iframe.one("load", function() {
+            this.contentWindow.postMessage(html, "*");
+            $(this).show().bind("message", function(event, data) {
+              dialog.close();
+            });
+          });
+        },
+        ignore: $(".webxray-hud, .webxray-overlay, " +
+                  ".webxray-dialog-overlay, link.webxray")
+      });
+    }
+  });
+  
   jQuery.fn.extend({
     uproot: function(cb) {
       var options = {
