@@ -13,6 +13,7 @@ module("uproot", {
   'basic-page'
 , 'basic-dynamic-page'
 , 'complex-doctype'
+, 'no-doctype'
 ].forEach(function(name) {
   asyncTest(name, function() {
     var prefix = 'unit/uproot/';
@@ -26,7 +27,8 @@ module("uproot", {
         var baseURI = document.location.href + iframe.attr('src');
         expected = expected.replace("{{ BASE_HREF }}", baseURI);
         iframe.uproot(function(actual) {
-          equal(actual, expected, "innerHTML matches.");
+          equal(jQuery.trim(actual), jQuery.trim(expected),
+                "innerHTML matches.");
           equal(docElem.innerHTML, startHTML, "document is unmodified");
           start();
         });

@@ -4,6 +4,8 @@
   var $ = jQuery;
   
   function makeDoctypeTag(doctype) {
+    if (!doctype)
+      return '';
     var tag = '<!DOCTYPE ' + doctype.name;
     if (doctype.publicId.length)
       tag += ' PUBLIC "' + doctype.publicId + '"';
