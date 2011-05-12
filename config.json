@@ -1,6 +1,6 @@
 {
   "port": 8000,
-  "staticFilesDir": "./static-files",
+  "staticFilesDir": "static-files",
   "indexFile": "/index.html",
   "compiledFile": "/webxray.js",
   "compiledFileParts": [

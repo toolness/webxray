@@ -19,7 +19,7 @@ First, check out the `webxray` repository:
 
     git clone https://github.com/toolness/webxray.git
 
-To start a web server that dynamically serves the Web X-Ray Goggles bookmarklet, run:
+To start a web server that dynamically serves the Web X-Ray Goggles bookmarklet and unit tests, run:
 
     python go.py serve
 

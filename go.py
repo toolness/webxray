@@ -19,6 +19,18 @@ try:
 except ImportError:
     import simplejson as json
 
+ROOT = os.path.abspath(os.path.dirname(__file__))
+
+index_html = """
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>webxray</title>
+<ul>
+<li><a href="%(staticFilesDir)s/">use goggles</a></li>
+<li><a href="test/">run tests</a></li>
+</ul>
+"""
+
 def build_compiled_file(cfg):
     for filename in cfg['compiledFileParts']:
         if '.local.' in filename:
@@ -31,19 +43,22 @@ def make_app(cfg):
     def app(environ, start_response):
         path = environ['PATH_INFO']
 
-        if path == cfg['compiledFile']:
+        if path == '/%(staticFilesDir)s%(compiledFile)s' % cfg:
             start_response('200 OK', [('Content-Type',
                                        'application/javascript')])
             return build_compiled_file(cfg)
-
+        elif path == '/':
+            start_response('200 OK', [('Content-Type',
+                                       'text/html')])
+            return [(index_html % cfg).encode('utf-8')]
+        
         if path.endswith('/'):
             path = '%sindex.html' % path
-        static_files_dir = os.path.abspath(cfg['staticFilesDir'])
         fileparts = path[1:].split('/')
-        fullpath = os.path.join(static_files_dir, *fileparts)
+        fullpath = os.path.join(ROOT, *fileparts)
         fullpath = os.path.normpath(fullpath)
         (mimetype, encoding) = mimetypes.guess_type(fullpath)
-        if (fullpath.startswith(static_files_dir) and
+        if (fullpath.startswith(ROOT) and
             not '.git' in fullpath and
             os.path.isfile(fullpath) and
             mimetype):
