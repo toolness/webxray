@@ -91,10 +91,7 @@ test("jQuery.mixMaster()", function() {
 
     var mixMaster = $.mixMaster({
       hud: hud, 
-      focusedOverlay: focused,
-      prompt: function() {
-        return '<em>hello</em>';
-      }
+      focusedOverlay: focused
     });
 
     fn(mixMaster, element, hud);
@@ -107,7 +104,7 @@ test("jQuery.mixMaster()", function() {
   mixTest(function(mixMaster, element, hud) {
     var domNode = element.find("#mixmastertest").get(0);
 
-    mixMaster.replaceFocusedElement();
+    mixMaster.replaceFocusedElement('<em>hello</em>');
     equal(element.html(), '<em>hello</em>', "Simulating replacement works");
     equal($(hud.overlay).text(), 'Busted replacement.');
 

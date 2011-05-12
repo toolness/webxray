@@ -64,7 +64,6 @@
   }
 
   function MixMaster(options) {
-    var promptFunction = options.prompt || prompt;
     var focused = options.focusedOverlay;
     var commandManager = CommandManager(options.hud, focused);
 
@@ -74,12 +73,6 @@
       replaceFocusedElement: function replaceFocusedElement(html) {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {
-          if (typeof(html) != "string") {
-            var promptText = "Enter the HTML to replace this <" + 
-                             elementToReplace.nodeName.toLowerCase() +
-                             "> element with.";
-            html = promptFunction(promptText);
-          }
           if (html !== null && html != "") {
             if (html[0] != '<') {
               html = '<span>' + html + '</span>';
