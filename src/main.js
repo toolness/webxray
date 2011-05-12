@@ -5,7 +5,7 @@
   var removeOnUnload = $();
 
   function loadPrerequisites(cb) {
-    var script = $("script.webxray");
+    var script = $('script.webxray, script[src$="webxray.js"]');
     var baseURI = script.attr("src").match(/(.*)webxray\.js$/)[1];
     var cssURI = baseURI + 'webxray.css';
     var cssLink = $('link[href="' + cssURI + '"]');
