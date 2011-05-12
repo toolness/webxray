@@ -38,7 +38,7 @@
       $(document.body).append(hud.overlay);
       focused.on('change', hud.onFocusChange);
       input.activate();
-      $(document.defaultView).focus();
+      $(window).focus();
 
       $(window.document).unload(function() {
         focused.destroy();

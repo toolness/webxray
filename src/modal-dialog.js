@@ -16,11 +16,6 @@
                   '</div></div></div></div>');
       var iframe = div.find("iframe");
       
-      // We need to use document.defaultView here because 'window' is a 
-      // trivial window subclass rather than window itself, which
-      // confuses Safari.
-      var window = document.defaultView;
-
       function onMessage(event) {
         if (event.source == self.iframe.get(0).contentWindow) {
           iframe.trigger("message", [event.data]);
