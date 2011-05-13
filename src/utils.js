@@ -39,6 +39,24 @@
   });
   
   jQuery.fn.extend({
+    // Given a descendant on the first matched element, returns a CSS
+    // selector that uniquely selects only the descendant from the
+    // first matched element.
+    pathTo: function pathTo(descendant) {
+      var root = this[0];
+      var target = $(descendant).get(0);
+      var parts = [];
+
+      for (var node = target; node && node != root; node = node.parentNode) {
+        var n = $(node).prevAll(node.nodeName.toLowerCase()).length + 1;
+        parts.push(node.nodeName.toLowerCase() +
+                   ':nth-of-type(' + n + ')');
+      }
+      
+      parts.reverse();
+      return parts.join(' > ');
+    },
+
     // Temporarily remove the set of matched elements,
     // returning a removal object with one method,
     // undo(), that can be used to undo the removal.

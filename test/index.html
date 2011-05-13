@@ -62,6 +62,39 @@ jQuery.noConflict();
 <h2 id="qunit-userAgent"></h2>
 <ol id="qunit-tests"></ol>
 <div id="qunit-fixture">
+  <!-- utils.js test fixture -->
+
+  <div id="utils">
+    <div class="test-case" data-expect="div:nth-of-type(1)">
+      <div data-target="true"></div>
+    </div>
+    <div class="test-case" data-expect="div:nth-of-type(1) > span:nth-of-type(1)">
+      <div>
+        <span data-target="true"></span>
+      </div>
+    </div>
+    <div class="test-case" data-expect="div:nth-of-type(1) > span:nth-of-type(2)">
+      <div>
+        <span></span>
+        <span data-target="true"></span>
+      </div>
+    </div>
+    <div class="test-case" data-expect="div:nth-of-type(1) > span:nth-of-type(2)">
+      <div>
+        <span></span>
+        <p></p>
+        <span data-target="true"></span>
+      </div>
+    </div>
+    <div class="test-case" data-expect="div:nth-of-type(1) > span:nth-of-type(1)">
+      <div>
+        <span data-target="true"></span>
+        <p></p>
+        <span></span>
+      </div>
+    </div>
+  </div>
+
   <!-- mix-master.js test fixture -->
   
   <div id="mix-master">

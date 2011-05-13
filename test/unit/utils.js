@@ -32,6 +32,22 @@ test("temporarilyRemove()", function() {
   ok(p === div.find("p").get(0));
 });
 
+test("pathTo()", function() {
+  var $ = jQuery;
+  $("#qunit-fixture #utils .test-case").each(function() {
+    var root = this;
+    
+    var expect = $(root).attr("data-expect");
+    var target = $(root).find('[data-target="true"]').get(0);
+    var actual = $(root).pathTo(target);
+    equals(actual, expect, "actual CSS path is same as expected");
+
+    var matches = $(root).find(expect);
+    if (matches.length != 1 || matches.get(0) !== target)
+      throw new Error("expected path is not actually valid!");
+  });
+});
+
 test("jQuery.shortenText()", function() {
   equals(jQuery.shortenText('hello', 3), 'hel\u2026');
   equals(jQuery.shortenText('hello', 5), 'hello');
