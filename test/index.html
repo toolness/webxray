@@ -4,8 +4,12 @@
 <link rel="stylesheet" href="qunit.css">
 <link rel="stylesheet" href="../static-files/webxray.css">
 
+
+<script src="../static-files/jquery.min.js"></script>
 <script>
-var jQuery = {};
+var fullJQuery = jQuery;
+jQuery.noConflict(true);
+jQuery = {};
 </script>
 
 <script src="../jquery/src/core.js"></script>
@@ -27,7 +31,7 @@ var jQuery = {};
 <script src="../jquery/src/dimensions.js"></script>
 
 <script src="../src/settings.js"></script>
-<script src="../src/settings.local.js"></script>
+<script src="../src/settings.local.js" class="ok-if-not-present"></script>
 <script src="../src/utils.js"></script>
 <script src="../src/uproot.js"></script>
 <script src="../src/tag-colors.js"></script>
@@ -54,7 +58,9 @@ jQuery.noConflict();
 <script src="unit/input.js"></script>
 
 <!-- This is for TestSwarm only. -->
-<script src="/js/inject.js"></script>
+<script src="/js/inject.js" class="ok-if-not-present"></script>
+
+<script src="sanity-checks.js"></script>
 
 <h1 id="qunit-header">Web X-Ray Goggles Unit Tests</h1>
 <h2 id="qunit-banner"></h2>
