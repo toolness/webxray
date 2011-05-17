@@ -4,63 +4,28 @@
 <link rel="stylesheet" href="qunit.css">
 <link rel="stylesheet" href="../static-files/webxray.css">
 
-
 <script src="../static-files/jquery.min.js"></script>
 <script>
+var unitTests = [
+  "utils/utils.js"
+, "uproot/uproot.js"
+, "tag-colors.js"
+, "event-emitter.js"
+, "focused-overlay.js"
+, "hud-overlay/hud-overlay.js"
+, "mix-master.js"
+, "input.js"
+];
 var fullJQuery = jQuery;
 jQuery.noConflict(true);
-jQuery = {};
-</script>
-
-<script src="../jquery/src/core.js"></script>
-<script src="../jquery/src/support.js"></script>
-<script src="../jquery/src/data.js"></script>
-<script src="../jquery/src/queue.js"></script>
-<script src="../jquery/src/attributes.js"></script>
-<script src="../jquery/src/event.js"></script>
-<script src="../jquery/src/selector.js"></script>
-<script src="../jquery/src/traversing.js"></script>
-<script src="../jquery/src/manipulation.js"></script>
-<script src="../jquery/src/css.js"></script>
-<script src="../jquery/src/ajax.js"></script>
-<script src="../jquery/src/ajax/jsonp.js"></script>
-<script src="../jquery/src/ajax/script.js"></script>
-<script src="../jquery/src/ajax/xhr.js"></script>
-<script src="../jquery/src/effects.js"></script>
-<script src="../jquery/src/offset.js"></script>
-<script src="../jquery/src/dimensions.js"></script>
-
-<script src="../src/settings.js"></script>
-<script src="../src/settings.local.js" class="ok-if-not-present"></script>
-<script src="../src/utils.js"></script>
-<script src="../src/uproot.js"></script>
-<script src="../src/tag-colors.js"></script>
-<script src="../src/event-emitter.js"></script>
-<script src="../src/focused-overlay.js"></script>
-<script src="../src/hud-overlay.js"></script>
-<script src="../src/mix-master.js"></script>
-<script src="../src/modal-dialog.js"></script>
-<script src="../src/input.js"></script>
-
-<script>
-jQuery.noConflict();
 </script>
 
 <script src="qunit.js"></script>
 
-<script src="unit/utils/utils.js"></script>
-<script src="unit/uproot/uproot.js"></script>
-<script src="unit/tag-colors.js"></script>
-<script src="unit/event-emitter.js"></script>
-<script src="unit/focused-overlay.js"></script>
-<script src="unit/hud-overlay/hud-overlay.js"></script>
-<script src="unit/mix-master.js"></script>
-<script src="unit/input.js"></script>
-
 <!-- This is for TestSwarm only. -->
-<script src="/js/inject.js" class="ok-if-not-present"></script>
+<script src="/js/inject.js"></script>
 
-<script src="sanity-checks.js"></script>
+<script src="run-tests.js"></script>
 
 <h1 id="qunit-header">Web X-Ray Goggles Unit Tests</h1>
 <h2 id="qunit-banner"></h2>
