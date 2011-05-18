@@ -80,14 +80,11 @@ testAsyncDialog({
 test("jQuery.mixMaster()", function() {
   var $ = jQuery;
 
-  function mixTest(fn) {
-    var element = $('<div><div id="mixmastertest"></div></div>');
-    $(document.body).append(element);
-
+  function testWithElement(element, fn) {
     var hud = $.hudOverlay({defaultContent: "hai2u"});
     var focused = jQuery.focusedOverlay();
 
-    var domNode = element.find("#mixmastertest").get(0);
+    var domNode = element.children().get(0);
     focused.set(domNode);
 
     var mixMaster = $.mixMaster({
@@ -95,12 +92,53 @@ test("jQuery.mixMaster()", function() {
       focusedOverlay: focused
     });
 
-    fn(mixMaster, element, hud);
+    fn(mixMaster, element, hud, focused);
 
-    $(element).remove();
     focused.destroy();
     hud.destroy();
   }
+
+  function makeTestElement() {
+    var element = $('<div><div id="mixmastertest"></div></div>');
+    $(document.body).append(element);
+    
+    return element;
+  }
+  
+  function mixTest(fn) {
+    var element = makeTestElement();
+    testWithElement(element, fn);
+
+    element.remove();
+  }
+
+  (function testSerialization() {
+    var element = makeTestElement();
+    var history;
+    
+    testWithElement(element, function(mixMaster, element, hud, focused) {
+      mixMaster.replaceFocusedElement('<em>hi</em>');
+      focused.set(element.children().get(0));
+      mixMaster.replaceFocusedElement('<span>u</span>');
+      history = mixMaster.serializeHistory();
+      equals(element.html(), '<span>u</span>',
+             'serializeHistory() doesn\'t change DOM');
+    });
+    
+    equals(typeof(history), 'string', "history is a string");
+
+    testWithElement(element, function(mixMaster) {
+      mixMaster.deserializeHistory(history);
+      equals(element.html(), '<span>u</span>',
+             'deserializeHistory() doesn\'t change DOM');
+      mixMaster.undo();
+      equal(element.html(), '<em>hi</em>');
+      mixMaster.undo();
+      equal(element.html(), '<div id="mixmastertest"></div>');
+    });
+
+    element.remove();
+  })();
 
   mixTest(function(mixMaster, element, hud) {
     var domNode = element.find("#mixmastertest").get(0);

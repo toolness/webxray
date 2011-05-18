@@ -18,33 +18,65 @@
       $(hud.overlay).html('<span>' + verb + ' ' + command.name + '.</span>');
     }
 
+    function internalRun(command) {
+      undoStack.push(command);
+      redoStack.splice(0);
+      command.execute();
+      return command;
+    }
+
+    function internalUndo() {
+      var command = undoStack.pop();
+      redoStack.push(command);
+      command.undo();
+      return command;
+    }
+    
+    function internalRedo() {
+      var command = redoStack.pop();
+      undoStack.push(command);
+      command.execute();
+      return command;
+    }
+
+    
     var self = {
       run: function(command) {
         focused.unfocus();
-        undoStack.push(command);
-        redoStack.splice(0);
-        command.execute();
-        updateStatus('Busted', command);
+        updateStatus('Busted', internalRun(command));
       },
       undo: function() {
         if (undoStack.length) {
           focused.unfocus();
-          var command = undoStack.pop();
-          redoStack.push(command);
-          command.undo();
-          updateStatus('Unbusted', command);
+          updateStatus('Unbusted', internalUndo());
         } else
           $(hud.overlay).html('<span>Nothing left to undo!</span>');
       },
       redo: function() {
         if (redoStack.length) {
           focused.unfocus();
-          var command = redoStack.pop();
-          undoStack.push(command);
-          command.execute();
-          updateStatus('Rebusted', command);
+          updateStatus('Rebusted', internalRedo());
         } else
           $(hud.overlay).html('<span>Nothing left to redo!</span>');
+      },
+      serialize: function() {
+        var commands = [];
+        var timesUndone = 0;
+        while (undoStack.length) {
+          internalUndo();
+          timesUndone++;
+        }
+        for (var i = 0; i < timesUndone; i++) {
+          var cmd = redoStack[redoStack.length - 1];
+          commands.push(cmd.serialize());
+          internalRedo();
+        }
+        return commands;
+      },
+      deserialize: function(commands) {
+        commands.forEach(function(state) {
+          internalRun(ReplaceWithCmd(state));
+        });
       }
     };
     
@@ -52,13 +84,44 @@
   }
 
   function ReplaceWithCmd(name, elementToReplace, newContent) {
+    var isExecuted = false;
+
+    function deserialize(state) {
+      name = state.name;
+      elementToReplace = $(document.documentElement).find(state.selector);
+      newContent = $(state.html);
+      if (elementToReplace.length != 1)
+        throw new Error("selector '" + state.selector + "' matches " +
+                        elementToReplace.length + " element(s)");
+    }
+
+    if (typeof(name) == "object" && !elementToReplace && !newContent)
+      deserialize(name);
+
     return {
       name: name,
       execute: function() {
+        if (isExecuted)
+          throw new Error("command already executed");
         $(elementToReplace).replaceWith(newContent);
+        isExecuted = true;
       },
       undo: function() {
+        if (!isExecuted)
+          throw new Error("command not yet executed");
         $(newContent).replaceWith(elementToReplace);
+        isExecuted = false;
+      },
+      serialize: function() {
+        if (isExecuted)
+          throw new Error("only unexecuted commands can be serialized");
+        var trivialParent = $("<div></div>");
+        trivialParent.append($(newContent).clone());
+        return {
+          name: name,
+          selector: $(document.documentElement).pathTo(elementToReplace),
+          html: trivialParent.html()
+        };
       }
     };
   }
@@ -70,6 +133,12 @@
     var self = {
       undo: function() { commandManager.undo(); },
       redo: function() { commandManager.redo(); },
+      serializeHistory: function serializeHistory() {
+        return JSON.stringify(commandManager.serialize());
+      },
+      deserializeHistory: function deserializeHistory(history) {
+        commandManager.deserialize(JSON.parse(history));
+      },
       replaceFocusedElement: function replaceFocusedElement(html) {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {
