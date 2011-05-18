@@ -1,10 +1,4 @@
-module("hud-overlay", {
-  setup: function() {
-    jQuery("#qunit-fixture").load("unit/hud-overlay/hud-overlay.html", start);
-    stop();
-  },
-  teardown: function() { jQuery("#hud-overlay").remove(); }
-});
+module("hud-overlay", htmlFixture('hud-overlay'));
 
 test("jQuery.hudOverlay() defaultContent works", function() {
   var $ = jQuery;

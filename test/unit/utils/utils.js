@@ -1,10 +1,4 @@
-module("utils", {
-  setup: function() {
-    jQuery("#qunit-fixture").load("unit/utils/utils.html", start);
-    stop();
-  },
-  teardown: function() { jQuery("#utils").remove(); }
-});
+module("utils", htmlFixture("utils"));
 
 test("emit()", function() {
   var stuff = jQuery("<div></div>");

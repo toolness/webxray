@@ -5,6 +5,24 @@
 
   window.jQuery = {};
 
+  window.htmlFixture = function(name) {
+    var id = "#" + name;
+    return {
+      setup: function() {
+        var url = "unit/" + name + "/" + name + ".html";
+        $("#qunit-fixture").load(url, function() {
+          equal($(id).length, 1, "fixture element with id '" + name +
+                                 "' should exist");
+          start();
+        });
+        stop();
+      },
+      teardown: function() {
+        $(id).remove();
+      }
+    };
+  };
+
   function loadScripts(name, scripts, prefix, cb) {
     scripts = scripts.slice();
     scripts.reverse();
