@@ -1,4 +1,4 @@
-module("mix-master");
+module("mix-master", htmlFixture('mix-master'));
 
 function testAsyncDialog(options) {
   var name = "replaceFocusedElementWithAwesomeDialog() " + options.name;
@@ -42,7 +42,8 @@ function testAsyncDialog(options) {
       }
     };
 
-    var url = 'mix-master-dialog.html?test=' + options.resultType;
+    var baseURL = 'unit/mix-master/mix-master-dialog.html?test=';
+    var url = baseURL + options.resultType;
     mixMaster.replaceFocusedElementWithAwesomeDialog(input,
                                                      url,
                                                      container);
