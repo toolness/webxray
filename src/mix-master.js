@@ -18,13 +18,6 @@
       $(hud.overlay).html('<span>' + verb + ' ' + command.name + '.</span>');
     }
 
-    function internalRun(command) {
-      undoStack.push(command);
-      redoStack.splice(0);
-      command.execute();
-      return command;
-    }
-
     function internalUndo() {
       var command = undoStack.pop();
       redoStack.push(command);
@@ -38,12 +31,14 @@
       command.execute();
       return command;
     }
-
     
     var self = {
       run: function(command) {
         focused.unfocus();
-        updateStatus('Busted', internalRun(command));
+        undoStack.push(command);
+        redoStack.splice(0);
+        command.execute();
+        updateStatus('Busted', command);
       },
       undo: function() {
         if (undoStack.length) {
@@ -63,20 +58,22 @@
         var commands = [];
         var timesUndone = 0;
         while (undoStack.length) {
+          var cmd = undoStack[undoStack.length - 1];
+          commands.push(cmd.serialize());
           internalUndo();
           timesUndone++;
         }
-        for (var i = 0; i < timesUndone; i++) {
-          var cmd = redoStack[redoStack.length - 1];
-          commands.push(cmd.serialize());
+        for (var i = 0; i < timesUndone; i++)
           internalRedo();
-        }
         return commands;
       },
       deserialize: function(commands) {
-        commands.forEach(function(state) {
-          internalRun(ReplaceWithCmd(state));
-        });
+        for (var i = 0; i < commands.length; i++) {
+          undoStack.push(ReplaceWithCmd(commands[i]));
+          internalUndo();
+        }
+        for (var i = 0; i < commands.length; i++)
+          internalRedo();
       }
     };
     
@@ -87,12 +84,13 @@
     var isExecuted = false;
 
     function deserialize(state) {
+      isExecuted = true;
       name = state.name;
-      elementToReplace = $(document.documentElement).find(state.selector);
-      newContent = $(state.html);
-      if (elementToReplace.length != 1)
+      newContent = $(document.documentElement).find(state.selector);
+      elementToReplace = $(state.html);
+      if (newContent.length != 1)
         throw new Error("selector '" + state.selector + "' matches " +
-                        elementToReplace.length + " element(s)");
+                        newContent.length + " elements");
     }
 
     if (typeof(name) == "object" && !elementToReplace && !newContent)
@@ -113,13 +111,13 @@
         isExecuted = false;
       },
       serialize: function() {
-        if (isExecuted)
-          throw new Error("only unexecuted commands can be serialized");
+        if (!isExecuted)
+          throw new Error("only executed commands can be serialized");
         var trivialParent = $("<div></div>");
-        trivialParent.append($(newContent).clone());
+        trivialParent.append($(elementToReplace).clone());
         return {
           name: name,
-          selector: $(document.documentElement).pathTo(elementToReplace),
+          selector: $(document.documentElement).pathTo(newContent),
           html: trivialParent.html()
         };
       }
