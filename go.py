@@ -83,7 +83,7 @@ if __name__ == "__main__":
     cmd = sys.argv[1]
     
     if cmd == 'serve':
-        server = make_server('', cfg['port'], make_app(cfg))
+        server = make_server('127.0.0.1', cfg['port'], make_app(cfg))
         print "serving on port %d" % cfg['port']
         server.serve_forever()
     elif cmd == 'compile':
