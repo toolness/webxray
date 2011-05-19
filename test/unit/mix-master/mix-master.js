@@ -140,6 +140,19 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   })();
 
+  mixTest(function(mixMaster, element) {
+    // This is really just a smoke test.
+    equal($('#webxray-serialized-history-v1').length, 0);
+    mixMaster.replaceFocusedElement('<p>hi</p>');
+    mixMaster.saveHistoryToDOM();
+    equal($('#webxray-serialized-history-v1').length, 1);
+    ok($('#webxray-serialized-history-v1').text().length);
+    mixMaster.loadHistoryFromDOM();
+    equal($('#webxray-serialized-history-v1').length, 1);
+    mixMaster.saveHistoryToDOM();
+    equal($('#webxray-serialized-history-v1').length, 1);
+  });
+  
   mixTest(function(mixMaster, element, hud) {
     var domNode = element.find("#mixmastertest").get(0);
 

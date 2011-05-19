@@ -35,6 +35,7 @@
         mixMaster: mixMaster
       });
 
+      mixMaster.loadHistoryFromDOM();
       $(document.body).append(hud.overlay);
       focused.on('change', hud.onFocusChange);
       input.activate();

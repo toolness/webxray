@@ -68,6 +68,8 @@
         return commands;
       },
       deserialize: function(commands) {
+        undoStack.splice(0);
+        redoStack.splice(0);
         for (var i = 0; i < commands.length; i++) {
           undoStack.push(ReplaceWithCmd(commands[i]));
           internalUndo();
@@ -131,6 +133,18 @@
     var self = {
       undo: function() { commandManager.undo(); },
       redo: function() { commandManager.redo(); },
+      saveHistoryToDOM: function saveHistoryToDOM() {
+        $('#webxray-serialized-history-v1').remove();
+        var serializedHistory = $('<div></div>');
+        serializedHistory.attr('id', 'webxray-serialized-history-v1')
+                         .text(self.serializeHistory()).hide();
+        $(document.body).append(serializedHistory);
+      },
+      loadHistoryFromDOM: function loadHistoryFromDOM() {
+        var serializedHistory = $('#webxray-serialized-history-v1');
+        if (serializedHistory.length)
+          self.deserializeHistory(serializedHistory.text());
+      },
       serializeHistory: function serializeHistory() {
         return JSON.stringify(commandManager.serialize());
       },

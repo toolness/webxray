@@ -62,6 +62,7 @@
           return true;
 
           case keys.T:
+          mixMaster.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
           return true;
           
