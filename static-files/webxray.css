@@ -19,6 +19,7 @@
     font-size: 9pt;
     background-color: rgba(0, 0, 0, 0.7);
     pointer-events: none;
+    border: none;
     z-index: 1001;
 }
 
@@ -43,6 +44,7 @@
     font-size: 8pt;
     background-color: #000000;
     pointer-events: none;
+    border: inherit;
 }
 
 .webxray-overlay-label-top {
@@ -62,6 +64,7 @@
     -moz-transition: opacity 0.25s linear;
     -o-transition: opacity 0.25s linear;
     pointer-events: none;
+    border: none;
     z-index: 1000;
 }
 
@@ -85,6 +88,7 @@
     left: 0px;
     bottom: 0px;
     right: 0px;
+    border: none;
     background: rgba(0, 0, 0, 0.5);
 }
 
@@ -93,25 +97,31 @@
     height: 100%;
     display: table;
     position: static;
+    border: inherit;
+    background: inherit;
 }
 
 .webxray-dialog-middle {
     width: 100%;
     display: table-cell;
     vertical-align: middle;
+    border: inherit;
+    background: inherit;
 }
 
-.webxray-dialog-inner {
+div.webxray-dialog-inner {
     width: 1024px;
     height: 66%;
     text-align: left;
     margin-left: auto;
     margin-right: auto;
+    border: inherit;
+    background: inherit;
 }
 
 .webxray-dialog-inner iframe {
     width: 1024px;
     min-height: 480px;
     height: 100%;
-    border: none;
+    border: inherit;
 }
