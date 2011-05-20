@@ -10,6 +10,7 @@
   function CommandManager(hud, focused) {
     var undoStack = [];
     var redoStack = [];
+    var transitionEffects = TransitionEffectManager();
 
     function updateStatus(verb, command) {
       // TODO: We're assuming that 'verb' and 'command' are both already
@@ -37,6 +38,7 @@
         focused.unfocus();
         undoStack.push(command);
         redoStack.splice(0);
+        transitionEffects.observe(command);
         command.execute();
         updateStatus('Busted', command);
       },
@@ -57,6 +59,7 @@
       serialize: function() {
         var commands = [];
         var timesUndone = 0;
+        transitionEffects.setEnabled(false);
         while (undoStack.length) {
           var cmd = undoStack[undoStack.length - 1];
           commands.push(cmd.serialize());
@@ -65,23 +68,49 @@
         }
         for (var i = 0; i < timesUndone; i++)
           internalRedo();
+        transitionEffects.setEnabled(true);
         return commands;
       },
       deserialize: function(commands) {
         undoStack.splice(0);
         redoStack.splice(0);
+        transitionEffects.setEnabled(false);
         for (var i = 0; i < commands.length; i++) {
-          undoStack.push(ReplaceWithCmd(commands[i]));
+          var cmd = ReplaceWithCmd(commands[i]);
+          transitionEffects.observe(cmd);
+          undoStack.push(cmd);
           internalUndo();
         }
         for (var i = 0; i < commands.length; i++)
           internalRedo();
+        transitionEffects.setEnabled(true);
       }
     };
     
     return self;
   }
 
+  function TransitionEffectManager() {
+    var isEnabled = true;
+    return {
+      observe: function(cmd) {
+        cmd.on('before-replace', function before(elementToReplace) {
+          if (!isEnabled)
+            return;
+          var overlay = $(elementToReplace).overlay();
+          cmd.on('after-replace', function after(newContent) {
+            cmd.removeListener('after-replace', after);
+            overlay.applyTagColor(newContent, 0.25)
+                   .resizeToAndFadeOut(newContent);            
+          });
+        });
+      },
+      setEnabled: function(enabled) {
+        isEnabled = enabled;
+      }
+    };
+  }
+  
   function ReplaceWithCmd(name, elementToReplace, newContent) {
     var isExecuted = false;
 
@@ -98,24 +127,22 @@
     if (typeof(name) == "object" && !elementToReplace && !newContent)
       deserialize(name);
 
-    return {
+    return jQuery.eventEmitter({
       name: name,
       execute: function() {
         if (isExecuted)
           throw new Error("command already executed");
-        var overlay = $(elementToReplace).overlay();
+        this.emit('before-replace', elementToReplace);
         $(elementToReplace).replaceWith(newContent);
-        overlay.applyTagColor(newContent, 0.25)
-               .resizeToAndFadeOut(newContent);
+        this.emit('after-replace', newContent);
         isExecuted = true;
       },
       undo: function() {
         if (!isExecuted)
           throw new Error("command not yet executed");
-        var overlay = $(newContent).overlay();
+        this.emit('before-replace', newContent);
         $(newContent).replaceWith(elementToReplace);
-        overlay.applyTagColor(elementToReplace, 0.25)
-               .resizeToAndFadeOut(elementToReplace);
+        this.emit('after-replace', elementToReplace);
         isExecuted = false;
       },
       serialize: function() {
@@ -129,7 +156,7 @@
           html: trivialParent.html()
         };
       }
-    };
+    });
   }
 
   function MixMaster(options) {
