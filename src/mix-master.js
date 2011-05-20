@@ -103,13 +103,19 @@
       execute: function() {
         if (isExecuted)
           throw new Error("command already executed");
+        var overlay = $(elementToReplace).overlay();
         $(elementToReplace).replaceWith(newContent);
+        overlay.applyTagColor(newContent, 0.25)
+               .resizeToAndFadeOut(newContent);
         isExecuted = true;
       },
       undo: function() {
         if (!isExecuted)
           throw new Error("command not yet executed");
+        var overlay = $(newContent).overlay();
         $(newContent).replaceWith(elementToReplace);
+        overlay.applyTagColor(elementToReplace, 0.25)
+               .resizeToAndFadeOut(elementToReplace);
         isExecuted = false;
       },
       serialize: function() {

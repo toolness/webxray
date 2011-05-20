@@ -33,7 +33,6 @@
         ancestorOverlay.addClass("webxray-ancestor");
         labelOverlay(ancestorOverlay, ancestor[0]);
         instance.ancestor = ancestor[0];
-        ancestorOverlay.addClass("webxray-overlay-visible");
       } else
         instance.ancestor = null;
     }
@@ -77,9 +76,6 @@
         element = this.element = newElement;
         overlay = $(element).overlayWithTagColor();
         labelOverlay(overlay, element);
-
-        overlay.addClass("webxray-overlay-visible");
-
         this.emit('change', this);
       },
       destroy: function destroy() {

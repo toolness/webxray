@@ -58,21 +58,27 @@
   });
 
   jQuery.fn.extend({
-    // Like $.overlay(), but applies the "official" Web X-Ray color
-    // for the element type being overlaid, with the given opacity.
-    // A default opacity is used if none is provided.
-    overlayWithTagColor: function overlayWithTagColor(opacity) {
+    // Applies the "official" Web X-Ray color for fromElement to
+    // the current set of matched elements with the given
+    // optional opacity. Returns the current set of matched
+    // elements to support chaining.
+    applyTagColor: function applyTagColor(fromElement, opacity) {
       var bgColor;
-      var overlay = $(this).overlay();
-      var baseColor = $.colorForTag($(this).get(0).nodeName);
+      var baseColor = $.colorForTag($(fromElement).get(0).nodeName);
 
       if (opacity === undefined)
         opacity = DEFAULT_OVERLAY_OPACITY;
 
       bgColor = $.makeRGBA(baseColor, opacity);
 
-      overlay.css({backgroundColor: bgColor});
-      return overlay;
+      this.css({backgroundColor: bgColor});
+      return this;
+    },
+    // Like $.overlay(), but applies the "official" Web X-Ray color
+    // for the element type being overlaid, with the given opacity.
+    // A default opacity is used if none is provided.
+    overlayWithTagColor: function overlayWithTagColor(opacity) {
+      return $(this).overlay().applyTagColor(this, opacity);
     }
   });
 })(jQuery);

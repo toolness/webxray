@@ -33,8 +33,6 @@ test("jQuery.focusedOverlay()", function() {
   overlay.set(document.body);
   equals(jQuery(".webxray-overlay").length, 1,
          "overlay exists in DOM after set()");
-  equals(jQuery(".webxray-overlay-visible").length, 1,
-         "overlay is visible after set()");
   equals(jQuery(".webxray-overlay-label-top").text(),
          "<body>", "top label is <body>");
   equals(jQuery(".webxray-overlay-label-bottom").text(),
@@ -48,8 +46,6 @@ test("jQuery.focusedOverlay()", function() {
   overlay.upfocus();
   equals(timesCalled, 2, "'change' event is emit on upfocus()");
   equals(overlay.ancestor.tagName, "HTML", "ancestor is <html>");
-  equals(jQuery(".webxray-ancestor.webxray-overlay-visible").length, 1,
-         "ancestor overlay is visible after upfocus()");
   equals(jQuery(".webxray-ancestor .webxray-overlay-label-top").text(),
          "<html>", "top ancestor label is <html>");
   equals(jQuery(".webxray-ancestor .webxray-overlay-label-bottom").text(),

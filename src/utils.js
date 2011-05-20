@@ -93,9 +93,7 @@
       return $(ancestor);
     },
     // Create and return a div that floats above the first
-    // matched element. The returned element must have the
-    // webxray-overlay-visible class added to it in order
-    // to become visible.
+    // matched element.
     overlay: function overlay() {
       var pos = this.offset();
       var overlay = $('<div class="webxray-overlay">&nbsp;</div>');
@@ -106,11 +104,6 @@
         width: this.outerWidth()
       });
       $(document.body).append(overlay);
-
-      // This seems like a no-op, but it somehow makes CSS transitions
-      // work. Perhaps it forces jQuery to actually apply CSS styles that 
-      // may have been cached within jQuery, or something?
-      overlay.css("color");
 
       return overlay;
     },
@@ -123,6 +116,26 @@
           arg = document.createTextNode(arg);
         this.append(arg);
       }
+    },
+    // Resizes and repositions the currently matched element to
+    // match the size and position of the given target by animating
+    // it, then fades out the currently matched element and
+    // removes it from the DOM.
+    resizeToAndFadeOut: function resizeToAndFadeOut(target) {
+      var overlay = this;
+
+      var hasNoStyle = $(target).attr('style') === undefined;
+      var pos = $(target).offset();
+      overlay.animate({
+        top: pos.top,
+        left: pos.left,
+        height: $(target).outerHeight(),
+        width: $(target).outerWidth()
+      }, function() {
+        overlay.fadeOut(function() { overlay.remove(); });
+      });
+      if (hasNoStyle && $(target).attr('style') == '')
+        $(target).removeAttr('style');
     }
   });
 })(jQuery);

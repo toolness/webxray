@@ -59,19 +59,9 @@
 
 .webxray-overlay {
     position: absolute;
-    opacity: 0;
-    -webkit-transition: opacity 0.25s linear;
-    -moz-transition: opacity 0.25s linear;
-    -o-transition: opacity 0.25s linear;
     pointer-events: none;
     border: none;
     z-index: 1000;
-}
-
-/* This style is applied once the overlay is ready to be shown,
- * and triggers a CSS transition on awesome browsers. */
-.webxray-overlay-visible {
-    opacity: 1.0;
 }
 
 /* A DOM element that has been deleted by the user, but which
