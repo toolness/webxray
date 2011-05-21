@@ -20,7 +20,7 @@
     background-color: rgba(0, 0, 0, 0.7);
     pointer-events: none;
     border: none;
-    z-index: 1001;
+    z-index: 2147483646;
 }
 
 .webxray-hud code {
@@ -61,7 +61,7 @@
     position: absolute;
     pointer-events: none;
     border: none;
-    z-index: 1000;
+    z-index: 2147483645;
 }
 
 /* A DOM element that has been deleted by the user, but which
@@ -72,7 +72,7 @@
 }
 
 .webxray-dialog-overlay {
-    z-index: 9999;
+    z-index: 2147483647;
     position: fixed;
     top: 0px;
     left: 0px;
