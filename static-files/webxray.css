@@ -109,7 +109,7 @@ div.webxray-dialog-inner {
     background: inherit;
 }
 
-.webxray-dialog-inner iframe {
+div.webxray-dialog-content, .webxray-dialog-inner iframe {
     width: 1024px;
     min-height: 480px;
     height: 100%;

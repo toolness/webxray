@@ -4,6 +4,27 @@
   var $ = jQuery;
 
   jQuery.extend({
+    getModalDialogDimensions: function() {
+      var div = $('<div class="webxray-dialog-overlay">' +
+                  '<div class="webxray-dialog-outer">' +
+                  '<div class="webxray-dialog-middle">' +
+                  '<div class="webxray-dialog-inner">' +
+                  '<div class="webxray-dialog-content">' +
+                  '</div></div></div></div></div>');
+      $(document.body).append(div);
+
+      var content = div.find('.webxray-dialog-content');
+      var pos = content.position();
+      var dimensions = {
+        top: pos.top,
+        left: pos.left,
+        width: content.outerWidth(),
+        height: content.outerHeight()
+      };
+      
+      div.remove();
+      return dimensions;
+    },
     modalDialog: function(options) {
       var input = options.input;
       var body = options.body || document.body;
