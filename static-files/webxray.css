@@ -20,7 +20,7 @@
     background-color: rgba(0, 0, 0, 0.7);
     pointer-events: none;
     border: none;
-    z-index: 2147483646;
+    z-index: 2147483645;
 }
 
 .webxray-hud code {
@@ -61,7 +61,7 @@
     position: absolute;
     pointer-events: none;
     border: none;
-    z-index: 2147483645;
+    z-index: 2147483644;
 }
 
 /* A DOM element that has been deleted by the user, but which
@@ -72,7 +72,7 @@
 }
 
 .webxray-dialog-overlay {
-    z-index: 2147483647;
+    z-index: 2147483646;
     position: fixed;
     top: 0px;
     left: 0px;
@@ -106,7 +106,7 @@ div.webxray-dialog-inner {
     margin-left: auto;
     margin-right: auto;
     border: inherit;
-    background: inherit;
+    background: white;
 }
 
 div.webxray-dialog-content, .webxray-dialog-inner iframe {
@@ -114,4 +114,12 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
     min-height: 480px;
     height: 100%;
     border: inherit;
+}
+
+.webxray-topmost {
+    z-index: 2147483647 !important;
+}
+
+.webxray-hidden {
+    visibility: hidden !important;
 }

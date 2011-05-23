@@ -34,6 +34,7 @@
     }
     
     var self = {
+      transitionEffects: transitionEffects,
       run: function(command) {
         focused.unfocus();
         undoStack.push(command);
@@ -184,18 +185,26 @@
       deserializeHistory: function deserializeHistory(history) {
         commandManager.deserialize(JSON.parse(history));
       },
+      htmlToJQuery: function htmlToJQuery(html) {
+        if (html == '' || typeof(html) != 'string')
+          return null;
+        if (html[0] != '<')
+          html = '<span>' + html + '</span>';
+        return $(html);
+      },
       replaceFocusedElement: function replaceFocusedElement(html) {
         var elementToReplace = focused.ancestor || focused.element;
         if (elementToReplace) {
-          if (html !== null && html != "") {
-            if (html[0] != '<') {
-              html = '<span>' + html + '</span>';
-            }
-            var newContent = $(html);
+          var newContent;
+          if (typeof(html) == 'string')
+            newContent = self.htmlToJQuery(html);
+          else
+            newContent = html;
+          if (newContent)
             commandManager.run(ReplaceWithCmd('replacement',
                                               elementToReplace,
                                               newContent));
-          }
+          return newContent;
         }
       },
       deleteFocusedElement: function deleteFocusedElement() {
@@ -230,43 +239,63 @@
         var trivialParent = $('<div></div>').append(clonedElement);
         var focusedHTML = trivialParent.html();
 
-        if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
-          focusedHTML = "<span>The HTML source for your selected " +
-                        "<code>&lt;" + tagName + "&gt;</code> element " +
-                        "could make your head explode.</span>";
+        var overlay = $(focusedElement).overlayWithTagColor(1.0);
+        overlay.addClass('webxray-topmost');
+        overlay.animate(jQuery.getModalDialogDimensions(), function() {
+          if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
+            focusedHTML = "<span>The HTML source for your selected " +
+                          "<code>&lt;" + tagName + "&gt;</code> element " +
+                          "could make your head explode.</span>";
 
-        var dialog = jQuery.modalDialog({
-          input: input,
-          body: body,
-          url: dialogURL + "#dialog"
-        });
+          var dialog = jQuery.modalDialog({
+            input: input,
+            body: body,
+            url: dialogURL + "#dialog"
+          });
 
-        dialog.iframe.bind("message", function onMessage(event, data) {
-          if (data && data.length && data[0] == '{') {
-            var data = JSON.parse(data);
-            dialog.close(function() {
+          dialog.iframe.bind("message", function onMessage(event, data) {
+            if (data && data.length && data[0] == '{') {
+              var data = JSON.parse(data);
               if (data.msg == "ok") {
-
                 // The dialog may have decided to replace all our spaces
                 // with non-breaking ones, so we'll undo that.
                 var html = data.endHTML.replace(/\u00a0/g, " ");
 
-                self.replaceFocusedElement(html);
+                commandManager.transitionEffects.setEnabled(false);
+                var newContent = self.replaceFocusedElement(html);
+                commandManager.transitionEffects.setEnabled(true);                
+                
+                overlay.applyTagColor(newContent, 1.0);
+                newContent.addClass('webxray-hidden');
+                overlay.fadeIn(function() {
+                  dialog.close(function() {
+                    overlay.resizeTo(newContent, function() {
+                      newContent.removeClass('webxray-hidden');
+                      $(this).fadeOut(function() { $(this).remove(); });
+                    });
+                  });
+                });
+              } else {
+                overlay.remove();
+                dialog.close();
               }
+            }
+          });
+          dialog.iframe.one("load", function onLoad() {
+            this.contentWindow.postMessage(JSON.stringify({
+              title: "Compose A Replacement",
+              instructions: "<span>When you're done composing your " +
+                            "replacement HTML, press the " +
+                            "<strong>Ok</strong> button.",
+              startHTML: focusedHTML,
+              baseURI: document.location.href
+            }), "*");
+            overlay.fadeOut(function() {
+              dialog.iframe.fadeIn();
             });
-          }
+          });
         });
-        dialog.iframe.one("load", function onLoad() {
-          this.contentWindow.postMessage(JSON.stringify({
-            title: "Compose A Replacement",
-            instructions: "<span>When you're done composing your " +
-                          "replacement HTML, press the " +
-                          "<strong>Ok</strong> button.",
-            startHTML: focusedHTML,
-            baseURI: document.location.href
-          }), "*");
-          $(this).fadeIn();
-        });
+        return;
       }
     };
     return self;
