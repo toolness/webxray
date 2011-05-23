@@ -119,9 +119,8 @@
     },
     // Resizes and repositions the currently matched element to
     // match the size and position of the given target by animating
-    // it, then fades out the currently matched element and
-    // removes it from the DOM.
-    resizeToAndFadeOut: function resizeToAndFadeOut(target) {
+    // it and then executing the given callback.
+    resizeTo: function resizeTo(target, cb) {
       var overlay = this;
 
       var hasNoStyle = $(target).attr('style') === undefined;
@@ -131,11 +130,18 @@
         left: pos.left,
         height: $(target).outerHeight(),
         width: $(target).outerWidth()
-      }, function() {
-        overlay.fadeOut(function() { overlay.remove(); });
-      });
+      }, cb);
       if (hasNoStyle && $(target).attr('style') == '')
         $(target).removeAttr('style');
+    },
+    // Resizes and repositions the currently matched element to
+    // match the size and position of the given target by animating
+    // it, then fades out the currently matched element and
+    // removes it from the DOM.
+    resizeToAndFadeOut: function resizeToAndFadeOut(target) {
+      this.resizeTo(target, function() {
+        $(this).fadeOut(function() { $(this).remove(); });
+      });
     }
   });
 })(jQuery);
