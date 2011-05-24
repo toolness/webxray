@@ -238,8 +238,10 @@
         var clonedElement = $(focusedElement).clone();
         var trivialParent = $('<div></div>').append(clonedElement);
         var focusedHTML = trivialParent.html();
-
+        var backdrop = $('<div class="webxray-dialog-overlay"></div>');
         var overlay = $(focusedElement).overlayWithTagColor(1.0);
+        
+        $(document.body).append(backdrop);
         overlay.addClass('webxray-topmost');
         overlay.animate(jQuery.getModalDialogDimensions(), function() {
           if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
@@ -253,6 +255,7 @@
             url: dialogURL + "#dialog"
           });
 
+          backdrop.remove();
           dialog.iframe.bind("message", function onMessage(event, data) {
             if (data && data.length && data[0] == '{') {
               var data = JSON.parse(data);

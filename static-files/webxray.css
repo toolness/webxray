@@ -88,7 +88,7 @@
     display: table;
     position: static;
     border: inherit;
-    background: inherit;
+    background: none;
 }
 
 .webxray-dialog-middle {
@@ -96,7 +96,7 @@
     display: table-cell;
     vertical-align: middle;
     border: inherit;
-    background: inherit;
+    background: none;
 }
 
 div.webxray-dialog-inner {
