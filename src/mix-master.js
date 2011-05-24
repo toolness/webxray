@@ -229,6 +229,7 @@
         $(focusedElement).addClass('webxray-hidden');
         $(document.body).append(backdrop);
         overlay.addClass('webxray-topmost');
+        focused.unfocus();
         overlay.animate(jQuery.getModalDialogDimensions(), function() {
           if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
             focusedHTML = "<span>The HTML source for your selected " +
@@ -269,6 +270,7 @@
                   });
                 });
               } else {
+                // TODO: Re-focus previously focused elements?
                 $(focusedElement).removeClass('webxray-hidden');
                 overlay.remove();
                 dialog.close();
