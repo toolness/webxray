@@ -40,6 +40,9 @@
     var instance = jQuery.eventEmitter({
       element: null,
       ancestor: null,
+      getPrimaryElement: function getPrimaryElement() {
+        return this.ancestor || this.element;
+      },
       upfocus: function upfocus() {
         if (!element)
           return;

@@ -192,11 +192,8 @@
           html = '<span>' + html + '</span>';
         return $(html);
       },
-      getFocusedElement: function getFocusedElement() {
-        return focused.ancestor || focused.element;
-      },
       deleteFocusedElement: function deleteFocusedElement() {
-        var elementToDelete = self.getFocusedElement();
+        var elementToDelete = focused.getPrimaryElement();
         if (elementToDelete) {
           // Replacing the element with a zero-length invisible
           // span is a lot easier than actually deleting the element,
@@ -208,7 +205,7 @@
         }
       },
       infoForFocusedElement: function infoForFocusedElement(open) {
-        var element = self.getFocusedElement();
+        var element = focused.getPrimaryElement();
         open = open || window.open;
         if (element) {
           var url = 'https://developer.mozilla.org/en/HTML/Element/' +
@@ -228,7 +225,7 @@
       replaceFocusedElementWithAwesomeDialog: function(input, dialogURL,
                                                        body) {
         var MAX_HTML_LENGTH = 1000;
-        var focusedElement =  self.getFocusedElement();
+        var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
           return;
         var tagName = focusedElement.nodeName.toLowerCase();

@@ -29,6 +29,8 @@ test("jQuery.focusedOverlay()", function() {
   overlay.on('change', function() { timesCalled++; });
   equals(overlay.element, null, "overlay.element starts out as null");
   equals(overlay.ancestor, null, "overlay.ancestor starts out as null");
+  equals(overlay.getPrimaryElement(), null,
+         "overlay.getPrimaryElement() starts out as null");
 
   overlay.set(document.body);
   equals(jQuery(".webxray-overlay").length, 1,
@@ -41,11 +43,15 @@ test("jQuery.focusedOverlay()", function() {
   equals(timesCalled, 1, "'change' event is emit on set()");
   equals(overlay.element, document.body,
          "overlay.element is the currently focused element");
+  equals(overlay.getPrimaryElement(), document.body,
+         "overlay.getPrimaryElement() is currently focused element");
   equals(overlay.ancestor, null, "overlay.ancestor is still null");
 
   overlay.upfocus();
   equals(timesCalled, 2, "'change' event is emit on upfocus()");
   equals(overlay.ancestor.tagName, "HTML", "ancestor is <html>");
+  equals(overlay.getPrimaryElement(), document.documentElement,
+         "overlay.getPrimaryElement() is <html>");
   equals(jQuery(".webxray-ancestor .webxray-overlay-label-top").text(),
          "<html>", "top ancestor label is <html>");
   equals(jQuery(".webxray-ancestor .webxray-overlay-label-bottom").text(),

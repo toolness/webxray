@@ -119,18 +119,14 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   }
 
-  function replaceFocused(mixMaster, html) {
-    mixMaster.replaceElement(mixMaster.getFocusedElement(), html);
-  }
-
   (function testSerialization() {
     var element = makeTestElement();
     var history;
     
     testWithElement(element, function(mixMaster, element, hud, focused) {
-      replaceFocused(mixMaster, '<em>hi</em>');
+      mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
       focused.set(element.children().get(0));
-      replaceFocused(mixMaster, '<span>u</span>');
+      mixMaster.replaceElement(focused.getPrimaryElement(), '<span>u</span>');
       history = mixMaster.serializeHistory();
       equals(element.html(), '<span>u</span>',
              'serializeHistory() doesn\'t change DOM');
@@ -151,10 +147,10 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   })();
 
-  mixTest(function(mixMaster, element) {
+  mixTest(function(mixMaster, element, hud, focused) {
     // This is really just a smoke test.
     equal($('#webxray-serialized-history-v1').length, 0);
-    replaceFocused(mixMaster, '<p>hi</p>');
+    mixMaster.replaceElement(focused.getPrimaryElement(), '<p>hi</p>');
     mixMaster.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1);
     ok($('#webxray-serialized-history-v1').text().length);
@@ -164,10 +160,10 @@ test("jQuery.mixMaster()", function() {
     equal($('#webxray-serialized-history-v1').length, 1);
   });
   
-  mixTest(function(mixMaster, element, hud) {
+  mixTest(function(mixMaster, element, hud, focused) {
     var domNode = element.find("#mixmastertest").get(0);
 
-    replaceFocused(mixMaster, '<em>hello</em>');
+    mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hello</em>');
     equal(element.html(), '<em>hello</em>', "Simulating replacement works");
     equal($(hud.overlay).text(), 'Busted replacement.');
 
