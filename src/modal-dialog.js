@@ -108,14 +108,22 @@
     morphDialogIntoElement: function(options) {
       var element = options.element;
       var dialog = options.dialog;
+      var input = options.input;
       var overlay = dialog.iframe.overlay();
       
       overlay.applyTagColor(element, 1.0);
       overlay.hide();
       overlay.fadeIn(function() {
         dialog.close(function() {
+          // input was just re-activated when the dialog closed, but
+          // we want to deactivate it again because we're not actually
+          // done with our transition.
+          input.deactivate();
           overlay.resizeTo(element, function() {
-            $(this).fadeOut(function() { $(this).remove(); });
+            $(this).fadeOut(function() {
+              $(this).remove();
+              input.activate();
+            });
             options.onDone();
           });
         });

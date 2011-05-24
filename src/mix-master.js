@@ -268,6 +268,7 @@
                   $(focusedElement).removeClass('webxray-hidden');
                   jQuery.morphDialogIntoElement({
                     dialog: dialog,
+                    input: input,
                     element: newContent,
                     onDone: function() {
                       newContent.removeClass('webxray-hidden');
