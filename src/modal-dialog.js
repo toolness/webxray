@@ -14,7 +14,7 @@
       $(document.body).append(div);
 
       var content = div.find('.webxray-dialog-content');
-      var pos = content.position();
+      var pos = content.offset();
       var dimensions = {
         top: pos.top,
         left: pos.left,
