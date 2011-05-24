@@ -102,6 +102,7 @@
 div.webxray-dialog-inner {
     width: 1024px;
     height: 66%;
+    min-height: 480px;
     text-align: left;
     margin-left: auto;
     margin-right: auto;
@@ -110,6 +111,7 @@ div.webxray-dialog-inner {
 }
 
 div.webxray-dialog-content, .webxray-dialog-inner iframe {
+    display: block;
     width: 1024px;
     min-height: 480px;
     height: 100%;

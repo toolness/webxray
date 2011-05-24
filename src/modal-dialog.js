@@ -51,13 +51,21 @@
         close: function close(cb) {
           div.fadeOut(function() {
             window.removeEventListener("message", onMessage, false);
-            input.activate();
             div.remove();
-            input = null;
             div = null;
-            $(window).focus();
-            if (cb)
-              cb();
+            
+            // Firefox seems to trigger a mouseout/mouseover event
+            // when we remove the dialog div, so we'll wait a moment
+            // before re-activating input so that we don't distract
+            // the user by focusing on whatever their mouse happens
+            // to be over when the dialog closes.
+            setTimeout(function() {
+              input.activate();
+              input = null;
+              $(window).focus();
+              if (cb)
+                cb();
+            }, 50);
           });
         }
       };

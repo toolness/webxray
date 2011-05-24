@@ -225,11 +225,15 @@
         var focusedHTML = trivialParent.html();
         var backdrop = $('<div class="webxray-dialog-overlay"></div>');
         var overlay = $(focusedElement).overlayWithTagColor(1.0);
-        
+
+        focused.unfocus();
+
+        // Closing the dialog we make later will re-activate this for us.
+        input.deactivate();
+
         $(focusedElement).addClass('webxray-hidden');
         $(document.body).append(backdrop);
         overlay.addClass('webxray-topmost');
-        focused.unfocus();
         overlay.animate(jQuery.getModalDialogDimensions(), function() {
           if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
             focusedHTML = "<span>The HTML source for your selected " +
@@ -257,10 +261,13 @@
                                                   focusedElement,
                                                   newContent));
                 commandManager.transitionEffects.setEnabled(true);
-                
-                overlay.applyTagColor(newContent, 1.0);
+
                 newContent.addClass('webxray-hidden');
                 $(focusedElement).removeClass('webxray-hidden');
+                
+                overlay = dialog.iframe.overlay();
+                overlay.applyTagColor(newContent, 1.0);
+                overlay.hide();
                 overlay.fadeIn(function() {
                   dialog.close(function() {
                     overlay.resizeTo(newContent, function() {
@@ -272,21 +279,22 @@
               } else {
                 // TODO: Re-focus previously focused elements?
                 $(focusedElement).removeClass('webxray-hidden');
-                overlay.remove();
                 dialog.close();
               }
             }
           });
           dialog.iframe.one("load", function onLoad() {
-            this.contentWindow.postMessage(JSON.stringify({
-              title: "Compose A Replacement",
-              instructions: "<span>When you're done composing your " +
-                            "replacement HTML, press the " +
-                            "<strong>Ok</strong> button.",
-              startHTML: focusedHTML,
-              baseURI: document.location.href
-            }), "*");
             overlay.fadeOut(function() {
+              overlay.remove();
+              overlay = null;
+              dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
+                title: "Compose A Replacement",
+                instructions: "<span>When you're done composing your " +
+                              "replacement HTML, press the " +
+                              "<strong>Ok</strong> button.",
+                startHTML: focusedHTML,
+                baseURI: document.location.href
+              }), "*");
               dialog.iframe.fadeIn();
             });
           });
