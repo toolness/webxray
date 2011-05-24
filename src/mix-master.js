@@ -187,25 +187,10 @@
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')
-          return null;
+          return $('<span></span>');
         if (html[0] != '<')
           html = '<span>' + html + '</span>';
         return $(html);
-      },
-      replaceFocusedElement: function replaceFocusedElement(html) {
-        var elementToReplace = focused.ancestor || focused.element;
-        if (elementToReplace) {
-          var newContent;
-          if (typeof(html) == 'string')
-            newContent = self.htmlToJQuery(html);
-          else
-            newContent = html;
-          if (newContent)
-            commandManager.run(ReplaceWithCmd('replacement',
-                                              elementToReplace,
-                                              newContent));
-          return newContent;
-        }
       },
       deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.ancestor || focused.element;
@@ -241,6 +226,7 @@
         var backdrop = $('<div class="webxray-dialog-overlay"></div>');
         var overlay = $(focusedElement).overlayWithTagColor(1.0);
         
+        $(focusedElement).addClass('webxray-hidden');
         $(document.body).append(backdrop);
         overlay.addClass('webxray-topmost');
         overlay.animate(jQuery.getModalDialogDimensions(), function() {
@@ -263,13 +249,17 @@
                 // The dialog may have decided to replace all our spaces
                 // with non-breaking ones, so we'll undo that.
                 var html = data.endHTML.replace(/\u00a0/g, " ");
+                var newContent = self.htmlToJQuery(html);
 
                 commandManager.transitionEffects.setEnabled(false);
-                var newContent = self.replaceFocusedElement(html);
-                commandManager.transitionEffects.setEnabled(true);                
+                commandManager.run(ReplaceWithCmd('replacement',
+                                                  focusedElement,
+                                                  newContent));
+                commandManager.transitionEffects.setEnabled(true);
                 
                 overlay.applyTagColor(newContent, 1.0);
                 newContent.addClass('webxray-hidden');
+                $(focusedElement).removeClass('webxray-hidden');
                 overlay.fadeIn(function() {
                   dialog.close(function() {
                     overlay.resizeTo(newContent, function() {
@@ -279,6 +269,7 @@
                   });
                 });
               } else {
+                $(focusedElement).removeClass('webxray-hidden');
                 overlay.remove();
                 dialog.close();
               }
