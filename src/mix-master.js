@@ -232,77 +232,57 @@
         var clonedElement = $(focusedElement).clone();
         var trivialParent = $('<div></div>').append(clonedElement);
         var focusedHTML = trivialParent.html();
-        var backdrop = $('<div class="webxray-dialog-overlay"></div>');
-        var overlay = $(focusedElement).overlayWithTagColor(1.0);
+
+        if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
+          focusedHTML = "<span>The HTML source for your selected " +
+                        "<code>&lt;" + tagName + "&gt;</code> element " +
+                        "could make your head explode.</span>";
 
         focused.unfocus();
-
-        // Closing the dialog we make later will re-activate this for us.
-        input.deactivate();
-
         $(focusedElement).addClass('webxray-hidden');
-        $(document.body).append(backdrop);
-        overlay.addClass('webxray-topmost');
-        overlay.animate(jQuery.getModalDialogDimensions(), function() {
-          if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
-            focusedHTML = "<span>The HTML source for your selected " +
-                          "<code>&lt;" + tagName + "&gt;</code> element " +
-                          "could make your head explode.</span>";
 
-          var dialog = jQuery.modalDialog({
-            input: input,
-            body: body,
-            url: dialogURL + "#dialog"
-          });
+        jQuery.morphElementIntoDialog({
+          input: input,
+          body: body,
+          url: dialogURL + "#dialog",
+          element: focusedElement,
+          onLoad: function(dialog) {
+            dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
+              title: "Compose A Replacement",
+              instructions: "<span>When you're done composing your " +
+                            "replacement HTML, press the " +
+                            "<strong>Ok</strong> button.",
+              startHTML: focusedHTML,
+              baseURI: document.location.href
+            }), "*");
+            dialog.iframe.fadeIn();
+            dialog.iframe.bind("message", function onMessage(event, data) {
+              if (data && data.length && data[0] == '{') {
+                var data = JSON.parse(data);
+                if (data.msg == "ok") {
+                  // The dialog may have decided to replace all our spaces
+                  // with non-breaking ones, so we'll undo that.
+                  var html = data.endHTML.replace(/\u00a0/g, " ");
+                  var newContent = self.replaceElement(focusedElement, html);
 
-          backdrop.remove();
-          dialog.iframe.bind("message", function onMessage(event, data) {
-            if (data && data.length && data[0] == '{') {
-              var data = JSON.parse(data);
-              if (data.msg == "ok") {
-                // The dialog may have decided to replace all our spaces
-                // with non-breaking ones, so we'll undo that.
-                var html = data.endHTML.replace(/\u00a0/g, " ");
-                var newContent = self.replaceElement(focusedElement, html);
-
-                newContent.addClass('webxray-hidden');
-                $(focusedElement).removeClass('webxray-hidden');
-                
-                overlay = dialog.iframe.overlay();
-                overlay.applyTagColor(newContent, 1.0);
-                overlay.hide();
-                overlay.fadeIn(function() {
-                  dialog.close(function() {
-                    overlay.resizeTo(newContent, function() {
+                  newContent.addClass('webxray-hidden');
+                  $(focusedElement).removeClass('webxray-hidden');
+                  jQuery.morphDialogIntoElement({
+                    dialog: dialog,
+                    element: newContent,
+                    onDone: function() {
                       newContent.removeClass('webxray-hidden');
-                      $(this).fadeOut(function() { $(this).remove(); });
-                    });
+                    }
                   });
-                });
-              } else {
-                // TODO: Re-focus previously focused elements?
-                $(focusedElement).removeClass('webxray-hidden');
-                dialog.close();
+                } else {
+                  // TODO: Re-focus previously focused elements?
+                  $(focusedElement).removeClass('webxray-hidden');
+                  dialog.close();
+                }
               }
-            }
-          });
-          dialog.iframe.one("load", function onLoad() {
-            overlay.fadeOut(function() {
-              overlay.remove();
-              overlay = null;
-              dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
-                title: "Compose A Replacement",
-                instructions: "<span>When you're done composing your " +
-                              "replacement HTML, press the " +
-                              "<strong>Ok</strong> button.",
-                startHTML: focusedHTML,
-                baseURI: document.location.href
-              }), "*");
-              dialog.iframe.fadeIn();
             });
-          });
+          }
         });
-        return;
       }
     };
     return self;

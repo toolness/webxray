@@ -74,6 +74,52 @@
       $(body).append(div);
 
       return self;
+    },
+    morphElementIntoDialog: function(options) {
+      var input = options.input;
+      var element = options.element;
+      var body = options.body || document.body;
+      var url = options.url;
+      var overlay = $(element).overlayWithTagColor(1.0);
+      var backdrop = $('<div class="webxray-dialog-overlay"></div>');
+
+      // Closing the dialog we make later will re-activate this for us.
+      input.deactivate();
+
+      $(body).append(backdrop);
+      overlay.addClass('webxray-topmost');
+      overlay.animate(jQuery.getModalDialogDimensions(), function() {
+        var dialog = jQuery.modalDialog({
+          input: input,
+          body: body,
+          url: url
+        });
+        
+        backdrop.remove();
+
+        dialog.iframe.one("load", function onLoad() {
+          overlay.fadeOut(function() {
+            overlay.remove();
+            options.onLoad(dialog);
+          });
+        });        
+      });
+    },
+    morphDialogIntoElement: function(options) {
+      var element = options.element;
+      var dialog = options.dialog;
+      var overlay = dialog.iframe.overlay();
+      
+      overlay.applyTagColor(element, 1.0);
+      overlay.hide();
+      overlay.fadeIn(function() {
+        dialog.close(function() {
+          overlay.resizeTo(element, function() {
+            $(this).fadeOut(function() { $(this).remove(); });
+            options.onDone();
+          });
+        });
+      });
     }
   });
 })(jQuery);
