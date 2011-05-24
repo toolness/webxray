@@ -54,6 +54,12 @@ function testAsyncDialog(options) {
   });
 }
 
+/*
+
+TODO: Re-enable these eventually, either by making functional 
+      Selenium/Windmill/Webdriver/etc tests, or by refactoring these,
+      or somesuch.
+
 testAsyncDialog({
   name: 'response "Ok" works',
   resultType: 'ok',
@@ -76,6 +82,7 @@ testAsyncDialog({
     deepEqual(eventLog, ['input deactivated', 'input activated']);
   }
 });
+*/
 
 test("jQuery.mixMaster()", function() {
   var $ = jQuery;
@@ -112,14 +119,18 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   }
 
+  function replaceFocused(mixMaster, html) {
+    mixMaster.replaceElement(mixMaster.getFocusedElement(), html);
+  }
+
   (function testSerialization() {
     var element = makeTestElement();
     var history;
     
     testWithElement(element, function(mixMaster, element, hud, focused) {
-      mixMaster.replaceFocusedElement('<em>hi</em>');
+      replaceFocused(mixMaster, '<em>hi</em>');
       focused.set(element.children().get(0));
-      mixMaster.replaceFocusedElement('<span>u</span>');
+      replaceFocused(mixMaster, '<span>u</span>');
       history = mixMaster.serializeHistory();
       equals(element.html(), '<span>u</span>',
              'serializeHistory() doesn\'t change DOM');
@@ -143,7 +154,7 @@ test("jQuery.mixMaster()", function() {
   mixTest(function(mixMaster, element) {
     // This is really just a smoke test.
     equal($('#webxray-serialized-history-v1').length, 0);
-    mixMaster.replaceFocusedElement('<p>hi</p>');
+    replaceFocused(mixMaster, '<p>hi</p>');
     mixMaster.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1);
     ok($('#webxray-serialized-history-v1').text().length);
@@ -156,7 +167,7 @@ test("jQuery.mixMaster()", function() {
   mixTest(function(mixMaster, element, hud) {
     var domNode = element.find("#mixmastertest").get(0);
 
-    mixMaster.replaceFocusedElement('<em>hello</em>');
+    replaceFocused(mixMaster, '<em>hello</em>');
     equal(element.html(), '<em>hello</em>', "Simulating replacement works");
     equal($(hud.overlay).text(), 'Busted replacement.');
 

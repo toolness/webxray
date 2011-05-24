@@ -192,8 +192,11 @@
           html = '<span>' + html + '</span>';
         return $(html);
       },
+      getFocusedElement: function getFocusedElement() {
+        return focused.ancestor || focused.element;
+      },
       deleteFocusedElement: function deleteFocusedElement() {
-        var elementToDelete = focused.ancestor || focused.element;
+        var elementToDelete = self.getFocusedElement();
         if (elementToDelete) {
           // Replacing the element with a zero-length invisible
           // span is a lot easier than actually deleting the element,
@@ -205,7 +208,7 @@
         }
       },
       infoForFocusedElement: function infoForFocusedElement(open) {
-        var element = focused.ancestor || focused.element;
+        var element = self.getFocusedElement();
         open = open || window.open;
         if (element) {
           var url = 'https://developer.mozilla.org/en/HTML/Element/' +
@@ -213,10 +216,19 @@
           open(url, 'info');
         }
       },
+      replaceElement: function(elementToReplace, html) {
+        var newContent = self.htmlToJQuery(html);
+        commandManager.transitionEffects.setEnabled(false);
+        commandManager.run(ReplaceWithCmd('replacement',
+                                          elementToReplace,
+                                          newContent));
+        commandManager.transitionEffects.setEnabled(true);
+        return newContent;
+      },
       replaceFocusedElementWithAwesomeDialog: function(input, dialogURL,
                                                        body) {
         var MAX_HTML_LENGTH = 1000;
-        var focusedElement =  focused.ancestor || focused.element;
+        var focusedElement =  self.getFocusedElement();
         if (!focusedElement)
           return;
         var tagName = focusedElement.nodeName.toLowerCase();
@@ -254,13 +266,7 @@
                 // The dialog may have decided to replace all our spaces
                 // with non-breaking ones, so we'll undo that.
                 var html = data.endHTML.replace(/\u00a0/g, " ");
-                var newContent = self.htmlToJQuery(html);
-
-                commandManager.transitionEffects.setEnabled(false);
-                commandManager.run(ReplaceWithCmd('replacement',
-                                                  focusedElement,
-                                                  newContent));
-                commandManager.transitionEffects.setEnabled(true);
+                var newContent = self.replaceElement(focusedElement, html);
 
                 newContent.addClass('webxray-hidden');
                 $(focusedElement).removeClass('webxray-hidden');
