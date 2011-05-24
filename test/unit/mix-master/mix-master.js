@@ -1,7 +1,7 @@
 module("mix-master", htmlFixture('mix-master'));
 
 function testAsyncDialog(options) {
-  var name = "replaceFocusedElementWithAwesomeDialog() " + options.name;
+  var name = "replaceFocusedElementWithDialog() " + options.name;
   test(name, function() {
     var $ = jQuery;
 
@@ -44,7 +44,7 @@ function testAsyncDialog(options) {
 
     var baseURL = 'unit/mix-master/mix-master-dialog.html?test=';
     var url = baseURL + options.resultType;
-    mixMaster.replaceFocusedElementWithAwesomeDialog(input,
+    mixMaster.replaceFocusedElementWithDialog(input,
                                                      url,
                                                      container);
     equals(container.find(".webxray-dialog-overlay").length, 1,

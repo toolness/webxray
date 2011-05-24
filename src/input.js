@@ -55,7 +55,7 @@
           return true;
           
           case keys.R:
-          mixMaster.replaceFocusedElementWithAwesomeDialog(
+          mixMaster.replaceFocusedElementWithDialog(
             self,
             jQuery.webxraySettings.mixMasterDialogURL
             );

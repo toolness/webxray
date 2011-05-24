@@ -222,8 +222,7 @@
         commandManager.transitionEffects.setEnabled(true);
         return newContent;
       },
-      replaceFocusedElementWithAwesomeDialog: function(input, dialogURL,
-                                                       body) {
+      replaceFocusedElementWithDialog: function(input, dialogURL, body) {
         var MAX_HTML_LENGTH = 1000;
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
