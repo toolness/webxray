@@ -227,13 +227,18 @@
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
           return;
-        var tagName = focusedElement.nodeName.toLowerCase();
         var focusedHTML = $(focusedElement).outerHtml();
 
-        if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
-          focusedHTML = "<span>The HTML source for your selected " +
-                        "<code>&lt;" + tagName + "&gt;</code> element " +
-                        "could make your head explode.</span>";
+        if (focusedHTML.length == 0 ||
+            focusedHTML.length > MAX_HTML_LENGTH) {
+          var tagName = focusedElement.nodeName.toLowerCase();
+          var msg = $("<div>That " +
+                      "<code>&lt;" + tagName + "&gt;</code> element " +
+                      "is too big for me to remix. Try selecting " +
+                      "a smaller one!</div>");
+          jQuery.transparentMessage(msg);
+          return;
+        }
 
         focused.unfocus();
         $(focusedElement).addClass('webxray-hidden');
