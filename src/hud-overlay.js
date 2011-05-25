@@ -5,7 +5,7 @@
   var MAX_URL_LENGTH = 35;
 
   jQuery.hudOverlay = function hudOverlay(options) {
-    var hud = $('<div class="webxray-hud"></div>');
+    var hud = $('<div class="webxray-base webxray-hud"></div>');
 
     if (options === undefined)
       options = {};

@@ -1,5 +1,15 @@
 /* Cascading Style Sheet (CSS) for Web X-Ray Goggles */
 
+/* A base class that every goggles element should inherit from, to 
+ * reset any bizarre and unexpected CSS set by the host page, e.g.
+ * div { border: blue; }. */
+
+.webxray-base {
+  width: auto;
+  height: auto;
+  border: none;
+}
+
 /* Style for when you SHIFT + up to inspect parent and grandparent
  * associations */
 
@@ -19,7 +29,6 @@
     font-size: 9pt;
     background-color: rgba(0, 0, 0, 0.7);
     pointer-events: none;
-    border: none;
     z-index: 2147483645;
 }
 
@@ -44,7 +53,6 @@
     font-size: 8pt;
     background-color: #000000;
     pointer-events: none;
-    border: inherit;
 }
 
 .webxray-overlay-label-top {
@@ -60,16 +68,18 @@
 .webxray-overlay {
     position: absolute;
     pointer-events: none;
-    border: none;
     z-index: 2147483644;
 }
 
 /* A DOM element that has been deleted by the user, but which
  * we'd like to remember just in case the user decides to undo
  * the deletion. */
+
 .webxray-deleted {
     display: none;
 }
+
+/* The backdrop surrounding a dialog box. */
 
 .webxray-dialog-overlay {
     z-index: 2147483646;
@@ -78,25 +88,23 @@
     left: 0px;
     bottom: 0px;
     right: 0px;
-    border: none;
     background: rgba(0, 0, 0, 0.5);
 }
 
+/* Styles for nested elements of a dialog box, needed to vertically 
+ * center it. */
+ 
 .webxray-dialog-outer {
     width: 100%;
     height: 100%;
     display: table;
     position: static;
-    border: inherit;
-    background: none;
 }
 
 .webxray-dialog-middle {
     width: 100%;
     display: table-cell;
     vertical-align: middle;
-    border: inherit;
-    background: none;
 }
 
 div.webxray-dialog-inner {
@@ -106,7 +114,6 @@ div.webxray-dialog-inner {
     text-align: left;
     margin-left: auto;
     margin-right: auto;
-    border: inherit;
     background: white;
 }
 
@@ -118,9 +125,15 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
     border: inherit;
 }
 
+/* Style used any time we want an element to appear above
+ * everything else on the page, including other goggles elements. */
+ 
 .webxray-topmost {
     z-index: 2147483647 !important;
 }
+
+/* Style used when we want to hide an element, but still
+ * ensure that it takes up space on the page. */
 
 .webxray-hidden {
     visibility: hidden !important;

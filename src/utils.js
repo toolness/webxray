@@ -103,7 +103,8 @@
     // matched element.
     overlay: function overlay() {
       var pos = this.offset();
-      var overlay = $('<div class="webxray-overlay">&nbsp;</div>');
+      var overlay = $('<div class="webxray-base webxray-overlay">' +
+                      '&nbsp;</div>');
       overlay.css({
         top: pos.top,
         left: pos.left,

@@ -5,11 +5,11 @@
 
   jQuery.extend({
     getModalDialogDimensions: function() {
-      var div = $('<div class="webxray-dialog-overlay">' +
-                  '<div class="webxray-dialog-outer">' +
-                  '<div class="webxray-dialog-middle">' +
-                  '<div class="webxray-dialog-inner">' +
-                  '<div class="webxray-dialog-content">' +
+      var div = $('<div class="webxray-base webxray-dialog-overlay">' +
+                  '<div class="webxray-base webxray-dialog-outer">' +
+                  '<div class="webxray-base webxray-dialog-middle">' +
+                  '<div class="webxray-base webxray-dialog-inner">' +
+                  '<div class="webxray-base webxray-dialog-content">' +
                   '</div></div></div></div></div>');
       $(document.body).append(div);
 
@@ -29,10 +29,10 @@
       var input = options.input;
       var body = options.body || document.body;
       var url = options.url;
-      var div = $('<div class="webxray-dialog-overlay">' +
-                  '<div class="webxray-dialog-outer">' +
-                  '<div class="webxray-dialog-middle">' +
-                  '<div class="webxray-dialog-inner">' +
+      var div = $('<div class="webxray-base webxray-dialog-overlay">' +
+                  '<div class="webxray-base webxray-dialog-outer">' +
+                  '<div class="webxray-base webxray-dialog-middle">' +
+                  '<div class="webxray-base webxray-dialog-inner">' +
                   '<iframe src="' + url + '"></iframe>' +
                   '</div></div></div></div>');
       var iframe = div.find("iframe");
@@ -81,7 +81,8 @@
       var body = options.body || document.body;
       var url = options.url;
       var overlay = $(element).overlayWithTagColor(1.0);
-      var backdrop = $('<div class="webxray-dialog-overlay"></div>');
+      var backdrop = $('<div class="webxray-base webxray-dialog-overlay">' +
+                       '</div>');
 
       // Closing the dialog we make later will re-activate this for us.
       input.deactivate();
