@@ -3,12 +3,26 @@
 
   var $ = jQuery;
   var removeOnUnload = $();
+  
+  function getMyScript() {
+    return $('script.webxray, script[src$="webxray.js"]');
+  }
+
+  if ($("#webxray-is-active").length) {
+    getMyScript().remove();
+    return;
+  }
 
   function loadPrerequisites(cb) {
-    var script = $('script.webxray, script[src$="webxray.js"]');
+    var script = getMyScript();
     var baseURI = script.attr("src").match(/(.*)webxray\.js$/)[1];
     var cssURI = baseURI + 'webxray.css';
     var cssLink = $('link[href="' + cssURI + '"]');
+    var active = $('<div id="webxray-is-active"></div>');
+
+    script.remove();
+    active.hide();
+    $(document.body).append(active);
 
     // This is a test to see if we're using legacy bookmarklet code,
     // which inserts the link tag itself.
@@ -17,7 +31,7 @@
       $(document.head).append(cssLink.attr("href", cssURI));
     }
 
-    removeOnUnload = removeOnUnload.add([cssLink.get(0), script.get(0)]);
+    removeOnUnload = removeOnUnload.add([cssLink.get(0), active.get(0)]);
     jQuery.webxraySettings.baseURI = baseURI;
     cb();
   }
