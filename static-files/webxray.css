@@ -126,7 +126,7 @@
 
 /* Styles for nested elements of a dialog box, needed to vertically 
  * center it. */
- 
+
 .webxray-dialog-outer {
     width: 100%;
     height: 100%;
@@ -156,6 +156,42 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
     min-height: 480px;
     height: 100%;
     border: inherit;
+}
+
+/* Transparent messages */
+
+.webxray-tmsg-overlay {
+  z-index: 2147483646;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  bottom: 0px;
+  right: 0px;
+  pointer-events: none;
+}
+
+.webxray-tmsg-outer {
+    width: 100%;
+    height: 100%;
+    display: table;
+    position: static;
+    pointer-events: none;
+}
+
+.webxray-tmsg-middle {
+    width: 100%;
+    display: table-cell;
+    vertical-align: middle;
+    pointer-events: none;
+}
+
+.webxray-tmsg-inner {
+  margin: 0 auto;
+  pointer-events: none;
+  color: white;
+  padding: 16px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.75);
 }
 
 /* Style used any time we want an element to appear above

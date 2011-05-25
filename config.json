@@ -30,6 +30,7 @@
   , "src/event-emitter.js"
   , "src/focused-overlay.js"
   , "src/hud-overlay.js"
+  , "src/transparent-message.js"
   , "src/mix-master.js"
   , "src/modal-dialog.js"
   , "src/input.js"
