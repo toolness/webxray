@@ -1,5 +1,15 @@
 module("utils", htmlFixture("utils"));
 
+test("outerHtml()", function() {
+  var html = '<div class="blah">hi</div>';
+  var element = jQuery(html);
+  equal(element.outerHtml(), html, "works w/ one matched element");
+
+  var moreHtml = '<div class="foo">bop</div>';
+  equal(element.add(jQuery(moreHtml)).outerHtml(), html + moreHtml,
+        "works w/ more than one matched element");
+});
+
 test("emit()", function() {
   var stuff = jQuery("<div></div>");
   stuff.emit("hello ", jQuery("<em>there</em>"), " dude");

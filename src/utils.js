@@ -39,6 +39,13 @@
   });
   
   jQuery.fn.extend({
+    // works like jQuery's html() with no arguments, but
+    // includes HTML code for the matched elements themselves.
+    outerHtml: function outerHtml() {
+      var clonedElement = this.clone();
+      var trivialParent = $('<div></div>').append(clonedElement);
+      return trivialParent.html();
+    },
     // Given a descendant on the first matched element, returns a CSS
     // selector that uniquely selects only the descendant from the
     // first matched element.

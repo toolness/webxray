@@ -228,9 +228,7 @@
         if (!focusedElement)
           return;
         var tagName = focusedElement.nodeName.toLowerCase();
-        var clonedElement = $(focusedElement).clone();
-        var trivialParent = $('<div></div>').append(clonedElement);
-        var focusedHTML = trivialParent.html();
+        var focusedHTML = $(focusedElement).outerHtml();
 
         if (focusedHTML.length == 0 || focusedHTML.length > MAX_HTML_LENGTH)
           focusedHTML = "<span>The HTML source for your selected " +
