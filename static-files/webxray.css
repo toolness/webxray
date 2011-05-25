@@ -14,8 +14,6 @@
   line-height: normal;
   min-height: 0;
   min-width: 0;
-  max-height: none;
-  max-width: none;
   opacity: 1.0;
   text-shadow: none;
   outline: none;
@@ -38,6 +36,11 @@
   /* These make assumptions about our locale. */
   direction: ltr;
   text-align: left;
+
+  /* These should really be 'none', but Safari 5.0.5 doesn't seem
+   * to like that value. */
+  max-height: 1000000px;
+  max-width: 1000000px;
 }
 
 /* Style for when you SHIFT + up to inspect parent and grandparent
