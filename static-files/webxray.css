@@ -207,3 +207,7 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
 .webxray-hidden {
     visibility: hidden !important;
 }
+
+div#webxray-wait-for-css-to-load {
+    content: "CSS is loaded" !important;
+}

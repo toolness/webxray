@@ -8,9 +8,33 @@
     return $('script.webxray, script[src$="webxray.js"]');
   }
 
+  // If the goggles are already active on this page, just exit.
   if ($("#webxray-is-active").length) {
     getMyScript().remove();
     return;
+  }
+
+  function waitForCSSToLoad(cb) {
+    // Sadly, link elements don't fire load events on most/all browsers,
+    // so we'll define a special style in our stylesheet and keep
+    // polling an element with that style until it has what we've
+    // defined in the stylesheet.
+    var div = $('<div id="webxray-wait-for-css-to-load"></div>');
+
+    div.hide();
+    $(document.body).append(div);
+
+    function checkIfLoaded() {
+      var content = div.css('content');
+      if (content && content.match(/CSS\ is\ loaded/)) {
+        div.remove();
+        clearInterval(intervalID);
+        cb();
+      }
+    }
+
+    var intervalID = setInterval(checkIfLoaded, 10);
+    checkIfLoaded();
   }
 
   function loadPrerequisites(cb) {
@@ -33,7 +57,7 @@
 
     removeOnUnload = removeOnUnload.add([cssLink.get(0), active.get(0)]);
     jQuery.webxraySettings.baseURI = baseURI;
-    cb();
+    waitForCSSToLoad(cb);
   }
 
   $(window).ready(function() {
