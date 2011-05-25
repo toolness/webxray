@@ -5,9 +5,39 @@
  * div { border: blue; }. */
 
 .webxray-base {
+  background: none;
   width: auto;
   height: auto;
   border: none;
+  padding: 0;
+  margin: 0;
+  line-height: normal;
+  min-height: 0;
+  min-width: 0;
+  max-height: none;
+  max-width: none;
+  opacity: 1.0;
+  text-shadow: none;
+  outline: none;
+  position: static;
+  top: auto;
+  bottom: auto;
+  left: auto;
+  right: auto;
+  text-transform: none;
+  word-spacing: normal;
+  text-decoration: none;
+  text-indent: 0;
+  visibility: visible;
+  letter-spacing: normal;
+  font-style: normal;
+  font-variant: normal;
+  font-weight: normal;
+  clip: auto;
+
+  /* These make assumptions about our locale. */
+  direction: ltr;
+  text-align: left;
 }
 
 /* Style for when you SHIFT + up to inspect parent and grandparent

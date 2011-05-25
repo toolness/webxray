@@ -33,7 +33,7 @@
                   '<div class="webxray-base webxray-dialog-outer">' +
                   '<div class="webxray-base webxray-dialog-middle">' +
                   '<div class="webxray-base webxray-dialog-inner">' +
-                  '<iframe src="' + url + '"></iframe>' +
+                  '<iframe class="webxray-base" src="' + url + '"></iframe>' +
                   '</div></div></div></div>');
       var iframe = div.find("iframe");
       
