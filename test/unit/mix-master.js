@@ -74,6 +74,7 @@ test("jQuery.mixMaster()", function() {
     equal($('#webxray-serialized-history-v1').length, 1);
     mixMaster.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1);
+    $('#webxray-serialized-history-v1').remove();
   });
   
   mixTest(function(mixMaster, element, hud, focused) {

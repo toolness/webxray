@@ -62,33 +62,10 @@
 
   $(window).ready(function() {
     loadPrerequisites(function() {
-      var hud = jQuery.hudOverlay();
-      var focused = jQuery.focusedOverlay();
-      var mixMaster = jQuery.mixMaster({
-        hud: hud,
-        focusedOverlay: focused
-      });
-      var input = jQuery.xRayInput({
-        focusedOverlay: focused,
-        mixMaster: mixMaster,
-        eventSource: document,
-        onQuit: function() {
-          $(document).trigger('unload');
-        }
-      });
-
-      mixMaster.loadHistoryFromDOM();
-      $(document.body).append(hud.overlay);
-      focused.on('change', hud.onFocusChange);
-      input.activate();
-      $(window).focus();
-
-      $(window.document).unload(function() {
-        focused.destroy();
-        focused = null;
-        input.deactivate();
-        hud.destroy();
-        hud = null;
+      var ui = jQuery.xRayUI({eventSource: document});
+      ui.on('quit', function() { $(document).trigger('unload'); });
+      $(document).unload(function() {
+        ui.unload();
         removeOnUnload.remove();
       });
     });
