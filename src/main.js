@@ -70,7 +70,11 @@
       });
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
-        mixMaster: mixMaster
+        mixMaster: mixMaster,
+        eventSource: document,
+        onQuit: function() {
+          $(document).trigger('unload');
+        }
       });
 
       mixMaster.loadHistoryFromDOM();

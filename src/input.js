@@ -21,6 +21,8 @@
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
+      var eventSource = options.eventSource;
+      var onQuit = options.onQuit;
 
       function handleKey(event) {
         if (event.altKey || event.ctrlKey ||
@@ -51,7 +53,8 @@
 
         switch (event.keyCode) {
           case keys.ESC:
-          $(document).trigger('unload');
+          if (onQuit)
+            onQuit();
           return true;
           
           case keys.R:
@@ -133,7 +136,7 @@
           if (!isActive) {
             isActive = true;
             for (var name in listeners)
-              document.addEventListener(name, self, true);
+              eventSource.addEventListener(name, self, true);
             $(window).bind('blur', showBlurIndicator);
           }
         },
@@ -141,7 +144,7 @@
           if (isActive) {
             isActive = false;
             for (var name in listeners)
-              document.removeEventListener(name, self, true);
+              eventSource.removeEventListener(name, self, true);
             $(window).unbind('blur', showBlurIndicator);
           }
         }

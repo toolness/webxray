@@ -2,7 +2,7 @@ module("input");
 
 test("jQuery.xRayInput() activate/deactivate", function() {
   var $ = jQuery;
-  var input = $.xRayInput({});
+  var input = $.xRayInput({eventSource: document});
   
   input.activate();
   ok(true, "activate() does not throw");
@@ -26,7 +26,7 @@ test("jQuery.xRayInput()", function() {
   };
 
   var log = [];
-  
+
   function MockObject(options) {
     var obj = {};
     options.methods.forEach(function(name) {
@@ -54,8 +54,30 @@ test("jQuery.xRayInput()", function() {
     focusedOverlay: MockObject({
       name: 'focusedOverlay',
       methods: ['upfocus', 'downfocus']
-    })
+    }),
+    eventSource: MockObject({
+      name: 'eventSource',
+      methods: ['addEventListener', 'removeEventListener']
+    }),
+    onQuit: function() {
+      log.push("onQuit() called");
+    }
   });
+
+  function times(msg, n) {
+    var log = [];
+    for (var i = 0; i < n; i++)
+      log.push(msg);
+    return log;
+  }
+
+  input.activate();
+  checkLog(times("eventSource.addEventListener() called w/ 3 args", 3),
+            'addEventListener() is called on eventSource');
+
+  input.deactivate();
+  checkLog(times("eventSource.removeEventListener() called w/ 3 args", 3),
+           'removeEventListener() is called on eventSource');
 
   input.handleEvent(event);
   ok(!prevented, "Typing invalid key doesn't prevent default event handling");
@@ -75,6 +97,10 @@ test("jQuery.xRayInput()", function() {
   event.keyCode = input.keys.I;
   input.handleEvent(event);
   checkLog(['mixMaster.infoForFocusedElement() called w/ 0 args']);
+
+  event.keyCode = input.keys.ESC;
+  input.handleEvent(event);
+  checkLog(['onQuit() called'], 'ESC invokes onQuit');
 
   event.shiftKey = true;
   event.keyCode = input.keys.LEFT;
