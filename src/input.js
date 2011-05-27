@@ -99,28 +99,7 @@
 
       var isActive = false;
 
-      function showBlurIndicator() {
-        var blurIndicator = $('<div class="webxray-base ' +
-                              'webxray-dialog-overlay"></div>');
-        $(document.body).append(blurIndicator);
-        $(window).one('focus', function() {
-          // If we wait a moment before removing the indicator, it'll receive
-          // any click events instead of elements underneath it. We can
-          // safely assume that any click events made immediately after
-          // focus are really just intended to focus the page rather
-          // than click on a specific element, so we want to swallow
-          // such events rather than e.g. take the user to a new page.
-          setTimeout(function() {
-            blurIndicator.remove();
-            blurIndicator = null;
-          }, 10);
-          if (!isActive)
-            self.activate();
-        });
-        self.deactivate();
-      }
-
-      var self = {
+      var self = jQuery.eventEmitter({
         keys: keys,
         handleEvent: function handleEvent(event) {
           if (event.type in listeners)
@@ -138,7 +117,7 @@
             isActive = true;
             for (var name in listeners)
               eventSource.addEventListener(name, self, true);
-            $(window).bind('blur', showBlurIndicator);
+            self.emit('activate');
           }
         },
         deactivate: function() {
@@ -146,10 +125,10 @@
             isActive = false;
             for (var name in listeners)
               eventSource.removeEventListener(name, self, true);
-            $(window).unbind('blur', showBlurIndicator);
+            self.emit('deactivate');
           }
         }
-      };
+      });
       
       return self;
     }

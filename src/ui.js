@@ -21,6 +21,7 @@
           self.emit('quit');
         }
       });
+      var indicator = jQuery.blurIndicator(input, window);
 
       mixMaster.loadHistoryFromDOM();
       $(document.body).append(hud.overlay);
@@ -38,6 +39,7 @@
             input = null;
             hud.destroy();
             hud = null;
+            indicator = null;
           }
         }
       });

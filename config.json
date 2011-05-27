@@ -34,6 +34,7 @@
   , "src/mix-master.js"
   , "src/modal-dialog.js"
   , "src/input.js"
+  , "src/blur-indicator.js"
   , "src/ui.js"
   , "src/main.js"
   , "src/outro.js"
