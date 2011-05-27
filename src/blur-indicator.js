@@ -4,11 +4,13 @@
   var $ = jQuery;
   
   jQuery.extend({
-    blurIndicator: function(input, focusable) {
+    blurIndicator: function(input, focusable, body) {
+      body = body || document.body;
+      
       function showBlurIndicator() {
         var blurIndicator = $('<div class="webxray-base ' +
                               'webxray-dialog-overlay"></div>');
-        $(document.body).append(blurIndicator);
+        $(body).append(blurIndicator);
         $(focusable).one('focus', function() {
           // If we wait a moment before removing the indicator, it'll receive
           // any click events instead of elements underneath it. We can
