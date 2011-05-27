@@ -4,14 +4,15 @@ asyncTest('jQuery.transparentMessage() w/o duration', function() {
   var $ = jQuery;
   var parent = $('<div></div>');
   var content = $('<div>hi</div>');
+  var bindTarget = parent;
   var wasEventTriggered = false;
   var msg = jQuery.transparentMessage(content, undefined, function() {
     ok(wasEventTriggered, "callback only called after keydown triggered");
     start();
-  }, parent);
+  }, parent, bindTarget);
   setTimeout(function() {
     wasEventTriggered = true;
-    $(window).trigger('keydown');
+    bindTarget.trigger('keydown');
   }, jQuery.USER_ACTIVITY_DELAY + 50);
 });
 

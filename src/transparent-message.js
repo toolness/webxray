@@ -13,20 +13,20 @@
     return width;
   }
 
-  function onUserActivity(cb) {
+  function onUserActivity(cb, bindTarget) {
     setTimeout(function() {
       var events = ['keydown', 'mousemove'];
       function onEvent() {
-        events.forEach(function(e) { $(window).unbind(e, onEvent); });
+        events.forEach(function(e) { $(bindTarget).unbind(e, onEvent); });
         cb();
       }
-      events.forEach(function(e) { $(window).bind(e, onEvent); });
+      events.forEach(function(e) { $(bindTarget).bind(e, onEvent); });
     }, jQuery.USER_ACTIVITY_DELAY);
   }
   
   jQuery.extend({
     USER_ACTIVITY_DELAY: 100,
-    transparentMessage: function(content, duration, cb, parent) {
+    transparentMessage: function(content, duration, cb, parent, bindTarget) {
       var div = $('<div class="webxray-base webxray-tmsg-overlay">' +
                   '<div class="webxray-base webxray-tmsg-outer">' +
                   '<div class="webxray-base webxray-tmsg-middle">' +
@@ -50,7 +50,7 @@
       if (duration)
         setTimeout(remove, duration);
       else
-        onUserActivity(remove);
+        onUserActivity(remove, bindTarget || window);
 
       return div;
     }
