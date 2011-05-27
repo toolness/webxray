@@ -149,12 +149,10 @@
       serialize: function() {
         if (!isExecuted)
           throw new Error("only executed commands can be serialized");
-        var trivialParent = $("<div></div>");
-        trivialParent.append($(elementToReplace).clone());
         return {
           name: name,
           selector: $(document.documentElement).pathTo(newContent),
-          html: trivialParent.html()
+          html: $(elementToReplace).outerHtml()
         };
       }
     });
