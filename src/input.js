@@ -100,7 +100,8 @@
       var isActive = false;
 
       function showBlurIndicator() {
-        var blurIndicator = $('<div class="webxray-dialog-overlay"></div>');
+        var blurIndicator = $('<div class="webxray-base ' +
+                              'webxray-dialog-overlay"></div>');
         $(document.body).append(blurIndicator);
         $(window).one('focus', function() {
           // If we wait a moment before removing the indicator, it'll receive
