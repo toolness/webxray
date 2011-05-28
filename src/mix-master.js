@@ -3,10 +3,6 @@
 
   var $ = jQuery;
 
-  /* This is some temporary code to provide some kind of 'remix'
-   * functionality to the goggles, at least until we have the
-   * real MixMaster tool ready. */
-
   function CommandManager(hud, focused) {
     var undoStack = [];
     var redoStack = [];
