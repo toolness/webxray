@@ -8,7 +8,7 @@ $(window).ready(function() {
 
 var MissionUtils = {
   wereGogglesInjected: function wereGogglesInjected() {
-    return ($('link.webxray').length != 0);
+    return ($('#webxray-is-active').length != 0);
   },
   areGogglesActive: function areGogglesActive() {
     return ($("div.webxray-hud").length != 0);
