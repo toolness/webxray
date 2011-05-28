@@ -22,6 +22,7 @@
   , "jquery/src/effects.js"
   , "jquery/src/offset.js"
   , "jquery/src/dimensions.js"
+  , "static-files/get-bookmarklet-url.js"
   , "src/settings.js"
   , "src/settings.local.js"
   , "src/utils.js"
