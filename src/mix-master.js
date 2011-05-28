@@ -60,7 +60,7 @@
         while (undoStack.length) {
           var cmd = undoStack[undoStack.length - 1];
           internalUndo();
-          recording.push(cmd.serialize());
+          recording.splice(0, 0, cmd.serialize());
           timesUndone++;
         }
         for (var i = 0; i < timesUndone; i++)
@@ -72,8 +72,8 @@
         undoStack.splice(0);
         redoStack.splice(0);
         transitionEffects.setEnabled(false);
-        while (recording.length) {
-          var cmd = ReplaceWithCmd(recording.pop());
+        for (var i = 0; i < recording.length; i++) {
+          var cmd = ReplaceWithCmd(recording[i]);
           transitionEffects.observe(cmd);
           undoStack.push(cmd);
           cmd.execute();
