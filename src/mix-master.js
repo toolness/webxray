@@ -57,7 +57,7 @@
         } else
           $(hud.overlay).html('<span>Nothing left to redo!</span>');
       },
-      serialize: function() {
+      serializeUndoStack: function() {
         var commands = [];
         var timesUndone = 0;
         transitionEffects.setEnabled(false);
@@ -72,7 +72,7 @@
         transitionEffects.setEnabled(true);
         return commands;
       },
-      deserialize: function(commands) {
+      deserializeUndoStack: function(commands) {
         undoStack.splice(0);
         redoStack.splice(0);
         transitionEffects.setEnabled(false);
@@ -178,10 +178,10 @@
           self.deserializeHistory(serializedHistory.text());
       },
       serializeHistory: function serializeHistory() {
-        return JSON.stringify(commandManager.serialize());
+        return JSON.stringify(commandManager.serializeUndoStack());
       },
       deserializeHistory: function deserializeHistory(history) {
-        commandManager.deserialize(JSON.parse(history));
+        commandManager.deserializeUndoStack(JSON.parse(history));
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')
