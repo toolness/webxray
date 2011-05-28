@@ -35,6 +35,36 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   }
 
+  (function testReplay() {
+    var element = makeTestElement();
+    var playback;
+    
+    testWithElement(element, function(mixMaster, element, hud, focused) {
+      mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
+      focused.set(element.children().get(0));
+      mixMaster.replaceElement(focused.getPrimaryElement(), '<span>u</span>');
+      playback = mixMaster.serializePlayback();
+      equals(element.html(), '<span>u</span>',
+             'serializePlayback() doesn\'t change DOM');
+    });
+    
+    equals(typeof(playback), 'string', "playback is a string");
+    element.remove();
+    element = makeTestElement();
+
+    testWithElement(element, function(mixMaster) {
+      mixMaster.replay(playback);
+      equals(element.html(), '<span>u</span>',
+             'replay() transforms DOM as expected');
+      mixMaster.undo();
+      equal(element.html(), '<em>hi</em>');
+      mixMaster.undo();
+      equal(element.html(), '<div id="mixmastertest"></div>');
+    });
+
+    element.remove();    
+  })();
+  
   (function testSerialization() {
     var element = makeTestElement();
     var history;

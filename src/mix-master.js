@@ -53,6 +53,33 @@
         } else
           $(hud.overlay).html('<span>Nothing left to redo!</span>');
       },
+      serializePlayback: function() {
+        var playback = [];
+        var timesUndone = 0;
+        transitionEffects.setEnabled(false);
+        while (undoStack.length) {
+          var cmd = undoStack[undoStack.length - 1];
+          internalUndo();
+          playback.push(cmd.serialize());
+          timesUndone++;
+        }
+        for (var i = 0; i < timesUndone; i++)
+          internalRedo();
+        transitionEffects.setEnabled(true);
+        return playback;
+      },
+      replay: function(playback) {
+        undoStack.splice(0);
+        redoStack.splice(0);
+        transitionEffects.setEnabled(false);
+        while (playback.length) {
+          var cmd = ReplaceWithCmd(playback.pop());
+          transitionEffects.observe(cmd);
+          undoStack.push(cmd);
+          cmd.execute();
+        }
+        transitionEffects.setEnabled(true);
+      },
       serializeUndoStack: function() {
         var commands = [];
         var timesUndone = 0;
@@ -112,13 +139,24 @@
     var isExecuted = false;
 
     function deserialize(state) {
-      isExecuted = true;
+      if (typeof(state.isExecuted) == 'undefined')
+        isExecuted = true; // support legacy serializations
+      else
+        isExecuted = state.isExecuted;
       name = state.name;
-      newContent = $(document.documentElement).find(state.selector);
-      elementToReplace = $(state.html);
-      if (newContent.length != 1)
-        throw new Error("selector '" + state.selector + "' matches " +
-                        newContent.length + " elements");
+      if (isExecuted) {
+        newContent = $(document.documentElement).find(state.selector);
+        elementToReplace = $(state.html);
+        if (newContent.length != 1)
+          throw new Error("selector '" + state.selector + "' matches " +
+                          newContent.length + " elements");
+      } else {
+        newContent = $(state.html);
+        elementToReplace = $(document.documentElement).find(state.selector);
+        if (elementToReplace.length != 1)
+          throw new Error("selector '" + state.selector + "' matches " +
+                          elementToReplace.length + " elements");
+      }
     }
 
     if (typeof(name) == "object" && !elementToReplace && !newContent)
@@ -143,12 +181,20 @@
         isExecuted = false;
       },
       serialize: function() {
-        if (!isExecuted)
-          throw new Error("only executed commands can be serialized");
+        var selector;
+        var html;
+        if (isExecuted) {
+          selector = $(document.documentElement).pathTo(newContent);
+          html = $(elementToReplace).outerHtml();
+        } else {
+          selector = $(document.documentElement).pathTo(elementToReplace);
+          html = $(newContent).outerHtml();
+        }
         return {
+          isExecuted: isExecuted,
           name: name,
-          selector: $(document.documentElement).pathTo(newContent),
-          html: $(elementToReplace).outerHtml()
+          selector: selector,
+          html: html
         };
       }
     });
@@ -172,6 +218,12 @@
         var serializedHistory = $('#webxray-serialized-history-v1');
         if (serializedHistory.length)
           self.deserializeHistory(serializedHistory.text());
+      },
+      serializePlayback: function serializePlayback() {
+        return JSON.stringify(commandManager.serializePlayback());
+      },
+      replay: function replay(playback) {
+        commandManager.replay(JSON.parse(playback));
       },
       serializeHistory: function serializeHistory() {
         return JSON.stringify(commandManager.serializeUndoStack());
