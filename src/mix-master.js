@@ -53,27 +53,27 @@
         } else
           $(hud.overlay).html('<span>Nothing left to redo!</span>');
       },
-      serializePlayback: function() {
-        var playback = [];
+      getRecording: function() {
+        var recording = [];
         var timesUndone = 0;
         transitionEffects.setEnabled(false);
         while (undoStack.length) {
           var cmd = undoStack[undoStack.length - 1];
           internalUndo();
-          playback.push(cmd.serialize());
+          recording.push(cmd.serialize());
           timesUndone++;
         }
         for (var i = 0; i < timesUndone; i++)
           internalRedo();
         transitionEffects.setEnabled(true);
-        return playback;
+        return recording;
       },
-      replay: function(playback) {
+      playRecording: function(recording) {
         undoStack.splice(0);
         redoStack.splice(0);
         transitionEffects.setEnabled(false);
-        while (playback.length) {
-          var cmd = ReplaceWithCmd(playback.pop());
+        while (recording.length) {
+          var cmd = ReplaceWithCmd(recording.pop());
           transitionEffects.observe(cmd);
           undoStack.push(cmd);
           cmd.execute();
@@ -219,11 +219,11 @@
         if (serializedHistory.length)
           self.deserializeHistory(serializedHistory.text());
       },
-      serializePlayback: function serializePlayback() {
-        return JSON.stringify(commandManager.serializePlayback());
+      getRecording: function getRecording() {
+        return JSON.stringify(commandManager.getRecording());
       },
-      replay: function replay(playback) {
-        commandManager.replay(JSON.parse(playback));
+      playRecording: function playRecording(recording) {
+        commandManager.playRecording(JSON.parse(recording));
       },
       serializeHistory: function serializeHistory() {
         return JSON.stringify(commandManager.serializeUndoStack());

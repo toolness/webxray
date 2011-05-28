@@ -35,27 +35,27 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   }
 
-  (function testReplay() {
+  (function testRecording() {
     var element = makeTestElement();
-    var playback;
+    var recording;
     
     testWithElement(element, function(mixMaster, element, hud, focused) {
       mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
       focused.set(element.children().get(0));
       mixMaster.replaceElement(focused.getPrimaryElement(), '<span>u</span>');
-      playback = mixMaster.serializePlayback();
+      recording = mixMaster.getRecording();
       equals(element.html(), '<span>u</span>',
-             'serializePlayback() doesn\'t change DOM');
+             'getRecording() doesn\'t change DOM');
     });
     
-    equals(typeof(playback), 'string', "playback is a string");
+    equals(typeof(recording), 'string', "recording is a string");
     element.remove();
     element = makeTestElement();
 
     testWithElement(element, function(mixMaster) {
-      mixMaster.replay(playback);
+      mixMaster.playRecording(recording);
       equals(element.html(), '<span>u</span>',
-             'replay() transforms DOM as expected');
+             'playRecording() transforms DOM as expected');
       mixMaster.undo();
       equal(element.html(), '<em>hi</em>');
       mixMaster.undo();
