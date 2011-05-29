@@ -25,8 +25,14 @@
     $(document.body).append(div);
 
     function checkIfLoaded() {
+      // This works on most browsers.
       var content = div.css('content');
-      if (content && content.match(/CSS\ is\ loaded/)) {
+
+      // This works on Safari.
+      var bgColor = div.css('background-color');
+
+      if ((content && content.match(/CSS\ is\ loaded/)) ||
+          (bgColor && bgColor.match(/rgb\(0,\s*1,\s*2\)/))) {
         div.remove();
         clearInterval(intervalID);
         cb();

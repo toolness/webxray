@@ -210,4 +210,5 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
 
 div#webxray-wait-for-css-to-load {
     content: "CSS is loaded" !important;
+    background-color: rgb(0, 1, 2);
 }
