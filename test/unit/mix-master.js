@@ -84,12 +84,10 @@ test("jQuery.mixMaster()", function() {
       recordingJS = mixMaster.convertRecordingToJS(recording);
       equal(mixMaster.isRecordingInGlobal(window), false,
             "Recording is not in global before eval");
-      console.log(recordingJS);
       eval(recordingJS);
       equal(mixMaster.isRecordingInGlobal(window), true,
             "Recording is in global after eval");
       var success = mixMaster.playRecordingFromGlobal(window);
-      console.log("WOW");
       ok(success, "playRecordingFromGlobal() succeeds");
       equal(mixMaster.isRecordingInGlobal(window), false,
             "Recording is not in global after playRecordingFromGlobal()");
