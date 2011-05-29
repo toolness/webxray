@@ -68,7 +68,14 @@
           mixMaster.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
           return true;
-          
+
+          case keys.B:
+          window.open(jQuery.webxraySettings.baseURI +
+                      "share/?r=" +
+                      encodeURI(mixMaster.getRecording()) +
+                      "&u=" + encodeURI(window.location.href));
+          return true;
+
           case keys.DELETE:
           mixMaster.deleteFocusedElement();
           return true;
