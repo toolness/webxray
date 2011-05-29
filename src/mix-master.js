@@ -2,6 +2,7 @@
   "use strict";
 
   var $ = jQuery;
+  var GLOBAL_RECORDING_VAR = 'webxrayRecording';
 
   function CommandManager(hud, focused) {
     var undoStack = [];
@@ -56,58 +57,58 @@
       getRecording: function() {
         var recording = [];
         var timesUndone = 0;
-        transitionEffects.setEnabled(false);
-        while (undoStack.length) {
-          var cmd = undoStack[undoStack.length - 1];
-          internalUndo();
-          recording.splice(0, 0, cmd.serialize());
-          timesUndone++;
-        }
-        for (var i = 0; i < timesUndone; i++)
-          internalRedo();
-        transitionEffects.setEnabled(true);
+        transitionEffects.disableDuring(function() {
+          while (undoStack.length) {
+            var cmd = undoStack[undoStack.length - 1];
+            internalUndo();
+            recording.splice(0, 0, cmd.serialize());
+            timesUndone++;
+          }
+          for (var i = 0; i < timesUndone; i++)
+            internalRedo();
+        });
         return recording;
       },
       playRecording: function(recording) {
         undoStack.splice(0);
         redoStack.splice(0);
-        transitionEffects.setEnabled(false);
-        for (var i = 0; i < recording.length; i++) {
-          var cmd = ReplaceWithCmd(recording[i]);
-          transitionEffects.observe(cmd);
-          undoStack.push(cmd);
-          cmd.execute();
-        }
-        transitionEffects.setEnabled(true);
+        transitionEffects.disableDuring(function() {
+          for (var i = 0; i < recording.length; i++) {
+            var cmd = ReplaceWithCmd(recording[i]);
+            transitionEffects.observe(cmd);
+            undoStack.push(cmd);
+            cmd.execute();
+          }
+        });
       },
       serializeUndoStack: function() {
         var commands = [];
         var timesUndone = 0;
-        transitionEffects.setEnabled(false);
-        while (undoStack.length) {
-          var cmd = undoStack[undoStack.length - 1];
-          commands.push(cmd.serialize());
-          internalUndo();
-          timesUndone++;
-        }
-        for (var i = 0; i < timesUndone; i++)
-          internalRedo();
-        transitionEffects.setEnabled(true);
+        transitionEffects.disableDuring(function() {
+          while (undoStack.length) {
+            var cmd = undoStack[undoStack.length - 1];
+            commands.push(cmd.serialize());
+            internalUndo();
+            timesUndone++;
+          }
+          for (var i = 0; i < timesUndone; i++)
+            internalRedo();
+        });
         return commands;
       },
       deserializeUndoStack: function(commands) {
         undoStack.splice(0);
         redoStack.splice(0);
-        transitionEffects.setEnabled(false);
-        for (var i = 0; i < commands.length; i++) {
-          var cmd = ReplaceWithCmd(commands[i]);
-          transitionEffects.observe(cmd);
-          undoStack.push(cmd);
-          internalUndo();
-        }
-        for (var i = 0; i < commands.length; i++)
-          internalRedo();
-        transitionEffects.setEnabled(true);
+        transitionEffects.disableDuring(function() {
+          for (var i = 0; i < commands.length; i++) {
+            var cmd = ReplaceWithCmd(commands[i]);
+            transitionEffects.observe(cmd);
+            undoStack.push(cmd);
+            internalUndo();
+          }
+          for (var i = 0; i < commands.length; i++)
+            internalRedo();
+        });
       }
     };
     
@@ -117,6 +118,14 @@
   function TransitionEffectManager() {
     var isEnabled = true;
     return {
+      disableDuring: function disableDuring(fn) {
+        if (isEnabled) {
+          isEnabled = false;
+          fn();
+          isEnabled = true;
+        } else
+          fn();
+      },
       observe: function(cmd) {
         cmd.on('before-replace', function before(elementToReplace) {
           if (!isEnabled)
@@ -205,6 +214,7 @@
     var commandManager = CommandManager(options.hud, focused);
 
     var self = {
+      transitionEffects: commandManager.transitionEffects,
       undo: function() { commandManager.undo(); },
       redo: function() { commandManager.redo(); },
       saveHistoryToDOM: function saveHistoryToDOM() {
@@ -218,6 +228,26 @@
         var serializedHistory = $('#webxray-serialized-history-v1');
         if (serializedHistory.length)
           self.deserializeHistory(serializedHistory.text());
+      },
+      isRecordingInGlobal: function isRecordingInGlobal(global) {
+        return (GLOBAL_RECORDING_VAR in global);
+      },
+      playRecordingFromGlobal: function playRecordingFromGlobal(global) {
+        var msg, recording, success;
+
+        try {
+          recording = JSON.stringify(global[GLOBAL_RECORDING_VAR]);
+          self.playRecording(recording);
+          success = true;
+        } catch (e) {
+          success = false;
+          // TODO: Log the error?
+        }
+        delete global[GLOBAL_RECORDING_VAR];
+        return success;
+      },
+      convertRecordingToJS: function convertRecordingToJS(recording) {
+        return ";" + GLOBAL_RECORDING_VAR + "=" + recording + ";";
       },
       getRecording: function getRecording() {
         return JSON.stringify(commandManager.getRecording());
@@ -261,11 +291,11 @@
       },
       replaceElement: function(elementToReplace, html) {
         var newContent = self.htmlToJQuery(html);
-        commandManager.transitionEffects.setEnabled(false);
-        commandManager.run(ReplaceWithCmd('replacement',
-                                          elementToReplace,
-                                          newContent));
-        commandManager.transitionEffects.setEnabled(true);
+        commandManager.transitionEffects.disableDuring(function() {
+          commandManager.run(ReplaceWithCmd('replacement',
+                                            elementToReplace,
+                                            newContent));
+        });
         return newContent;
       },
       replaceFocusedElementWithDialog: function(input, dialogURL, body) {

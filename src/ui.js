@@ -3,6 +3,19 @@
 
   var $ = jQuery;
 
+  function maybeLoadRecording(mixMaster) {
+    if (mixMaster.isRecordingInGlobal(window)) {
+      var msg,
+          success = mixMaster.playRecordingFromGlobal(window);
+      if (success)
+        msg = 'Hack rebusted!';
+      else
+        msg = 'Hack rebusting failed. Perhaps the page changed since ' +
+              'the hack was first busted?';
+      jQuery.transparentMessage($('<div></div>').text(msg));
+    }
+  }
+
   jQuery.extend({
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
@@ -23,6 +36,7 @@
       });
       var indicator = jQuery.blurIndicator(input, window);
 
+      maybeLoadRecording(mixMaster);
       mixMaster.loadHistoryFromDOM();
       $(document.body).append(hud.overlay);
       focused.on('change', hud.onFocusChange);

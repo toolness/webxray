@@ -14,7 +14,8 @@ test("jQuery.mixMaster()", function() {
       hud: hud, 
       focusedOverlay: focused
     });
-
+    mixMaster.transitionEffects.setEnabled(false);
+    
     fn(mixMaster, element, hud, focused);
 
     focused.destroy();
@@ -36,8 +37,15 @@ test("jQuery.mixMaster()", function() {
   }
 
   (function testRecording() {
-    var element = makeTestElement();
-    var recording;
+    function makeSpan() {
+      var element = $('<span><div id="mixmastertest"></div></span>');
+      $(document.body).append(element);
+
+      return element;
+    }
+    
+    var element = makeSpan();
+    var recording, recordingJS;
     
     testWithElement(element, function(mixMaster, element, hud, focused) {
       mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
@@ -50,19 +58,59 @@ test("jQuery.mixMaster()", function() {
     
     equals(typeof(recording), 'string', "recording is a string");
     element.remove();
-    element = makeTestElement();
+    element = makeSpan();
 
-    testWithElement(element, function(mixMaster) {
-      mixMaster.playRecording(recording);
+    function testPlayRecording() {
+      testWithElement(element, function(mixMaster) {
+        mixMaster.playRecording(recording);
+        equals(element.html(), '<span>u</span>',
+               'playRecording() transforms DOM as expected');
+        mixMaster.undo();
+        equal(element.html(), '<em>hi</em>');
+        mixMaster.undo();
+        equal(element.html(), '<div id="mixmastertest"></div>');
+      });
+    }
+    
+    testPlayRecording();
+    element.remove();
+    element = makeSpan();
+
+    testPlayRecording();
+    element.remove();
+    element = makeSpan();
+
+    testWithElement(element, function testPlayRecordingFromGlobal(mixMaster) {
+      recordingJS = mixMaster.convertRecordingToJS(recording);
+      equal(mixMaster.isRecordingInGlobal(window), false,
+            "Recording is not in global before eval");
+      console.log(recordingJS);
+      eval(recordingJS);
+      equal(mixMaster.isRecordingInGlobal(window), true,
+            "Recording is in global after eval");
+      var success = mixMaster.playRecordingFromGlobal(window);
+      console.log("WOW");
+      ok(success, "playRecordingFromGlobal() succeeds");
+      equal(mixMaster.isRecordingInGlobal(window), false,
+            "Recording is not in global after playRecordingFromGlobal()");
+
       equals(element.html(), '<span>u</span>',
-             'playRecording() transforms DOM as expected');
+             'playRecordingFromGlobal() transforms DOM as expected');
       mixMaster.undo();
       equal(element.html(), '<em>hi</em>');
       mixMaster.undo();
       equal(element.html(), '<div id="mixmastertest"></div>');
     });
 
-    element.remove();    
+    element.remove();
+
+    testWithElement(element, function testPlayFailure(mixMaster) {
+      eval(recordingJS);
+      var success = mixMaster.playRecordingFromGlobal(window);
+      ok(!success, "playRecordingFromGlobal() fails");
+      equal(mixMaster.isRecordingInGlobal(window), false,
+            "Recording is not in global after play failure");
+    });
   })();
   
   (function testSerialization() {
