@@ -36,15 +36,16 @@ a:hover {
 
 $(window).ready(function() {
   var expr = /\?r=(.+)&u=(.+)/;
-  var match = window.location.search.match(expr);
+  var loc = window.location;
+  var match = loc.search.match(expr);
   if (match) {
     var recording = decodeURI(match[1]);
     var url = decodeURI(match[2]);
     $('#r').text(recording);
     var mixMaster = jQuery.mixMaster({});
     var recordingJS = mixMaster.convertRecordingToJS(recording);
-    var path = window.location.pathname.match(/(.*)share\/$/)[1];
-    var baseURI = window.location.origin + path;
+    var path = loc.pathname.match(/(.*)share\/$/)[1];
+    var baseURI = loc.protocol + '//' + loc.host + path;
     var bm = jQuery.getGogglesBookmarkletURL(baseURI) + recordingJS;
     $('#url').attr('href', url).text(url);
     $('#code').val(bm).focus().select();
