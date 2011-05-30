@@ -35,6 +35,11 @@
              match[2] + ", " +
              match[3] + ", " +
              alpha + ")";
+    },
+    // Like console.warn(), but only does anything if console exists.
+    warn: function warn() {
+      if (window.console && window.console.warn)
+        window.console.warn.apply(window.console, arguments);
     }
   });
   

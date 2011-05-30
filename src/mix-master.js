@@ -227,7 +227,11 @@
       loadHistoryFromDOM: function loadHistoryFromDOM() {
         var serializedHistory = $('#webxray-serialized-history-v1');
         if (serializedHistory.length)
-          self.deserializeHistory(serializedHistory.text());
+          try {
+            self.deserializeHistory(serializedHistory.text());
+          } catch (e) {
+            jQuery.warn("deserialization of history in DOM failed", e);
+          }
       },
       isRecordingInGlobal: function isRecordingInGlobal(global) {
         return (GLOBAL_RECORDING_VAR in global);
@@ -241,7 +245,7 @@
           success = true;
         } catch (e) {
           success = false;
-          // TODO: Log the error?
+          jQuery.warn("payback of recording from global failed", e);
         }
         delete global[GLOBAL_RECORDING_VAR];
         return success;

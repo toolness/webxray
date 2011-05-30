@@ -140,16 +140,34 @@ test("jQuery.mixMaster()", function() {
   })();
 
   mixTest(function(mixMaster, element, hud, focused) {
-    // This is really just a smoke test.
     equal($('#webxray-serialized-history-v1').length, 0);
     mixMaster.replaceElement(focused.getPrimaryElement(), '<p>hi</p>');
     mixMaster.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1);
     ok($('#webxray-serialized-history-v1').text().length);
+
+    var mm = jQuery.mixMaster({hud: hud, focusedOverlay: focused});
+    
+    mm.loadHistoryFromDOM();
+    equal($('#webxray-serialized-history-v1').length, 1,
+          "existing history DOM is not removed after load");
+    equal(element.html(), '<p>hi</p>',
+          "loading history doesn't change DOM");
+    mm.undo();
+    equal(element.html(), '<div id="mixmastertest"></div>',
+          "undo history is loaded properly");
+    
+    var oldHistory = $('#webxray-serialized-history-v1').text();
+    mm.saveHistoryToDOM();
+    equal($('#webxray-serialized-history-v1').length, 1,
+          "history DOM exists after save");
+    ok($('#webxray-serialized-history-v1').text() != oldHistory,
+       "history DOM is replaced after save");
+
+    $('#webxray-serialized-history-v1').text('garbage');
     mixMaster.loadHistoryFromDOM();
-    equal($('#webxray-serialized-history-v1').length, 1);
-    mixMaster.saveHistoryToDOM();
-    equal($('#webxray-serialized-history-v1').length, 1);
+    ok(true, "loadHistoryFromDOM() with bogus history data doesn't throw");
+    
     $('#webxray-serialized-history-v1').remove();
   });
   
