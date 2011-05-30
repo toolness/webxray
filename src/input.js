@@ -98,6 +98,15 @@
             event.stopPropagation();
           }
         },
+        click: function(event) {
+          if (event.target && event.target.nodeName == 'A') {
+            var msg = 'If you would like to follow that link, please ' +
+                      'deactivate the goggles first by pressing ESC.';
+            jQuery.transparentMessage($('<div></div>').text(msg));
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        },
         mouseout: function(event) {
           event.stopPropagation();
           focused.unfocus();
