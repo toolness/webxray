@@ -18,15 +18,10 @@
     openUprootDialog: function(input) {
       $(document).uproot({
         success: function(html) {
-          var dialog = jQuery.modalDialog({
+          jQuery.simpleModalDialog({
             input: input,
-            url: jQuery.webxraySettings.baseURI + "uproot-dialog.html"
-          });
-          dialog.iframe.one("load", function() {
-            this.contentWindow.postMessage(html, "*");
-            $(this).show().bind("message", function(event, data) {
-              dialog.close();
-            });
+            filename: "uproot-dialog.html",
+            payload: html
           });
         },
         ignore: $(".webxray-hud, .webxray-overlay, " +

@@ -70,10 +70,14 @@
           return true;
 
           case keys.B:
-          window.open(jQuery.webxraySettings.baseURI +
-                      "share/?r=" +
-                      encodeURI(mixMaster.getRecording()) +
-                      "&u=" + encodeURI(window.location.href));
+          jQuery.simpleModalDialog({
+            input: self,
+            filename: "share-dialog.html",
+            payload: jQuery.webxraySettings.baseURI +
+                     "share/?r=" +
+                     encodeURI(mixMaster.getRecording()) +
+                     "&u=" + encodeURI(window.location.href)
+          });
           return true;
 
           case keys.DELETE:

@@ -25,6 +25,18 @@
       div.remove();
       return dimensions;
     },
+    simpleModalDialog: function(options) {
+      var dialog = jQuery.modalDialog({
+        input: options.input,
+        url: jQuery.webxraySettings.baseURI + options.filename
+      });
+      dialog.iframe.one("load", function() {
+        this.contentWindow.postMessage(options.payload, "*");
+        $(this).show().bind("message", function(event, data) {
+          dialog.close();
+        });
+      });
+    },
     modalDialog: function(options) {
       var input = options.input;
       var body = options.body || document.body;
