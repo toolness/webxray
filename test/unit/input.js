@@ -72,11 +72,11 @@ test("jQuery.xRayInput()", function() {
   }
 
   input.activate();
-  checkLog(times("eventSource.addEventListener() called w/ 3 args", 3),
+  checkLog(times("eventSource.addEventListener() called w/ 3 args", 4),
             'addEventListener() is called on eventSource');
 
   input.deactivate();
-  checkLog(times("eventSource.removeEventListener() called w/ 3 args", 3),
+  checkLog(times("eventSource.removeEventListener() called w/ 3 args", 4),
            'removeEventListener() is called on eventSource');
 
   input.handleEvent(event);
