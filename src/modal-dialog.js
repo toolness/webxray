@@ -33,9 +33,11 @@
       dialog.iframe.one("load", function() {
         this.contentWindow.postMessage(options.payload, "*");
         $(this).show().bind("message", function(event, data) {
-          dialog.close();
+          if (data == "close")
+            dialog.close();
         });
       });
+      return dialog;
     },
     modalDialog: function(options) {
       var input = options.input;
