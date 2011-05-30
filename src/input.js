@@ -75,8 +75,10 @@
             filename: "share-dialog.html",
             payload: jQuery.webxraySettings.baseURI +
                      "share/?r=" +
-                     encodeURI(mixMaster.getRecording()) +
-                     "&u=" + encodeURI(window.location.href)
+                     jQuery.compressStrToUriComponent(
+                       mixMaster.getRecording()
+                     ) +
+                     "&u=" + encodeURIComponent(window.location.href)
           });
           return true;
 

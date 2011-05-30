@@ -31,6 +31,7 @@ a:hover {
 <script src="../jquery.min.js"></script>
 <script src="../get-bookmarklet-url.js"></script>
 <script src="../src/mix-master.js"></script>
+<script src="../src/compression.js"></script>
 <script>
 "use strict";
 
@@ -39,8 +40,8 @@ $(window).ready(function() {
   var loc = window.location;
   var match = loc.search.match(expr);
   if (match) {
-    var recording = decodeURI(match[1]);
-    var url = decodeURI(match[2]);
+    var recording = jQuery.decompressUriComponentToStr(match[1]);
+    var url = decodeURIComponent(match[2]);
     $('#r').text(recording);
     var mixMaster = jQuery.mixMaster({});
     var recordingJS = mixMaster.convertRecordingToJS(recording);
