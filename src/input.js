@@ -99,7 +99,7 @@
           }
         },
         click: function(event) {
-          if (event.target && event.target.nodeName == 'A') {
+          if ($(event.target).closest('a').length) {
             var msg = 'If you would like to follow that link, please ' +
                       'deactivate the goggles first by pressing ESC.';
             jQuery.transparentMessage($('<div></div>').text(msg));
