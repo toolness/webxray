@@ -3,13 +3,18 @@
 
   var $ = jQuery;
   
-  jQuery.focusedOverlay = function focusedOverlay() {
+  jQuery.focusedOverlay = function focusedOverlay(options) {
+    if (!options)
+      options = {};
+    
+    var useAnimation = options.useAnimation;
     var ancestorIndex = 0;
     var ancestorOverlay = null;
     var overlay = null;
     var element = null;
 
-    function labelOverlay(overlay, target) {
+    function labelOverlay(overlay, target, finalSize) {
+      finalSize = finalSize || overlay;
       ["bottom", "top"].forEach(function(className) {
         var part = $('<div class="webxray-base webxray-overlay-label">' +
                      '</div>');
@@ -18,24 +23,36 @@
         part.text("<" + (className == "bottom" ? "/" : "") +
                   tag + ">");
         overlay.append(part);
-        if (part.width() > overlay.width() ||
-            part.height() > overlay.height())
+        if (part.width() > $(finalSize).width() ||
+            part.height() > $(finalSize).height())
           part.hide();
       });
     }
 
-    function setAncestorOverlay(ancestor) {
+    function setAncestorOverlay(ancestor, useAnimation) {
       if (ancestorOverlay) {
         ancestorOverlay.remove();
         ancestorOverlay = null;
       }
       if (ancestor) {
-        ancestorOverlay = ancestor.overlay();
+        if (useAnimation) {
+          var fromElement = instance.getPrimaryElement();
+          ancestorOverlay = $(fromElement).overlay();
+          ancestorOverlay.resizeTo(ancestor);
+        } else
+          ancestorOverlay = ancestor.overlay();
         ancestorOverlay.addClass("webxray-ancestor");
-        labelOverlay(ancestorOverlay, ancestor[0]);
+        labelOverlay(ancestorOverlay, ancestor[0], ancestor[0]);        
         instance.ancestor = ancestor[0];
-      } else
+      } else {
+        if (useAnimation && instance.ancestor) {
+          ancestorOverlay = $(instance.ancestor).overlay();
+          ancestorOverlay.addClass("webxray-ancestor");
+          labelOverlay(ancestorOverlay, instance.element, instance.element);
+          ancestorOverlay.resizeToAndFadeOut(instance.element);
+        }
         instance.ancestor = null;
+      }
     }
 
     var instance = jQuery.eventEmitter({
@@ -51,18 +68,22 @@
 
         if (ancestor.length && ancestor[0] != document) {
           ancestorIndex++;
-          setAncestorOverlay(ancestor);
+          setAncestorOverlay(ancestor, useAnimation);
         }
         this.emit('change', this);
       },
       downfocus: function downfocus() {
         if (!element)
           return;
-        setAncestorOverlay(null);
+        if (ancestorOverlay) {
+          ancestorOverlay.remove();
+          ancestorOverlay = null;
+        }
         if (ancestorIndex > 0 && --ancestorIndex > 0) {
           var ancestor = $(element).ancestor(ancestorIndex);
-          setAncestorOverlay(ancestor);
-        }
+          setAncestorOverlay(ancestor, useAnimation);
+        } else
+          setAncestorOverlay(null, useAnimation);
         this.emit('change', this);
       },
       unfocus: function unfocus() {

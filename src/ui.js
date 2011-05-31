@@ -20,7 +20,9 @@
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
       var hud = jQuery.hudOverlay();
-      var focused = jQuery.focusedOverlay();
+      var focused = jQuery.focusedOverlay({
+        useAnimation: true
+      });
       var mixMaster = jQuery.mixMaster({
         hud: hud,
         focusedOverlay: focused
