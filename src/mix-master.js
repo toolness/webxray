@@ -315,6 +315,12 @@
           return;
         var focusedHTML = $(focusedElement).outerHtml();
 
+        if ($(focusedElement).is('html, body')) {
+          var msg = "Changing that would be a bad idea."
+          jQuery.transparentMessage($('<div></div>').text(msg));
+          return;
+        }
+
         if (focusedHTML.length == 0 ||
             focusedHTML.length > MAX_HTML_LENGTH) {
           var tagName = focusedElement.nodeName.toLowerCase();
