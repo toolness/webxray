@@ -30,28 +30,23 @@
           return false;
         }
 
-        if (event.shiftKey) {
-          switch (event.keyCode) {
-            case keys.LEFT:
-            mixMaster.undo();
-            return true;
-
-            case keys.RIGHT:
-            mixMaster.redo();
-            return true;        
-
-            case keys.UP:
-            focused.upfocus();
-            return true;
-
-            case keys.DOWN:
-            focused.downfocus();
-            return true;            
-          }
-          return false;
-        }
-
         switch (event.keyCode) {
+          case keys.LEFT:
+          mixMaster.undo();
+          return true;
+
+          case keys.RIGHT:
+          mixMaster.redo();
+          return true;        
+
+          case keys.UP:
+          focused.upfocus();
+          return true;
+
+          case keys.DOWN:
+          focused.downfocus();
+          return true;            
+
           case keys.ESC:
           if (onQuit)
             onQuit();
