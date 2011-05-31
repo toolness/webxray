@@ -276,6 +276,11 @@
       deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.getPrimaryElement();
         if (elementToDelete) {
+          if ($(elementToDelete).is('html, body')) {
+            var msg = "Deleting that would be a bad idea."
+            jQuery.transparentMessage($('<div></div>').text(msg));
+            return;
+          }
           // Replacing the element with a zero-length invisible
           // span is a lot easier than actually deleting the element,
           // since it allows us to place a "bookmark" in the DOM
