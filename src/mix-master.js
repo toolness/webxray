@@ -309,7 +309,7 @@
         return newContent;
       },
       replaceFocusedElementWithDialog: function(input, dialogURL, body) {
-        var MAX_HTML_LENGTH = 1000;
+        var MAX_HTML_LENGTH = 5000;
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
           return;
