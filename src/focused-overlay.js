@@ -14,8 +14,13 @@
     var element = null;
 
     function labelOverlay(overlay, target, finalSize) {
+      var parts = ["top"];
+      
+      if ($(target).contents().length)
+        parts = ["bottom", "top"];
+      
       finalSize = finalSize || overlay;
-      ["bottom", "top"].forEach(function(className) {
+      parts.forEach(function(className) {
         var part = $('<div class="webxray-base webxray-overlay-label">' +
                      '</div>');
         var tag = target.nodeName.toLowerCase();

@@ -65,6 +65,15 @@ test("jQuery.focusedOverlay()", function() {
   equals(timesCalled, 4, "'change' event is emit on unfocus()");
   equals(overlay.element, null, "overlay.element is null after unfocus()");
 
+  var noContents = jQuery('<input type="button" value="hello">');
+  jQuery(document.body).append(noContents);
+  overlay.set(noContents.get(0));
+  equals(jQuery(".webxray-overlay-label-top").length, 1,
+         "top label exists on elements with no contents");
+  equals(jQuery(".webxray-overlay-label-bottom").length, 0,
+         "bottom label does not exist on elements with no contents");
+  noContents.remove();
+
   overlay.destroy();
 
   equals(jQuery(".webxray-overlay").length, 0,
