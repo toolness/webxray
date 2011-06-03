@@ -61,6 +61,7 @@ div.button:hover {
 </div>
 <script>
 $(window).ready(function() {
+  var isInIframe = !(top === self);
   var responseSent = false;
   var isStarted = false;
 
@@ -97,14 +98,28 @@ $(window).ready(function() {
     $("#dom-rendering").append(sample);
   }
   
-  window.addEventListener("message", function(event) {
-    if (event.data && event.data.length && event.data[0] == '{') {
-      onMessage(JSON.parse(event.data));
+  if (isInIframe) {
+    window.addEventListener("message", function(event) {
+      if (event.data && event.data.length && event.data[0] == '{') {
+        onMessage(JSON.parse(event.data));
+      }
+    }, false);
+
+    var sendMessage = function sendMessageViaPostMessage(data) {
+      window.parent.postMessage(JSON.stringify(data), "*");
     }
-  }, false);
-  
-  var sendMessage = function sendMessageViaPostMessage(data) {
-    window.parent.postMessage(JSON.stringify(data), "*");
+  } else {
+    onMessage({
+      title: "Here is a title.",
+      instructions: "Here are instructions.",
+      startHTML: "<p>Here is starting HTML.</p>",
+      baseURI: "http://www.mozilla.org/"
+    });
+
+    sendMessage = function fakeSendMessage(data) {
+      alert("Sending the following to parent window: " +
+            JSON.stringify(data));
+    }
   }
     
   $("#nevermind.button").click(function() {
