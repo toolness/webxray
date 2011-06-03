@@ -318,11 +318,7 @@
         var wasAnythingChanged = false;
         var props = [
           {name: 'background-image', defaultValue: 'none'},
-          {name: 'background-repeat', defaultValue: 'repeat'},
-          {name: 'width', defaultValue: 'auto',
-           onlyIfDefined: 'background-image'},
-          {name: 'height', defaultValue: 'auto',
-           onlyIfDefined: 'background-image'}
+          {name: 'background-repeat', defaultValue: 'repeat'}
         ];
         
         all.add(all.find('*')).each(function() {
