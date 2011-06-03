@@ -52,6 +52,13 @@
             onQuit();
           return true;
           
+          case keys.E:
+          mixMaster.replaceFocusedElementWithDialog(
+            self,
+            jQuery.webxraySettings.baseURI + "easy-remix-dialog/"
+            );
+          return true;
+          
           case keys.R:
           mixMaster.replaceFocusedElementWithDialog(
             self,

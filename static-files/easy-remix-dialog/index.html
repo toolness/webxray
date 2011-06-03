@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<link rel="stylesheet" href="hierarchic-source-code.css">
+<link rel="stylesheet" href="../webxray.css">
+<title>Easy Remix Dialog</title>
+<script src="../jquery.min.js"></script>
+<script src="render-dom.js"></script>
+<script src="edit-dom.js"></script>
+<script src="../src/utils.js"></script>
+<script src="../src/tag-colors.js"></script>
+<script src="../src/event-emitter.js"></script>
+<script src="../src/focused-overlay.js"></script>
+<style>
+body {
+  font-family: Baskerville, Georgia, serif;
+  background: white;
+}
+
+h1, h2 {
+  font-weight: normal;
+  margin-top: 0.5em;
+  margin-bottom: 0.1em;
+}
+
+#dom-rendering-column {
+  width: 480px;
+  float: left;
+}
+
+#preview-column {
+  width: 480px;
+  float: left;
+  margin-left: 2em;
+}
+
+.button {
+  float: right;
+  padding: 0.5em;
+  background: #f0f0f0;
+  margin: 0.25em;
+  cursor: pointer;
+}
+
+div.button:hover {
+  background: black;
+  color: white;
+}
+</style>
+<div id="buttons">
+  <div class="button" id="nevermind">Nevermind</div>
+  <div class="button" id="ok">Ok</div>
+</div>
+<div id="header"><h1></h1></div>
+<div id="dom-rendering-column">
+  <h2>Source Code</h2>
+  <div id="dom-rendering"></div>
+</div>
+<div id="preview-column">
+  <h2>Preview</h2>
+  <div id="preview"></div>
+</div>
+<script>
+$(window).ready(function() {
+  var responseSent = false;
+  var isStarted = false;
+
+  function onMessage(data) {
+    if (isStarted)
+      return;
+    isStarted = true;
+    
+    var base = document.createElement('base');
+    base.setAttribute('href', data.baseURI);
+    $(document.head).append(base);
+    $("#header h1").text(data.title);
+    $("#preview").append(data.startHTML);
+    var sample = $('#preview').children().renderDom();
+
+    var focused = jQuery.focusedOverlay();
+
+    sample.mouseover(function(event) {
+      var target = $(event.target);
+
+      if (!target.is('div.element'))
+        target = target.closest('div.element');
+      var linkedNode = target.data("linked-node");
+      if (linkedNode)
+        focused.set(linkedNode);
+    });
+    sample.mouseout(function(event) {
+      focused.unfocus();
+    });
+    var editables = sample.find(".text, .attributes .value");
+    editables.makeTextEditable().click(function() {
+      focused.unfocus();
+    });
+    $("#dom-rendering").append(sample);
+  }
+  
+  window.addEventListener("message", function(event) {
+    if (event.data && event.data.length && event.data[0] == '{') {
+      onMessage(JSON.parse(event.data));
+    }
+  }, false);
+  
+  var sendMessage = function sendMessageViaPostMessage(data) {
+    window.parent.postMessage(JSON.stringify(data), "*");
+  }
+    
+  $("#nevermind.button").click(function() {
+    if (!responseSent) {
+      sendMessage({msg: 'nevermind'});
+      responseSent = true;
+    }
+  });
+  $("#ok.button").click(function() {
+    if (!responseSent) {
+      sendMessage({msg: 'ok', endHTML: $("#preview").html()});
+      responseSent = true;
+    }
+  });
+});
+</script>

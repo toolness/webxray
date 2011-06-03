@@ -1,0 +1,100 @@
+div.element {
+  position: relative;
+  white-space: pre-wrap;
+  font-family: Monaco;
+  font-size: 9pt;
+  color: rgba(0,0,0,0.75);
+  border: 1px dotted black;
+  padding-bottom: 1.5em;
+  margin: 0.5em;
+  word-wrap: break-word;
+}
+
+div.element form {
+  display: inline;
+}
+
+div.element textarea {
+  border: none;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 0;
+  margin: 0;
+  outline: none;
+  overflow: hidden;
+}
+
+div.element > span.start, div.element > span.end {
+  background: rgba(0,0,0,0.75);
+  color: white;
+}
+
+div.element > span.start:before {
+  content: '<';
+}
+
+div.element > span.start:after {
+  content: '>';
+}
+
+div.element > span.start > span.name {
+}
+
+div.element li {
+  display: inline;
+}
+
+div.element > span.start > ul.attributes {
+  display: inline;
+  padding: 0;
+}
+
+div.element > span.start > ul.attributes span.name {
+  color: rgba(255,255,255,0.7);
+}
+
+div.element > span.start > ul.attributes span.name:before {
+  content: ' ';
+}
+
+div.element > span.start > ul.attributes span.name:after {
+  content: '=';
+}
+
+div.element > span.start > ul.attributes span.value {
+  color: white;
+}
+
+div.element > span.start > ul.attributes span.value:before {
+  content: '"';
+  color: rgba(255,255,255,0.7);
+}
+
+div.element > span.start > ul.attributes span.value:after {
+  content: '"';
+  color: rgba(255,255,255,0.7);
+}
+
+div.element > ul.children {
+  padding-left: 0.5em;
+  padding-right: 0.5em;
+}
+
+div.element > span.end {
+  position: absolute;
+  right: 0px;
+  bottom: 0px;
+}
+
+div.element > span.end:before {
+  content: '</';
+}
+
+div.element > span.end:after {
+  content: '>';
+}
+
+div.element li.text {
+  font-family: "Helvetica Neue";
+  color: black;
+}
