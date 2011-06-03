@@ -59,6 +59,15 @@ div.button:hover {
   <h2>Preview</h2>
   <div id="preview"></div>
 </div>
+<div id="sample" style="display: none;">
+  <div>
+    <p>Here is starting <em>HTML</em>.</p>
+    <img src="../github-ribbon.png">
+    <ul class="sample-list" id="sample-id">
+      <li class="areallyreallyreallyreallyreallyridiculouslylongclassname">List item one</li>
+    </ul>
+  </div>
+</div>
 <script>
 $(window).ready(function() {
   var isInIframe = !(top === self);
@@ -112,8 +121,8 @@ $(window).ready(function() {
     onMessage({
       title: "Here is a title.",
       instructions: "Here are instructions.",
-      startHTML: "<p>Here is starting HTML.</p>",
-      baseURI: "http://www.mozilla.org/"
+      startHTML: $("#sample").html(),
+      baseURI: document.baseURI
     });
 
     sendMessage = function fakeSendMessage(data) {
