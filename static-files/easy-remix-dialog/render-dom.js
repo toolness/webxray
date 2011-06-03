@@ -43,9 +43,8 @@
         item.append(renderElement(this));
         children.append(item);
         break;
-        
-        default:
-        throw new Error("unknown nodeType " + this.nodeType);
+
+        // TODO: What about other node types?
       }
     });
     if (children.children().length) {
