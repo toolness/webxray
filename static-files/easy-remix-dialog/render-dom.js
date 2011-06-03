@@ -24,7 +24,8 @@
     name.text(node.nodeName.toLowerCase());
     start.append(name);
     var attribs = makeAttributeList(node);
-    start.append(attribs);
+    if (attribs.children().length)
+      start.append(attribs);
     rendered.append(start);
     var children = $('<ul class="children"></ul>');
     $(node).contents().each(function() {
