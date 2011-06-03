@@ -98,7 +98,8 @@ div.element > span.end:after {
   content: '>';
 }
 
-div.element li.text {
+div.element div.text {
+  display: inline;
   font-family: "Helvetica Neue";
   color: black;
 }

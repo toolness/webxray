@@ -15,6 +15,13 @@
     return attribs;
   }
   
+  function renderTextNode(node) {
+    var div = $('<div class="text"></div>');
+    div.text(node.nodeValue);
+    div.data("linked-node", node);
+    return div;
+  }
+  
   function renderElement(node) {
     node = $(node).get(0);
     
@@ -33,8 +40,7 @@
       switch (this.nodeType) {
         case this.TEXT_NODE:
         if (jQuery.trim(this.nodeValue).length) {
-          item.addClass('text').text(this.nodeValue);
-          item.data("linked-node", this);
+          item.append(renderTextNode(this));
           children.append(item);
         }
         break;
