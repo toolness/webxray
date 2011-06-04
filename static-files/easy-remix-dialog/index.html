@@ -88,7 +88,6 @@ function enableDragAndDrop(rendering) {
     draggable.bind('dragend', function(event) {
       rendering.find('.current-drop').removeClass('current-drop');
       rendering.find('.current-drag').removeClass('current-drag');
-      return false;
     });
   }
   
@@ -186,7 +185,9 @@ $(window).ready(function() {
     });
 
     enableDragAndDrop(rendered);
-
+    rendered.bind('dragend', function() {
+      focused.unfocus();
+    });
     rendered.mouseout(function(event) {
       focused.unfocus();
     });
