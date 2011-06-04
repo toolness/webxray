@@ -186,6 +186,7 @@ function enableDragAndDrop(rendering) {
       }
 
       activateDraggable(currDrag);
+      activateDraggable(currDrag.find('div.element, div.text'));
       $(document.body).append(currDrag);
       currDrag.hide();
       currDrag.wrap('<li></li>');
