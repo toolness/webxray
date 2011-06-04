@@ -181,6 +181,7 @@ function enableDragAndDrop(rendering) {
       activateDraggable(currDrag);
       $(document.body).append(currDrag);
       currDrag.hide();
+      currDrag.makeTextEditable();
       currDrag.wrap('<li></li>');
 
       moveNode();
@@ -229,8 +230,10 @@ $(window).ready(function() {
       focused.unfocus();
     });
     var editables = rendered.find(".text, .attributes .value");
-    editables.makeTextEditable().click(function() {
-      focused.unfocus();
+    editables.makeTextEditable();
+    rendered.click(function(event) {
+      if ($(event.target).is(".text, .attributes .value"))
+        focused.unfocus();
     });
     $("#dom-rendering").append(rendered);
   }
