@@ -120,9 +120,13 @@ function enableDragAndDrop(rendering) {
     var currDrop = rendering.find('.current-drop');
 
     //console.log("over ", event.originalEvent.dataTransfer.types);
-    
-    if (!currDrag.has(currDrop.get(0)).length)
-      event.preventDefault();
+
+    // Are we being dragged into an element *inside* the
+    // dragged element?
+    if (currDrag.parent("li").has(currDrop.get(0)).length)
+      return;
+
+    event.preventDefault();
   });
   
   rendering.bind('drop', function(event) {
