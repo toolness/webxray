@@ -5,8 +5,8 @@ div.element {
   font-size: 9pt;
   color: rgba(0,0,0,0.75);
   border: 1px dotted black;
-  padding-bottom: 1.5em;
-  margin: 0.5em;
+  padding-bottom: 0.75em;
+  margin-left: 0.5em;
   word-wrap: break-word;
 }
 
@@ -102,4 +102,15 @@ div.element div.text {
   display: inline;
   font-family: "Helvetica Neue";
   color: black;
+}
+
+.drop-zone {
+  min-height: 8px;
+}
+
+.current-drag {
+}
+
+.current-drop {
+  background: rgba(0,0,0,0.25) !important;
 }

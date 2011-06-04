@@ -69,6 +69,86 @@ div.button:hover {
   </div>
 </div>
 <script>
+function enableDragAndDrop(rendering) {
+  var dropZoneHTML = '<div class="drop-zone"></div>'
+  
+  function activateDraggable(draggable) {
+    draggable.attr("draggable", "true");
+    draggable.bind('dragstart', function(event) {
+      var currDrag = rendering.find('.current-drag');
+
+      if (currDrag.length)
+        return;
+
+      var e = event.originalEvent;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/html', 'hi');
+      $(this).addClass('current-drag');
+    });
+    draggable.bind('dragend', function(event) {
+      rendering.find('.current-drop').removeClass('current-drop');
+      rendering.find('.current-drag').removeClass('current-drag');
+      return false;
+    });
+  }
+  
+  function activateDropZone(dropZone) {
+    dropZone.bind('dragenter', function(event) {
+      rendering.find('.current-drop').removeClass('current-drop');
+      $(this).addClass('current-drop');
+      return false;
+    });
+  }
+
+  function makeDropZones() {
+    rendering.find('.drop-zone').remove();
+    rendering.find('ul.children > li').append(dropZoneHTML);
+    rendering.find('span.start').after(dropZoneHTML);
+
+    var dropZones = rendering.find('.drop-zone');
+    activateDropZone(dropZones);
+  }
+  
+  function initialize() {
+    var draggables = rendering.find('div.element, div.text');
+    activateDraggable(draggables);
+    makeDropZones();
+  }
+  
+  rendering.bind('dragover', function(event) {
+    var currDrag = rendering.find('.current-drag');
+    var currDrop = rendering.find('.current-drop');
+
+    //console.log("over ", event.originalEvent.dataTransfer.types);
+    
+    if (!currDrag.has(currDrop.get(0)).length)
+      event.preventDefault();
+  });
+  
+  rendering.bind('drop', function(event) {
+    var currDrag = rendering.find('.current-drag');
+    var dropTarget = rendering.find('.current-drop');
+    var nodeToMove = currDrag.data("linked-node");
+
+    if (dropTarget.is("span.start ~ .current-drop")) {
+      var parentElement = dropTarget.parent().data("linked-node");
+      $(parentElement).prepend(nodeToMove);
+      if (!dropTarget.next("ul.children").length)
+        dropTarget.after('<ul class="children"></ul>');
+      dropTarget.next("ul.children").prepend(currDrag.parent());
+    } else {
+      var element = dropTarget.prev().data("linked-node");
+      $(element).after(nodeToMove);
+      $(dropTarget).closest("li").after(currDrag.parent());
+    }
+    makeDropZones();
+    
+    return false;
+  });
+
+  initialize();
+}
+
 $(window).ready(function() {
   var isInIframe = !(top === self);
   var responseSent = false;
@@ -97,6 +177,9 @@ $(window).ready(function() {
       if (linkedNode)
         focused.set(linkedNode);
     });
+
+    enableDragAndDrop(sample);
+
     sample.mouseout(function(event) {
       focused.unfocus();
     });
