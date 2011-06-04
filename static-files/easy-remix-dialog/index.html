@@ -164,11 +164,11 @@ $(window).ready(function() {
     $(document.head).append(base);
     $("#header h1").text(data.title);
     $("#preview").append(data.startHTML);
-    var sample = $('#preview').children().renderDom();
+    var rendered = $('#preview').children().renderDom();
 
     var focused = jQuery.focusedOverlay();
 
-    sample.mouseover(function(event) {
+    rendered.mouseover(function(event) {
       var target = $(event.target);
 
       if (!target.is('div.element'))
@@ -178,16 +178,16 @@ $(window).ready(function() {
         focused.set(linkedNode);
     });
 
-    enableDragAndDrop(sample);
+    enableDragAndDrop(rendered);
 
-    sample.mouseout(function(event) {
+    rendered.mouseout(function(event) {
       focused.unfocus();
     });
-    var editables = sample.find(".text, .attributes .value");
+    var editables = rendered.find(".text, .attributes .value");
     editables.makeTextEditable().click(function() {
       focused.unfocus();
     });
-    $("#dom-rendering").append(sample);
+    $("#dom-rendering").append(rendered);
   }
   
   if (isInIframe) {
