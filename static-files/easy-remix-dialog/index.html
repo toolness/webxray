@@ -127,12 +127,11 @@ function enableDragAndDrop(rendering) {
   rendering.bind('dragover', function(event) {
     var currDrag = rendering.find('.current-drag');
     var currDrop = rendering.find('.current-drop');
-
+    var makeCopy = event.shiftKey;
+    var isDropInsideDrag = currDrag.parent("li").has(currDrop.get(0)).length;
     //console.log("over ", event.originalEvent.dataTransfer.types);
 
-    // Are we being dragged into an element *inside* the
-    // dragged element?
-    if (currDrag.parent("li").has(currDrop.get(0)).length)
+    if (isDropInsideDrag && !makeCopy)
       return;
 
     event.preventDefault();
@@ -142,6 +141,8 @@ function enableDragAndDrop(rendering) {
     var currDrag = rendering.find('.current-drag');
     var dropTarget = rendering.find('.current-drop');
     var nodeToMove = currDrag.data("linked-node");
+    var isLocalDrag = currDrag.length;
+    var makeCopy = event.shiftKey;
     
     function moveNode() {
       if (dropTarget.prev("span.start").length) {
@@ -159,7 +160,8 @@ function enableDragAndDrop(rendering) {
       makeDropZones();
     }
     
-    if (currDrag.length) {
+    if (isLocalDrag && !makeCopy) {
+      console.log(event.shiftKey);
       currDrag.slideUp(moveNode);
     } else {
       var data = event.originalEvent.dataTransfer;
@@ -169,11 +171,13 @@ function enableDragAndDrop(rendering) {
       if (html) {
         nodeToMove = $(html).last().get(0);
         currDrag = $(nodeToMove).renderDom();
+        currDrag.find(".text, .attributes .value").makeTextEditable();
       } else if (text) {
         // TODO: This should really be part of jQuery.fn.renderDom().
         nodeToMove = document.createTextNode(text);
         currDrag = $('<div class="text"></div>').text(text);
         currDrag.data("linked-node", nodeToMove);
+        currDrag.makeTextEditable();
       } else {
         throw new Error("unsupported dataTransfer type");
       }
@@ -181,7 +185,6 @@ function enableDragAndDrop(rendering) {
       activateDraggable(currDrag);
       $(document.body).append(currDrag);
       currDrag.hide();
-      currDrag.makeTextEditable();
       currDrag.wrap('<li></li>');
 
       moveNode();
