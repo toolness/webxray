@@ -134,18 +134,21 @@ function enableDragAndDrop(rendering) {
     var dropTarget = rendering.find('.current-drop');
     var nodeToMove = currDrag.data("linked-node");
 
-    if (dropTarget.is("span.start ~ .current-drop")) {
-      var parentElement = dropTarget.parent().data("linked-node");
-      $(parentElement).prepend(nodeToMove);
-      if (!dropTarget.next("ul.children").length)
-        dropTarget.after('<ul class="children"></ul>');
-      dropTarget.next("ul.children").prepend(currDrag.parent());
-    } else {
-      var element = dropTarget.prev().data("linked-node");
-      $(element).after(nodeToMove);
-      $(dropTarget).closest("li").after(currDrag.parent());
-    }
-    makeDropZones();
+    currDrag.slideUp(function() {
+      if (dropTarget.prev("span.start").length) {
+          var parentElement = dropTarget.parent().data("linked-node");
+          if (!dropTarget.next("ul.children").length)
+            dropTarget.after('<ul class="children"></ul>');
+          $(parentElement).prepend(nodeToMove);
+          dropTarget.next("ul.children").prepend(currDrag.parent());
+      } else {
+        var element = dropTarget.prev().data("linked-node");
+        $(element).after(nodeToMove);
+        $(dropTarget).closest("li").after(currDrag.parent());
+      }
+      currDrag.slideDown();
+      makeDropZones();
+    });
     
     return false;
   });
