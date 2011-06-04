@@ -80,9 +80,13 @@ function enableDragAndDrop(rendering) {
       if (currDrag.length)
         return;
 
+      var linked = $(this).data("linked-node");
       var e = event.originalEvent;
       e.dataTransfer.effectAllowed = 'move';
-      e.dataTransfer.setData('text/html', 'hi');
+      if (linked.nodeType == linked.TEXT_NODE)
+        e.dataTransfer.setData('text/plain', linked.nodeValue);
+      else
+        e.dataTransfer.setData('text/html', $(linked).outerHtml());
       $(this).addClass('current-drag');
     });
     draggable.bind('dragend', function(event) {
@@ -132,14 +136,14 @@ function enableDragAndDrop(rendering) {
     var currDrag = rendering.find('.current-drag');
     var dropTarget = rendering.find('.current-drop');
     var nodeToMove = currDrag.data("linked-node");
-
-    currDrag.slideUp(function() {
+    
+    function moveNode() {
       if (dropTarget.prev("span.start").length) {
-          var parentElement = dropTarget.parent().data("linked-node");
-          if (!dropTarget.next("ul.children").length)
-            dropTarget.after('<ul class="children"></ul>');
-          $(parentElement).prepend(nodeToMove);
-          dropTarget.next("ul.children").prepend(currDrag.parent());
+        var parentElement = dropTarget.parent().data("linked-node");
+        if (!dropTarget.next("ul.children").length)
+          dropTarget.after('<ul class="children"></ul>');
+        $(parentElement).prepend(nodeToMove);
+        dropTarget.next("ul.children").prepend(currDrag.parent());
       } else {
         var element = dropTarget.prev().data("linked-node");
         $(element).after(nodeToMove);
@@ -147,8 +151,35 @@ function enableDragAndDrop(rendering) {
       }
       currDrag.slideDown();
       makeDropZones();
-    });
+    }
     
+    if (currDrag.length) {
+      currDrag.slideUp(moveNode);
+    } else {
+      var data = event.originalEvent.dataTransfer;
+      var html = data.getData('text/html');
+      var text = data.getData('text/plain');
+
+      if (html) {
+        nodeToMove = $(html).last().get(0);
+        currDrag = $(nodeToMove).renderDom();
+      } else if (text) {
+        // TODO: This should really be part of jQuery.fn.renderDom().
+        nodeToMove = document.createTextNode(text);
+        currDrag = $('<div class="text"></div>').text(text);
+        currDrag.data("linked-node", nodeToMove);
+      } else {
+        throw new Error("unsupported dataTransfer type");
+      }
+
+      activateDraggable(currDrag);
+      $(document.body).append(currDrag);
+      currDrag.hide();
+      currDrag.wrap('<li></li>');
+
+      moveNode();
+      // TODO: call rendering.trigger('dragend');?
+    }
     return false;
   });
 
