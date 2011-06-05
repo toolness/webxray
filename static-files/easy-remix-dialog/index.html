@@ -124,7 +124,7 @@ function enableDragAndDrop(rendering) {
       
       var linked = $(this).data("linked-node");
       var e = event.originalEvent;
-      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.effectAllowed = 'all';
       if (linked.nodeType == linked.TEXT_NODE)
         e.dataTransfer.setData('text/plain', linked.nodeValue);
       else
@@ -316,7 +316,7 @@ $(window).ready(function() {
       var e = event.originalEvent;
       var id = $(this).attr('id');
 
-      e.dataTransfer.effectAllowed = 'copy';
+      e.dataTransfer.effectAllowed = 'all';
 
       switch (id) {
         case "sample-text":
