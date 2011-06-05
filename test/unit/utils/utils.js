@@ -1,5 +1,12 @@
 module("utils", htmlFixture("utils"));
 
+test("isVoidElement()", function() {
+  equal(jQuery('<img>').isVoidElement(), true,
+        'returns true on void elements');
+  equal(jQuery('<div></div>').isVoidElement(), false,
+        'returns false on not-void elements');
+});
+
 test("outerHtml()", function() {
   var html = '<div class="blah">hi</div>';
   var element = jQuery(html);

@@ -44,6 +44,15 @@
   });
   
   jQuery.fn.extend({
+    // returns whether at least one of the matched elements is a
+    // void element (i.e., has no closing tag).
+    isVoidElement: function() {
+      // Taken from:
+      // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
+      return this.is("area, base, br, col, command, embed, hr, img, " +
+                     "input, keygen, link, meta, param, source, " +
+                     "track, wbr");
+    },
     // works like jQuery's html() with no arguments, but
     // includes HTML code for the matched elements themselves.
     outerHtml: function outerHtml() {

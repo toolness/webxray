@@ -66,13 +66,6 @@
   }
     
   jQuery.fn.extend({
-    isVoidElement: function() {
-      // Taken from:
-      // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
-      return this.is("area, base, br, col, command, embed, hr, img, " +
-                     "input, keygen, link, meta, param, source, " +
-                     "track, wbr");
-    },
     renderDom: function renderDom() {
       return renderElement(this);
     }
