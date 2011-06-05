@@ -28,6 +28,8 @@
     var rendered = $('<div class="element"></div>');
     var start = $('<span class="start"></span>');
     var name = $('<span class="name"></span>');
+    if ($(node).isVoidElement())
+      rendered.addClass("is-void");
     name.text(node.nodeName.toLowerCase());
     start.append(name);
     var attribs = makeAttributeList(node);
@@ -64,6 +66,13 @@
   }
     
   jQuery.fn.extend({
+    isVoidElement: function() {
+      // Taken from:
+      // http://www.w3.org/TR/html-markup/syntax.html#syntax-elements
+      return this.is("area, base, br, col, command, embed, hr, img, " +
+                     "input, keygen, link, meta, param, source, " +
+                     "track, wbr");
+    },
     renderDom: function renderDom() {
       return renderElement(this);
     }
