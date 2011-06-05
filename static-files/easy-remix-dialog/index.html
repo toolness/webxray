@@ -59,12 +59,20 @@ div.trash.active {
   background: red;
 }
 
+span.sample {
+  border: 1px dotted gray;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 8pt;
+  background: #f0f0f0;
+  padding: 3px;
+}
 </style>
 <div id="buttons">
   <div class="button" id="nevermind">Nevermind</div>
   <div class="button" id="ok">Ok</div>
 </div>
 <div id="header"><h1></h1></div>
+<p>Try dragging and dropping elements in the source code to move them around. Hold shift to copy instead of move. Click on text to change it. Want some inspiration? Drag content from other webpages into the source code, or try dragging these: <span class="sample" id="sample-link">link</span> <span class="sample" id="sample-image">image</span> <span class="sample" id="sample-text">text</span> <span class="sample" id="sample-list">list</span>.</p>
 <div id="dom-rendering-column">
   <h2>Source Code</h2>
   <div id="dom-rendering"></div>
@@ -72,6 +80,11 @@ div.trash.active {
 <div id="preview-column">
   <h2>Preview</h2>
   <div id="preview"></div>
+</div>
+<div id="samples" style="display: none;">
+  <div class="sample-image"><img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png"></div>
+  <div class="sample-link"><a href="http://wikipedia.org/">Here is a sample link.</div>
+  <div class="sample-list"><ul><li>Item one</li><li>Item two</li></ul></div>
 </div>
 <div id="sample" style="display: none;">
   <div>
@@ -83,8 +96,6 @@ div.trash.active {
   </div>
 </div>
 <script>
-// TODO: add some kind of factory/hackbook interface allowing people
-//       to make new elements easily
 // TODO: add firefox/opera/safari support
 // TODO: prevent appending to void elements defined at
 //       http://www.w3.org/TR/html-markup/syntax.html#syntax-elements.
@@ -300,6 +311,24 @@ $(window).ready(function() {
         focused.unfocus();
     });
     $("#dom-rendering").append(rendered);
+
+    $("span.sample").attr("draggable", "true");
+    $("span.sample").bind('dragstart', function(event) {
+      var e = event.originalEvent;
+      var id = $(this).attr('id');
+
+      e.dataTransfer.effectAllowed = 'copy';
+
+      switch (id) {
+        case "sample-text":
+        e.dataTransfer.setData('text/plain', "here is sample text.");
+        break;
+        
+        default:
+        var html = $("div#samples").find("." + id).html();
+        e.dataTransfer.setData('text/html', html);
+      }      
+    });
   }
   
   if (isInIframe) {
