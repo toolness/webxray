@@ -14,10 +14,10 @@
     var element = null;
 
     function labelOverlay(overlay, target, finalSize) {
-      var parts = ["top"];
+      var parts = ["top", "bottom"];
       
-      if ($(target).contents().length)
-        parts = ["bottom", "top"];
+      if ($(target).isVoidElement())
+        parts = ["top"];
       
       finalSize = finalSize || overlay;
       parts.forEach(function(className) {
