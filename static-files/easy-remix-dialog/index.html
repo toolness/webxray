@@ -45,6 +45,20 @@ div.button:hover {
   background: black;
   color: white;
 }
+
+div.trash {
+  float: left;
+  background: black;
+  color: white;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 9pt;
+  padding: 10px;
+}
+
+div.trash.active {
+  background: red;
+}
+
 </style>
 <div id="buttons">
   <div class="button" id="nevermind">Nevermind</div>
@@ -69,7 +83,6 @@ div.button:hover {
   </div>
 </div>
 <script>
-// TODO: add ability to delete nodes
 // TODO: add some kind of factory/hackbook interface allowing people
 //       to make new elements easily
 // TODO: add firefox/opera/safari support
@@ -92,6 +105,15 @@ function enableDragAndDrop(rendering) {
       if (currDrag.length)
         return;
 
+      var trash = $('<div class="trash">X</div>');
+      rendering.append(trash);
+      activateTrash(trash);
+      var offset = $(this).offset();
+      trash.offset({
+        left: offset.left + $(this).outerWidth(),
+        top: offset.top
+      });
+      
       var linked = $(this).data("linked-node");
       var e = event.originalEvent;
       e.dataTransfer.effectAllowed = 'move';
@@ -104,6 +126,7 @@ function enableDragAndDrop(rendering) {
     draggable.bind('dragend', function(event) {
       rendering.find('.current-drop').removeClass('current-drop');
       rendering.find('.current-drag').removeClass('current-drag');
+      rendering.find("div.trash").remove();
     });
   }
   
@@ -128,6 +151,38 @@ function enableDragAndDrop(rendering) {
     var draggables = rendering.find('div.element, div.text');
     activateDraggable(draggables);
     makeDropZones();
+  }
+  
+  function activateTrash(trash) {
+    trash.bind('dragenter', function(event) {
+      $(this).addClass('active');
+    });
+  
+    trash.bind('dragleave', function(event) {
+      $(this).removeClass('active');
+    });
+  
+    trash.bind('drop', function(event) {
+      var currDrag = rendering.find('.current-drag');
+      var nodeToDelete = currDrag.data("linked-node");
+    
+      currDrag.slideUp(function() {
+        currDrag.parent().remove();
+        nodeToDelete.parentNode.removeChild(nodeToDelete);
+        makeDropZones();
+      });
+
+      return false;
+    });
+  
+    trash.bind('dragover', function(event) {
+      var currDrag = rendering.find('.current-drag');
+
+      if (currDrag.length) {
+        rendering.find('.current-drop').removeClass('current-drop');
+        event.preventDefault();
+      }
+    });
   }
   
   rendering.bind('dragover', function(event) {
