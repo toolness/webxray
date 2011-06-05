@@ -32,7 +32,6 @@
         mixMaster: mixMaster,
         eventSource: options.eventSource,
         onQuit: function() {
-          self.unload();
           self.emit('quit');
         }
       });
@@ -46,6 +45,7 @@
       $(window).focus();
 
       var self = jQuery.eventEmitter({
+        mixMaster: mixMaster,
         unload: function() {
           if (!isUnloaded) {
             isUnloaded = true;

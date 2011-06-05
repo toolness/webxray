@@ -69,7 +69,10 @@
   $(window).ready(function() {
     loadPrerequisites(function() {
       var ui = jQuery.xRayUI({eventSource: document});
-      ui.on('quit', function() { $(document).trigger('unload'); });
+      ui.on('quit', function() {
+        ui.mixMaster.saveHistoryToDOM();
+        $(document).trigger('unload');
+      });
       $(document).unload(function() {
         ui.unload();
         removeOnUnload.remove();
