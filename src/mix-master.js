@@ -345,7 +345,9 @@
         
         return wasAnythingChanged;
       },
-      replaceFocusedElementWithDialog: function(input, dialogURL, body) {
+      replaceFocusedElementWithDialog: function(options) {
+        var input = options.input;
+        var dialogURL = options.dialogURL;
         var MAX_HTML_LENGTH = 5000;
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
@@ -389,7 +391,7 @@
 
         jQuery.morphElementIntoDialog({
           input: input,
-          body: body,
+          body: options.body,
           url: dialogURL + "#dialog",
           element: focusedElement,
           onLoad: function(dialog) {
