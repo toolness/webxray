@@ -25,7 +25,8 @@
           });
         },
         ignore: $(".webxray-hud, .webxray-overlay, " +
-                  ".webxray-dialog-overlay, link.webxray")
+                  ".webxray-dialog-overlay, link.webxray, " +
+                  "#webxray-is-active")
       });
     }
   });
