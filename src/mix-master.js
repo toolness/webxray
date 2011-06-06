@@ -351,6 +351,10 @@
         if (!focusedElement)
           return;
 
+        // We need to remove any script tags in the element now, or else
+        // we'll likely re-execute them.
+        $(focusedElement).find("script").remove();
+
         var focusedHTML = $(focusedElement).outerHtml();
 
         if ($(focusedElement).is('html, body')) {
