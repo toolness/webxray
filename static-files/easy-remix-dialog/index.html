@@ -1,9 +1,10 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <link rel="stylesheet" href="hierarchic-source-code.css">
-<link rel="stylesheet" href="../webxray.css">
+<link rel="stylesheet" id="webxray" href="../webxray.css">
 <title>Easy Remix Dialog</title>
 <script src="../jquery.min.js"></script>
+<script src="../jquery.scrollTo-min.js"></script>
 <script src="render-dom.js"></script>
 <script src="edit-dom.js"></script>
 <script src="../src/utils.js"></script>
@@ -31,6 +32,13 @@ h1, h2 {
   width: 480px;
   float: left;
   margin-left: 2em;
+}
+
+#preview {
+  position: fixed;
+  border: none;
+  width: 480px;
+  height: 400px;
 }
 
 .button {
@@ -84,23 +92,13 @@ span.sample {
 </div>
 <div id="preview-column">
   <h2>Preview</h2>
-  <div id="preview"></div>
+  <iframe id="preview" scrolling="no" src="blank.html"></iframe>
 </div>
 <div id="samples" style="display: none;">
   <div class="sample-link"><a href="http://wikipedia.org/">Here is a sample link.</div>
   <div class="sample-list"><ul><li>Item one</li><li>Item two</li></ul></div>
 </div>
-<div id="sample" style="display: none;">
-  <div>
-    <p>Here is starting <em>HTML</em>.</p>
-    <img src="../github-ribbon.png">
-    <ul class="sample-list" id="sample-id">
-      <li class="areallyreallyreallyreallyreallyridiculouslylongclassname">List item one</li>
-    </ul>
-  </div>
-</div>
 <script>
-// TODO: add firefox/opera/safari support
 // TODO: consider automatically absolutifying src and href URLs.
 // TODO: add infinite undo/redo.
 // TODO: make it possible to create/delete attributes.
@@ -278,14 +276,81 @@ $(window).ready(function() {
       return;
     isStarted = true;
     
-    var base = document.createElement('base');
-    base.setAttribute('href', data.baseURI);
-    $(document.head).append(base);
     $("#header h1").text(data.title);
-    $("#preview").append(data.startHTML);
-    var rendered = $('#preview').children().renderDom();
+    
+    var previewDoc = $("#preview").contents();
+    var stylesheet = $('<link rel="stylesheet"></link>');
 
+    // TODO: We need to be able to set the doctype too,
+    // for full fidelity to the original page.
+    previewDoc.find("head").html(data.startHTML.head);
+    stylesheet.attr('href', $("link#webxray").get(0).href);
+    previewDoc.find("head").append(stylesheet);
+    previewDoc.find("body").html(data.startHTML.body);
+    
+    // The selector has to be relative to the body element;
+    // for some reason, the nth-of-type CSS selector doesn't
+    // work for html and body elements in iframes.
+    var selected = previewDoc.find("body").find(data.startHTML.selector);
+    var stayVisible = selected.find("*");
+    stayVisible = stayVisible.add(selected.parents()).add(selected);
+    previewDoc.find("*").not(stayVisible).hide();
+    
+    function setZoom(zoom) {
+      $("#preview").contents().find("html").css({
+        '-webkit-transform': 'scale(' + zoom + ')',
+        '-webkit-transform-origin': 'top left',
+        '-moz-transform': 'scale(' + zoom + ')',
+        '-moz-transform-origin': 'top left'
+      });
+    }
+    
+    function scaleAndPan(isInstant) {
+      var contentWidth = selected.outerWidth(true);
+      var frameWidth = $("#preview").width();
+      var zoom = 1.0;
+      if (contentWidth > frameWidth) {
+        zoom = frameWidth / contentWidth;
+      }
+      setZoom(1.0);
+      var originalOffset = selected.offset();
+      setZoom(zoom);
+      var offset = selected.offset();
+      
+      // Firefox doesn't apply transformations to
+      // offset coordinates, so we'll need to do it
+      // manually.
+      if (zoom != 1.0 && offset.top == originalOffset.top) {
+        offset.top *= zoom;
+        offset.left *= zoom;
+      }
+
+      var options = {};
+      
+      if (!isInstant)
+        options.duration = 1000;
+      
+      $("#preview").scrollTo({
+        top: offset.top,
+        left: offset.left
+      }, options);
+    }
+    
+    setInterval(scaleAndPan, 500);
+    scaleAndPan(true);
+    
+    var rendered = previewDoc.find(data.startHTML.selector).renderDom();
     var focused = jQuery.focusedOverlay();
+
+    $("#ok.button").click(function() {
+      if (!responseSent) {
+        sendMessage({
+          msg: 'ok',
+          endHTML: selected.outerHtml()
+        });
+        responseSent = true;
+      }
+    });
 
     rendered = rendered.wrap('<div></div>').parent();
 
@@ -348,11 +413,20 @@ $(window).ready(function() {
       window.parent.postMessage(JSON.stringify(data), "*");
     }
   } else {
-    onMessage({
-      title: "Easy Remix Dialog",
-      instructions: "Here are instructions.",
-      startHTML: $("#sample").html(),
-      baseURI: document.baseURI
+    var iframe = $('<iframe src="sample.html"></iframe>');
+    $(document.body).append(iframe);
+    iframe.hide();
+    iframe.load(function() {
+      var doc = iframe.contents();
+      onMessage({
+        title: "Easy Remix Dialog",
+        instructions: "Here are instructions.",
+        startHTML: {
+          selector: "#sample",
+          head: doc.find("head").html(),
+          body: doc.find("body").html()
+        }
+      });
     });
 
     sendMessage = function fakeSendMessage(data) {
@@ -364,12 +438,6 @@ $(window).ready(function() {
   $("#nevermind.button").click(function() {
     if (!responseSent) {
       sendMessage({msg: 'nevermind'});
-      responseSent = true;
-    }
-  });
-  $("#ok.button").click(function() {
-    if (!responseSent) {
-      sendMessage({msg: 'ok', endHTML: $("#preview").html()});
       responseSent = true;
     }
   });

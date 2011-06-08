@@ -55,7 +55,9 @@
           case keys.E:
           mixMaster.replaceFocusedElementWithDialog(
             self,
-            jQuery.webxraySettings.baseURI + "easy-remix-dialog/"
+            jQuery.webxraySettings.baseURI + "easy-remix-dialog/",
+            undefined,
+            true
             );
           return true;
           

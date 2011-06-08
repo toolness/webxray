@@ -345,7 +345,8 @@
         
         return wasAnythingChanged;
       },
-      replaceFocusedElementWithDialog: function(input, dialogURL, body) {
+      replaceFocusedElementWithDialog: function(input, dialogURL, body,
+                                                sendFullDocument) {
         var MAX_HTML_LENGTH = 5000;
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
@@ -380,52 +381,65 @@
           jQuery.warn("imprintCSSInline() failed", e);
         }
         
-        focused.unfocus();
-        $(focusedElement).addClass('webxray-hidden');
-
-        jQuery.morphElementIntoDialog({
-          input: input,
-          body: body,
-          url: dialogURL + "#dialog",
-          element: focusedElement,
-          onLoad: function(dialog) {
-            dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
-              title: "Compose A Replacement",
-              instructions: "<span>When you're done composing your " +
-                            "replacement HTML, press the " +
-                            "<strong>Ok</strong> button.",
-              startHTML: focusedHTML,
-              baseURI: document.location.href
-            }), "*");
-            dialog.iframe.fadeIn();
-            dialog.iframe.bind("message", function onMessage(event, data) {
-              if (data && data.length && data[0] == '{') {
-                var data = JSON.parse(data);
-                if (data.msg == "ok") {
-                  // The dialog may have decided to replace all our spaces
-                  // with non-breaking ones, so we'll undo that.
-                  var html = data.endHTML.replace(/\u00a0/g, " ");
-                  var newContent = self.replaceElement(focusedElement, html);
-
-                  newContent.addClass('webxray-hidden');
-                  $(focusedElement).removeClass('webxray-hidden');
-                  jQuery.morphDialogIntoElement({
-                    dialog: dialog,
-                    input: input,
-                    element: newContent,
-                    onDone: function() {
-                      newContent.removeClass('webxray-hidden');
-                    }
-                  });
-                } else {
-                  // TODO: Re-focus previously focused elements?
-                  $(focusedElement).removeClass('webxray-hidden');
-                  dialog.close();
-                }
-              }
+        if (sendFullDocument) {
+          $(document).uprootIgnoringWebxray(function (html, head, body) {
+            begin({
+              head: head,
+              body: body,
+              selector: $(document.body).pathTo(focused.getPrimaryElement())
             });
-          }
-        });
+          });
+        } else
+          begin(focusedHTML);
+
+        function begin(startHTML) {
+          focused.unfocus();
+          $(focusedElement).addClass('webxray-hidden');
+
+          jQuery.morphElementIntoDialog({
+            input: input,
+            body: body,
+            url: dialogURL + "#dialog",
+            element: focusedElement,
+            onLoad: function(dialog) {
+              dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
+                title: "Compose A Replacement",
+                instructions: "<span>When you're done composing your " +
+                              "replacement HTML, press the " +
+                              "<strong>Ok</strong> button.",
+                startHTML: startHTML,
+                baseURI: document.location.href
+              }), "*");
+              dialog.iframe.fadeIn();
+              dialog.iframe.bind("message", function onMessage(event, data) {
+                if (data && data.length && data[0] == '{') {
+                  var data = JSON.parse(data);
+                  if (data.msg == "ok") {
+                    // The dialog may have decided to replace all our spaces
+                    // with non-breaking ones, so we'll undo that.
+                    var html = data.endHTML.replace(/\u00a0/g, " ");
+                    var newContent = self.replaceElement(focusedElement, html);
+
+                    newContent.addClass('webxray-hidden');
+                    $(focusedElement).removeClass('webxray-hidden');
+                    jQuery.morphDialogIntoElement({
+                      dialog: dialog,
+                      input: input,
+                      element: newContent,
+                      onDone: function() {
+                        newContent.removeClass('webxray-hidden');
+                      }
+                    });
+                  } else {
+                    // TODO: Re-focus previously focused elements?
+                    $(focusedElement).removeClass('webxray-hidden');
+                    dialog.close();
+                  }
+                }
+              });
+            }
+          });
+        }
       }
     };
     return self;
