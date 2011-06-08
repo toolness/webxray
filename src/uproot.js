@@ -16,22 +16,25 @@
   
   jQuery.extend({
     openUprootDialog: function(input) {
-      $(document).uproot({
-        success: function(html) {
-          jQuery.simpleModalDialog({
-            input: input,
-            filename: "uproot-dialog.html",
-            payload: html
-          });
-        },
-        ignore: $(".webxray-hud, .webxray-overlay, " +
-                  ".webxray-dialog-overlay, link.webxray, " +
-                  "#webxray-is-active")
+      $(document).uprootIgnoringWebxray(function(html) {
+        jQuery.simpleModalDialog({
+          input: input,
+          filename: "uproot-dialog.html",
+          payload: html
+        });
       });
     }
   });
   
   jQuery.fn.extend({
+    uprootIgnoringWebxray: function(cb) {
+      $(document).uproot({
+        success: cb,
+        ignore: $(".webxray-hud, .webxray-overlay, " +
+                  ".webxray-dialog-overlay, link.webxray, " +
+                  "#webxray-is-active")
+      });
+    },
     uproot: function(cb) {
       var options = {
         ignore: $()
@@ -56,9 +59,11 @@
           var doctype = makeDoctypeTag(document.doctype);
           var html = doctype + '\n<html>' +
                      document.documentElement.innerHTML + '</html>';
+          var head = document.head.innerHTML;
+          var body = document.body.innerHTML;
           removal.undo();
           $(base).remove();
-          cb.call(elem, html);
+          cb.call(elem, html, head, body);
         }, 0);
     }
   });
