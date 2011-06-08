@@ -267,6 +267,8 @@ function enableDragAndDrop(rendering) {
 }
 
 $(window).ready(function() {
+  $(document.body).hide();
+
   var isInIframe = !(top === self);
   var responseSent = false;
   var isStarted = false;
@@ -276,6 +278,8 @@ $(window).ready(function() {
       return;
     isStarted = true;
     
+    $(document.body).show();
+
     $("#header h1").text(data.title);
     
     var previewDoc = $("#preview").contents();
@@ -401,6 +405,8 @@ $(window).ready(function() {
         e.dataTransfer.setData('text/html', html);
       }      
     });
+    
+    $(document.body).hide().fadeIn();    
   }
   
   if (isInIframe) {
