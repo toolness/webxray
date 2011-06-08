@@ -330,6 +330,7 @@ $(window).ready(function() {
       if (!isInstant)
         options.duration = 1000;
       
+      $("#preview").height(selected.outerHeight(true));
       $("#preview").scrollTo({
         top: offset.top,
         left: offset.left
