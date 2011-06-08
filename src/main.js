@@ -46,8 +46,11 @@
   function loadPrerequisites(cb) {
     var script = getMyScript();
     var baseURI = script.attr("src").match(/(.*)webxray\.js$/)[1];
-    var cssURI = baseURI + 'webxray.css';
-    var cssLink = $('link[href="' + cssURI + '"]');
+
+    jQuery.webxraySettings.baseURI = baseURI;
+
+    var cssURL = jQuery.webxraySettings.url("cssURL");
+    var cssLink = $('link[href="' + cssURL + '"]');
     var active = $('<div id="webxray-is-active"></div>');
 
     script.remove();
@@ -58,11 +61,10 @@
     // which inserts the link tag itself.
     if (cssLink.length == 0) {
       cssLink = $('<link rel="stylesheet" class="webxray"></link>');
-      $(document.head).append(cssLink.attr("href", cssURI));
+      $(document.head).append(cssLink.attr("href", cssURL));
     }
 
     removeOnUnload = removeOnUnload.add([cssLink.get(0), active.get(0)]);
-    jQuery.webxraySettings.baseURI = baseURI;
     waitForCSSToLoad(cb);
   }
 

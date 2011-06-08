@@ -55,7 +55,7 @@
           case keys.E:
           mixMaster.replaceFocusedElementWithDialog({
             input: self,
-            dialogURL: jQuery.webxraySettings.baseURI + "easy-remix-dialog/",
+            dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
             sendFullDocument: true
           });
           return true;
@@ -63,7 +63,7 @@
           case keys.R:
           mixMaster.replaceFocusedElementWithDialog({
             input: self,
-            dialogURL: jQuery.webxraySettings.mixMasterDialogURL
+            dialogURL: jQuery.webxraySettings.url("mixMasterDialogURL")
           });
           return true;
 
@@ -75,9 +75,9 @@
           case keys.B:
           jQuery.simpleModalDialog({
             input: self,
-            filename: "share-dialog.html",
-            payload: jQuery.webxraySettings.baseURI +
-                     "share/?r=" +
+            url: jQuery.webxraySettings.url("shareDialogURL"),
+            payload: jQuery.webxraySettings.url("sharePageURL") +
+                     "?r=" +
                      jQuery.compressStrToUriComponent(
                        mixMaster.getRecording()
                      ) +

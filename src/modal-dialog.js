@@ -28,7 +28,7 @@
     simpleModalDialog: function(options) {
       var dialog = jQuery.modalDialog({
         input: options.input,
-        url: jQuery.webxraySettings.baseURI + options.filename
+        url: options.url
       });
       dialog.iframe.one("load", function() {
         this.contentWindow.postMessage(options.payload, "*");

@@ -19,7 +19,7 @@
       $(document).uprootIgnoringWebxray(function(html) {
         jQuery.simpleModalDialog({
           input: input,
-          filename: "uproot-dialog.html",
+          url: jQuery.webxraySettings.url("uprootDialogURL"),
           payload: html
         });
       });

@@ -9,6 +9,11 @@
       return this.baseURI + this[name];
     },
     baseURI: "",
-    mixMasterDialogURL: "http://labs.toolness.com/dom-tutorial/"
+    cssURL: "webxray.css",
+    mixMasterDialogURL: "http://labs.toolness.com/dom-tutorial/index.html",
+    easyRemixDialogURL: "easy-remix-dialog/index.html",
+    shareDialogURL: "share-dialog.html",
+    sharePageURL: "share/",
+    uprootDialogURL: "uproot-dialog.html"
   };
 })(jQuery);
