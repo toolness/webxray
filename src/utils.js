@@ -117,6 +117,7 @@
     // matched element.
     overlay: function overlay() {
       var pos = this.offset();
+      var body = this.get(0).ownerDocument.body;
       var overlay = $('<div class="webxray-base webxray-overlay">' +
                       '&nbsp;</div>');
       overlay.css({
@@ -125,7 +126,7 @@
         height: this.outerHeight(),
         width: this.outerWidth()
       });
-      $(document.body).append(overlay);
+      $(body).append(overlay);
 
       return overlay;
     },
