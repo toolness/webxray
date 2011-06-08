@@ -345,12 +345,18 @@
         
         return wasAnythingChanged;
       },
-      replaceFocusedElementWithDialog: function(input, dialogURL, body,
-                                                sendFullDocument) {
+      replaceFocusedElementWithDialog: function(options) {
+        var input = options.input;
+        var dialogURL = options.dialogURL;
+        var sendFullDocument = options.sendFullDocument;
         var MAX_HTML_LENGTH = 5000;
         var focusedElement =  focused.getPrimaryElement();
         if (!focusedElement)
           return;
+
+        // We need to remove any script tags in the element now, or else
+        // we'll likely re-execute them.
+        $(focusedElement).find("script").remove();
 
         var focusedHTML = $(focusedElement).outerHtml();
 
@@ -398,7 +404,7 @@
 
           jQuery.morphElementIntoDialog({
             input: input,
-            body: body,
+            body: options.body,
             url: dialogURL + "#dialog",
             element: focusedElement,
             onLoad: function(dialog) {
