@@ -43,7 +43,7 @@ location. If you'd like to host your own dialog, though, you can:
 
   2. In the `webxray` repository, create a new file called
   `src/settings.local.js`. Assuming your hosted instance of the dialog is at
-  http://127.0.0.1:8002/, and fill it with this:
+  http://127.0.0.1:8002/, fill it with this:
 
         jQuery.webxraySettings.extend({
           mixMasterDialogURL: "http://127.0.0.1:8002/"
