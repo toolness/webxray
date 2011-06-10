@@ -16,15 +16,20 @@
   
   for (var i = 0; i < alphabet.length; i++)
     keys[alphabet[i]] = alphabet.charCodeAt(i);
-  
+
   jQuery.extend({
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
+      var styleInfo = jQuery.styleInfoOverlay({focused: focused});
 
       function handleKey(event) {
+        if (event.shiftKey) {
+          styleInfo.show();
+        }
+        
         if (event.altKey || event.ctrlKey ||
             event.altGraphKey || event.metaKey) {
           return false;
@@ -102,6 +107,10 @@
             event.preventDefault();
             event.stopPropagation();
           }
+        },
+        keyup: function(event) {
+          if (!event.shiftKey)
+            styleInfo.hide();
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {

@@ -212,3 +212,34 @@ div#webxray-wait-for-css-to-load {
     content: "CSS is loaded" !important;
     background-color: rgb(0, 1, 2);
 }
+
+.webxray-style-info {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  z-index: 2147483646;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+  padding: 1em;
+  font-size: 8pt;
+  pointer-events: none;
+}
+
+.webxray-style-info .webxray-rows {
+  display: table;
+}
+
+.webxray-style-info .webxray-rows .webxray-row {
+  display: table-row;
+}
+
+.webxray-style-info .webxray-rows .webxray-row .webxray-name {
+  color: #d0d0d0;
+}
+
+.webxray-style-info .webxray-rows .webxray-row .webxray-name,
+.webxray-style-info .webxray-rows .webxray-row .webxray-value {
+  padding-right: 1em;
+  display: table-cell;
+  max-width: 15em;
+}
