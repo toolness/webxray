@@ -223,23 +223,25 @@ div#webxray-wait-for-css-to-load {
   padding: 1em;
   font-size: 8pt;
   pointer-events: none;
+  -webkit-column-count: 4;
+  -moz-column-count: 4;
+  -moz-column-width: 10em;
+  word-wrap: break-word;
+  min-width: 50em;
 }
 
 .webxray-style-info .webxray-rows {
-  display: table;
 }
 
 .webxray-style-info .webxray-rows .webxray-row {
-  display: table-row;
 }
 
 .webxray-style-info .webxray-rows .webxray-row .webxray-name {
+  padding-right: 1em;
   color: #d0d0d0;
 }
 
 .webxray-style-info .webxray-rows .webxray-row .webxray-name,
 .webxray-style-info .webxray-rows .webxray-row .webxray-value {
-  padding-right: 1em;
-  display: table-cell;
-  max-width: 15em;
+  display: inline;
 }

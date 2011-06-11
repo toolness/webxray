@@ -68,7 +68,7 @@
 
       names.sort();
 
-      var NUM_COLS = 3;
+      var NUM_COLS = 1;
 
       for (var i = 0; i < names.length + NUM_COLS; i += NUM_COLS) {
         var row = $('<div class="webxray-row"></div>');
