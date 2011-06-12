@@ -87,13 +87,22 @@
 
       jQuery.each(style, function() {
         var name = this;
+        var isNameValid = false;
         
-        if (name.match(/^-/))
+        cssProperties.groups.forEach(function(begin) {
+          if (name.indexOf(begin) == 0)
+            isNameValid = true;
+        });
+        cssProperties.properties.forEach(function(prop) {
+          if (name == prop)
+            isNameValid = true;
+        });
+        if (!isNameValid)
           return;
         var value = style.getPropertyValue(name);
 
-        if (value.match(/^(none|auto|normal)/))
-          return;
+        //if (value.match(/^(none|auto|normal)/))
+        //  return;
 
         names.push(name);
       });
