@@ -3,6 +3,38 @@
 
   var $ = jQuery;
 
+  var cssProperties = {
+    directional: [
+      "margin-",
+      "padding-",
+      "border-",
+    ],
+    groups: [
+      "background-",
+      "font-",
+      "text-",
+      "list-style-"
+    ],
+    properties: [
+      "color",
+      "clear",
+      "cursor",
+      "direction",
+      "display",
+      "position",
+      "float",
+      "letter-spacing",
+      "line-height",
+      "opacity",
+      "visibility",
+      "white-space",
+      "vertical-align",
+      "word-spacing",
+      "word-wrap",
+      "z-index"
+    ]
+  };
+
   jQuery.extend({
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
