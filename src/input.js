@@ -3,6 +3,8 @@
 
   var $ = jQuery;
 
+  var pressed = {};
+
   var keys = {
     DELETE: 8,
     LEFT: 37,
@@ -25,11 +27,16 @@
       var onQuit = options.onQuit;
       var styleInfo = jQuery.styleInfoOverlay({focused: focused});
 
-      function handleKey(event) {
-        if (event.shiftKey) {
-          styleInfo.show();
+      function handleKeyUp(event) {
+        switch (event.keyCode) {
+          case keys.C:
+          styleInfo.hide();
+          return true;
         }
-        
+        return false;
+      }
+
+      function handleKeyDown(event) {        
         if (event.altKey || event.ctrlKey ||
             event.altGraphKey || event.metaKey) {
           return false;
@@ -97,20 +104,29 @@
           case keys.I:
           mixMaster.infoForFocusedElement();
           return true;
+          
+          case keys.C:
+          if (!pressed[keys.C])
+            styleInfo.show();
+          return true;
         }
         return false;
       }
 
       var listeners = {
         keydown: function(event) {
-          if (handleKey(event)) {
+          if (handleKeyDown(event)) {
             event.preventDefault();
             event.stopPropagation();
           }
+          pressed[event.keyCode] = true;
         },
         keyup: function(event) {
-          if (!event.shiftKey)
-            styleInfo.hide();
+          if (handleKeyUp(event)) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          pressed[event.keyCode] = false;
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {
