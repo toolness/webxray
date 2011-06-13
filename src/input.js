@@ -11,7 +11,8 @@
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    ESC: 27
+    ESC: 27,
+    SPACE: 32
   };
 
   var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
@@ -36,7 +37,7 @@
         return false;
       }
 
-      function handleKeyDown(event) {        
+      function handleKeyDown(event) {
         if (event.altKey || event.ctrlKey ||
             event.altGraphKey || event.metaKey) {
           return false;
@@ -105,6 +106,13 @@
           mixMaster.infoForFocusedElement();
           return true;
           
+          case keys.SPACE:
+          if (pressed[keys.C]) {
+            pressed[keys.C] = false;
+            styleInfo.lock(self);
+          }
+          return true;
+
           case keys.C:
           if (!pressed[keys.C])
             styleInfo.show();

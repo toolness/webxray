@@ -76,6 +76,31 @@
       }
 
       var self = {
+        lock: function(input) {
+          input.deactivate();
+          overlay.addClass("webxray-style-info-locked");
+          var close = $('<div class="webxray-close-button"></div>');
+          overlay.append(close);
+          overlay.find('.webxray-value').click(function() {
+            var property = $(this).prev('.webxray-name').text();
+            var value = $(this).text();
+            var result = prompt("Enter a new value for " + property + ":",
+                                value);
+            if (result) {
+              $(this).addClass('webxray-value-matches-inline-style');
+              $(this).text(result);
+              var info = $(this).closest(".webxray-rows");
+              var element = info.data("linked-element");
+              $(element).css(property, result);
+            }
+          });
+          close.click(function(event) {
+            overlay.removeClass("webxray-style-info-locked");
+            close.remove();
+            self.hide();
+            input.activate();
+          });
+        },
         show: function() {
           isVisible = true;
           refresh();
@@ -129,6 +154,7 @@
       var names = [];
       var matchingCssRules = this.getMatchingCssRules();
 
+      info.data("linked-element", element);
       jQuery.each(style, function() {
         var name = this;
         var isNameValid = false;
