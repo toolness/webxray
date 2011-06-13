@@ -234,14 +234,6 @@ div#webxray-wait-for-css-to-load {
   pointer-events: auto !important;
 }
 
-.webxray-style-info-locked .webxray-value {
-  cursor: pointer;
-}
-
-.webxray-style-info-locked .webxray-value:hover {
-  background: rgba(0, 0, 0, 0.9);
-}
-
 .webxray-close-button:hover {
   background-color: rgba(0, 0, 0, 0.9);
 }
@@ -266,6 +258,17 @@ div#webxray-wait-for-css-to-load {
 .webxray-style-info .webxray-rows .webxray-row form,
 .webxray-style-info .webxray-rows .webxray-row input {
   display: inline;
+  margin: 0;
+  padding: 0;
+  border: none;
+  outline: none;
+  color: yellow;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.webxray-style-info-locked .webxray-row:hover {
+  background: black;
+  cursor: pointer;
 }
 
 .webxray-style-info .webxray-rows .webxray-row .webxray-name {

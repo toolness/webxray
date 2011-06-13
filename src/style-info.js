@@ -65,7 +65,10 @@
   }
   
   function makeCssValueEditable() {
-    var self = $(this);
+    if ($(this).find('form').length)
+      return;
+
+    var self = $(this).find('.webxray-value');
     var info = self.closest(".webxray-rows");
     var element = info.data("linked-element");
     var property = self.prev('.webxray-name').text();
@@ -140,7 +143,7 @@
           overlay.addClass("webxray-style-info-locked");
           var close = $('<div class="webxray-close-button"></div>');
           overlay.append(close);
-          overlay.find('.webxray-value').click(makeCssValueEditable);
+          overlay.find('.webxray-row').click(makeCssValueEditable);
           close.click(function(event) {
             overlay.removeClass("webxray-style-info-locked");
             close.remove();
