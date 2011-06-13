@@ -49,6 +49,65 @@
     return false;
   }
 
+  function getNonInlinePropertyValue(element, property) {
+    var inlineValue = element.style.getPropertyValue(property);
+    
+    if (inlineValue)
+      $(element).css(property, '');
+
+    var style = element.ownerDocument.defaultView.getComputedStyle(element);
+    var value = style.getPropertyValue(property);
+
+    if (inlineValue)
+      $(element).css(property, inlineValue);
+      
+    return value;
+  }
+  
+  function makeCssValueEditable() {
+    var self = $(this);
+    var info = self.closest(".webxray-rows");
+    var element = info.data("linked-element");
+    var property = self.prev('.webxray-name').text();
+    var originalValue = self.text();
+    var form = $('<form><input type="text"></input></form>');
+    var textField = form.find("input");
+    var defaultValue = getNonInlinePropertyValue(element, property);
+
+    self.empty().append(form);
+    textField.val(originalValue).select().focus();
+    textField.attr("placeholder", defaultValue);
+
+    function cancel() {
+      form.remove();
+      self.text(originalValue);
+    }
+    
+    textField.blur(cancel);
+    textField.keydown(function(event) {
+      if (event.keyCode == 27)
+        cancel();
+    });
+
+    form.submit(function() {
+      var newValue = textField.val();
+
+      $(this).remove();
+      if (newValue == '') {
+        $(element).css(property, '');
+        self.removeClass('webxray-value-matches-inline-style');
+        self.text($(element).css(property));
+      } else {
+        self.text(newValue);
+        if (newValue != originalValue) {
+          self.addClass('webxray-value-matches-inline-style');
+          $(element).css(property, newValue);
+        }
+      }
+      return false;
+    });
+  }
+
   jQuery.extend({
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
@@ -81,19 +140,7 @@
           overlay.addClass("webxray-style-info-locked");
           var close = $('<div class="webxray-close-button"></div>');
           overlay.append(close);
-          overlay.find('.webxray-value').click(function() {
-            var property = $(this).prev('.webxray-name').text();
-            var value = $(this).text();
-            var result = prompt("Enter a new value for " + property + ":",
-                                value);
-            if (result) {
-              $(this).addClass('webxray-value-matches-inline-style');
-              $(this).text(result);
-              var info = $(this).closest(".webxray-rows");
-              var element = info.data("linked-element");
-              $(element).css(property, result);
-            }
-          });
+          overlay.find('.webxray-value').click(makeCssValueEditable);
           close.click(function(event) {
             overlay.removeClass("webxray-style-info-locked");
             close.remove();

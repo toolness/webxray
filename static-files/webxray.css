@@ -263,6 +263,11 @@ div#webxray-wait-for-css-to-load {
 .webxray-style-info .webxray-rows .webxray-row {
 }
 
+.webxray-style-info .webxray-rows .webxray-row form,
+.webxray-style-info .webxray-rows .webxray-row input {
+  display: inline;
+}
+
 .webxray-style-info .webxray-rows .webxray-row .webxray-name {
   padding-right: 1em;
   color: #d0d0d0;
