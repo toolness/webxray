@@ -119,6 +119,7 @@
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
       var style = window.getComputedStyle(element);
+      var parentStyle = window.getComputedStyle(element.parentNode);
 
       var info = $('<div class="webxray-rows"></div>');
       var names = [];
@@ -159,6 +160,8 @@
           var valueCell = $('<div class="webxray-value"></div>');
           nameCell.text(name);
           valueCell.text(value);
+          if (parentStyle && parentStyle.getPropertyValue(name) != value)
+            valueCell.addClass("webxray-value-different-from-parent");
           if (anyRuleMatches(matchingCssRules, name, value))
             valueCell.addClass("webxray-value-matches-css-rule");
           if (element.style.getPropertyValue(name) == value)

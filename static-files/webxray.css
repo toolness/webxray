@@ -246,6 +246,7 @@ div#webxray-wait-for-css-to-load {
   display: inline;
 }
 
-.webxray-value-matches-css-rule, .webxray-value-matches-inline-style {
+.webxray-value-matches-css-rule, .webxray-value-matches-inline-style,
+.webxray-value-different-from-parent {
   color: yellow;
 }
