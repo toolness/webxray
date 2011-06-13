@@ -16,6 +16,10 @@
       "list-style-"
     ],
     properties: [
+      "top",
+      "left",
+      "bottom",
+      "right",
       "color",
       "clear",
       "cursor",
