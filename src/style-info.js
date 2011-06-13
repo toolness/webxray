@@ -238,6 +238,14 @@
           var value = style.getPropertyValue(name);
           var nameCell = $('<div class="webxray-name"></div>');
           var valueCell = $('<div class="webxray-value"></div>');
+          
+          if (value) {
+            var urlMatch = value.match(/url\("?([^"]*)"?\)/);
+          
+            if (urlMatch)
+              value = urlMatch[1];
+          }
+          
           nameCell.text(name);
           valueCell.text(value);
           if (parentStyle && parentStyle.getPropertyValue(name) != value)
