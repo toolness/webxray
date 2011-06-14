@@ -243,6 +243,11 @@ div#webxray-wait-for-css-to-load {
   padding: 0.5em;
   border: 1px dotted white;
   cursor: pointer;
+  visibility: hidden;
+}
+
+.webxray-style-info-locked .webxray-close-button {
+  visibility: visible;
 }
 
 .webxray-close-button:before {

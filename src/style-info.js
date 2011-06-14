@@ -119,6 +119,8 @@
       var isVisible = false;
       
       var overlay = $('<div class="webxray-base webxray-style-info"></div>');
+      var close = $('<div class="webxray-close-button"></div>');
+      overlay.append(close);
       $(body).append(overlay);
       overlay.hide();
       
@@ -130,11 +132,12 @@
       
       function refresh() {
         overlay.empty();
+        overlay.append(close);
         var primary = focused.getPrimaryElement();
         
         if (primary) {
           var info = $(primary).getStyleInfo();
-          overlay.append(info);
+          overlay.prepend(info);
         }
       }
 
@@ -142,12 +145,10 @@
         lock: function(input) {
           input.deactivate();
           overlay.addClass("webxray-style-info-locked");
-          var close = $('<div class="webxray-close-button"></div>');
-          overlay.append(close);
           overlay.find('.webxray-row').click(makeCssValueEditable);
           close.click(function(event) {
             overlay.removeClass("webxray-style-info-locked");
-            close.remove();
+            close.unbind();
             self.hide();
             input.activate();
           });
