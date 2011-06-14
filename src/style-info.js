@@ -146,11 +146,30 @@
           input.deactivate();
           overlay.addClass("webxray-style-info-locked");
           overlay.find('.webxray-row').click(makeCssValueEditable);
+          
+          function handleKeyDown(event) {
+            if (event.keyCode == input.keys.I) {
+              if (!overlay.find('form').length) {
+                var hover = overlay.find('.webxray-row:hover');
+                if (hover.length) {
+                  var property = hover.find('.webxray-name').text();
+                  var url = 'https://developer.mozilla.org/en/CSS/' + property;
+                  open(url, 'info');
+                  event.preventDefault();
+                  event.stopPropagation();
+                }
+              }
+            }
+          }
+          
+          window.addEventListener("keydown", handleKeyDown, true);
+          
           close.click(function(event) {
             overlay.removeClass("webxray-style-info-locked");
             close.unbind();
             self.hide();
             input.activate();
+            window.removeEventListener("keydown", handleKeyDown, true);
           });
         },
         show: function() {
