@@ -188,33 +188,6 @@
   });
   
   jQuery.fn.extend({
-    getMatchingCssRules: function getRelevantCssRules() {
-      var allMatches = [];
-      this.each(function() {
-        var element = this;
-        var doc = this.ownerDocument;
-        jQuery.each(document.styleSheets, function() {
-          var sheet = this;
-          if (!sheet.cssRules)
-            return;
-          jQuery.each(sheet.cssRules, function() {
-            var rule = this;
-            if (rule.type == rule.STYLE_RULE) {
-              var matches = $(rule.selectorText, doc);
-
-              var matches = doc.querySelectorAll(rule.selectorText);
-              
-              for (var i = 0; i < matches.length; i++)
-                if (matches[i] === element) {
-                  allMatches.push(rule);
-                  return;
-                }
-            }
-          });
-        });
-      });
-      return allMatches;
-    },
     getStyleInfo: function getStyleInfo() {
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
@@ -223,7 +196,6 @@
 
       var info = $('<div class="webxray-rows"></div>');
       var names = [];
-      var matchingCssRules = this.getMatchingCssRules();
 
       info.data("linked-element", element);
       jQuery.each(style, function() {
@@ -264,8 +236,6 @@
           valueCell.text(value);
           if (parentStyle && normalizeProperty(parentStyle, name) != value)
             valueCell.addClass("webxray-value-different-from-parent");
-          if (anyRuleMatches(matchingCssRules, name, value))
-            valueCell.addClass("webxray-value-matches-css-rule");
           if (normalizeProperty(element.style, name) == value)
             valueCell.addClass("webxray-value-matches-inline-style");
           row.append(nameCell);
