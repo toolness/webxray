@@ -232,7 +232,7 @@
 
       var NUM_COLS = 1;
 
-      for (var i = 0; i < names.length + NUM_COLS; i += NUM_COLS) {
+      for (var i = 0; i < names.length + (NUM_COLS-1); i += NUM_COLS) {
         var row = $('<div class="webxray-row"></div>');
         for (var j = 0; j < NUM_COLS; j++) {
           var name = names[i+j];
