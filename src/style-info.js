@@ -39,29 +39,31 @@
     ]
   };
 
+  function normalizeProperty(style, name) {
+    var value;
+    
+    if (style instanceof CSSStyleDeclaration)
+      value = style.getPropertyValue(name);
+    else
+      value = $(style).css(name);
+
+    if (value) {
+      var urlMatch = value.match(/url\("?([^"]*)"?\)/);
+    
+      if (urlMatch)
+        value = urlMatch[1];
+    }
+    return value;
+  }
+
   function anyRuleMatches(rules, name, value) {
     for (var i = 0; i < rules.length; i++) {
       var rule = rules[i];
       
-      if (rule.style.getPropertyValue(name) == value)
+      if (normalizeProperty(rule.style, name) == value)
         return true;
     }
     return false;
-  }
-
-  function getNonInlinePropertyValue(element, property) {
-    var inlineValue = element.style.getPropertyValue(property);
-    
-    if (inlineValue)
-      $(element).css(property, '');
-
-    var style = element.ownerDocument.defaultView.getComputedStyle(element);
-    var value = style.getPropertyValue(property);
-
-    if (inlineValue)
-      $(element).css(property, inlineValue);
-      
-    return value;
   }
   
   function makeCssValueEditable() {
@@ -75,11 +77,9 @@
     var originalValue = self.text();
     var form = $('<form><input type="text"></input></form>');
     var textField = form.find("input");
-    var defaultValue = getNonInlinePropertyValue(element, property);
 
     self.empty().append(form);
     textField.val(originalValue).select().focus();
-    textField.attr("placeholder", defaultValue);
 
     function cancel() {
       form.remove();
@@ -99,13 +99,14 @@
       if (newValue == '') {
         $(element).css(property, '');
         self.removeClass('webxray-value-matches-inline-style');
-        self.text($(element).css(property));
+        self.text(normalizeProperty(element, property));
       } else {
-        self.text(newValue);
         if (newValue != originalValue) {
           self.addClass('webxray-value-matches-inline-style');
           $(element).css(property, newValue);
-        }
+          self.text(normalizeProperty(element, property));
+        } else
+          self.text(originalValue);
       }
       return false;
     });
@@ -235,24 +236,17 @@
         var row = $('<div class="webxray-row"></div>');
         for (var j = 0; j < NUM_COLS; j++) {
           var name = names[i+j];
-          var value = style.getPropertyValue(name);
+          var value = normalizeProperty(style, name);
           var nameCell = $('<div class="webxray-name"></div>');
           var valueCell = $('<div class="webxray-value"></div>');
           
-          if (value) {
-            var urlMatch = value.match(/url\("?([^"]*)"?\)/);
-          
-            if (urlMatch)
-              value = urlMatch[1];
-          }
-          
           nameCell.text(name);
           valueCell.text(value);
-          if (parentStyle && parentStyle.getPropertyValue(name) != value)
+          if (parentStyle && normalizeProperty(parentStyle, name) != value)
             valueCell.addClass("webxray-value-different-from-parent");
           if (anyRuleMatches(matchingCssRules, name, value))
             valueCell.addClass("webxray-value-matches-css-rule");
-          if (element.style.getPropertyValue(name) == value)
+          if (normalizeProperty(element.style, name) == value)
             valueCell.addClass("webxray-value-matches-inline-style");
           row.append(nameCell);
           row.append(valueCell);
