@@ -192,7 +192,10 @@
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
       var style = window.getComputedStyle(element);
-      var parentStyle = window.getComputedStyle(element.parentNode);
+      var parentStyle = null;
+      
+      if (element.nodeName != "HTML")
+        parentStyle = window.getComputedStyle(element.parentNode);
 
       var info = $('<div class="webxray-rows"></div>');
       var names = [];
