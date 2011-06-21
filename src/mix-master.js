@@ -10,10 +10,9 @@
     var transitionEffects = TransitionEffectManager();
 
     function updateStatus(verb, command) {
-      // TODO: We're assuming that 'verb' and 'command' are both already
-      // HTML-escaped here, which isn't necessarily obvious. Might want
-      // to escape them just in case.
-      $(hud.overlay).html('<span>' + verb + ' ' + command.name + '.</span>');
+      var span = $('<span></span>');
+      span.text(verb + ' ' + command.name + '.');
+      $(hud.overlay).empty().append(span);
     }
 
     function internalUndo() {
