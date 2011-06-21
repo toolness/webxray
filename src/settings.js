@@ -8,6 +8,7 @@
         return this[name];
       return this.baseURI + this[name];
     },
+    language: navigator.language,
     baseURI: "",
     cssURL: "webxray.css",
     mixMasterDialogURL: "http://labs.toolness.com/dom-tutorial/index.html",

@@ -5,15 +5,14 @@
   var MAX_URL_LENGTH = 35;
 
   jQuery.hudOverlay = function hudOverlay(options) {
-    var hud = $('<div class="webxray-base webxray-hud"></div>');
-
     if (options === undefined)
       options = {};
 
+    var hud = $('<div class="webxray-base webxray-hud"></div>');
+    var l10n = jQuery.localization.scope("hud-overlay", options.locale);
+
     function showDefaultContent() {
-      hud.html(options.defaultContent ||
-               "<span>Web X-Ray Goggles activated! " +
-               "Press ESC to deactivate.</span>");
+      hud.html(options.defaultContent || l10n("default-html"));
     }
 
     showDefaultContent();
@@ -34,18 +33,20 @@
           var span = $("<span></span>");
           var tagName = "<" + element.nodeName.toLowerCase() + ">";
       
-          span.emit(code(tagName), " element");
+          span.emit(code(tagName), " ", l10n("element"));
           if (element.id)
-            span.emit(" with id ", code(element.id));
+            span.emit(" ", l10n("with"), " ", l10n("id"), " ",
+                      code(element.id));
           if (element.className)
-            span.emit(element.id ? " and" : " with", " class ",
+            span.emit(" " + (element.id ? l10n("and") : l10n("with")),
+                      " ", l10n("class"), " ",
                       code(element.className));
           var url = element.href || element.src || element.action ||
                     element.currentSrc;
           if (url && url.length) {
             url = $.shortenText(url, MAX_URL_LENGTH);
             span.emit((element.id || element.className) ? "," : "",
-                      " pointing at ",
+                      " ", l10n("pointing-at"), " ",
                       $('<span class="webxray-url"></span>').text(url));
           }
           return span;
@@ -53,10 +54,11 @@
 
         if (focused.element) {
           var span = $("<span></span>");
-          span.emit("You are on a ", elementDesc(focused.element), ".");
+          span.emit(l10n("focused-intro"), " ",
+                    elementDesc(focused.element), ".");
           if (focused.ancestor)
-            span.emit(" It is inside a ", elementDesc(focused.ancestor),
-                      ".");
+            span.emit(" ", l10n("ancestor-intro"), " ",
+                      elementDesc(focused.ancestor), ".");
           hud.empty().append(span);
         } else
           showDefaultContent();

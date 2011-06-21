@@ -8,8 +8,9 @@ test("jQuery.hudOverlay() defaultContent works", function() {
 });
 
 test("onFocusChange()", function() {
+  var locale = jQuery.localization.createLocale(["en-US"]);
   var $ = jQuery;
-  var hud = $.hudOverlay();
+  var hud = $.hudOverlay({locale: locale});
   $("#qunit-fixture #hud-overlay .test-case").each(function() {
     var element = $(this).find(".element").children();
     var ancestor = $(this).find(".ancestor").children();
