@@ -105,8 +105,7 @@
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {
-            var msg = 'If you would like to follow that link, please ' +
-                      'deactivate the goggles first by pressing ESC.';
+            var msg = jQuery.locale.get("input:link-click-blocked");
             jQuery.transparentMessage($('<div></div>').text(msg));
             event.preventDefault();
             event.stopPropagation();

@@ -9,3 +9,7 @@ jQuery.localization.extend("en-US", "hud-overlay", {
   "focused-intro": "You are on a",
   "ancestor-intro": "It is inside a"
 });
+
+jQuery.localization.extend("en-US", "input", {
+  "link-click-blocked": 'If you would like to follow that link, please deactivate the goggles first by pressing ESC.'
+});
