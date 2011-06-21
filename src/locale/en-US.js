@@ -13,3 +13,8 @@ jQuery.localization.extend("en-US", "hud-overlay", {
 jQuery.localization.extend("en-US", "input", {
   "link-click-blocked": 'If you would like to follow that link, please deactivate the goggles first by pressing ESC.'
 });
+
+jQuery.localization.extend("en-US", "hack-recording-playback", {
+  "success": 'Hack rebusted!',
+  "failure": 'Hack rebusting failed. Perhaps the page changed since the hack was first busted?'
+});

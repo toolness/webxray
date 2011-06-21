@@ -8,10 +8,9 @@
       var msg,
           success = mixMaster.playRecordingFromGlobal(window);
       if (success)
-        msg = 'Hack rebusted!';
+        msg = jQuery.locale.get('hack-recording-playback:success');
       else
-        msg = 'Hack rebusting failed. Perhaps the page changed since ' +
-              'the hack was first busted?';
+        msg = jQuery.locale.get('hack-recording-playback:failure');
       jQuery.transparentMessage($('<div></div>').text(msg));
     }
   }
