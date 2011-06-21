@@ -1,8 +1,6 @@
 (function(jQuery) {
   "use strict";
 
-  var currentLocale = {};
-
   function normalizeLanguage(language) {
     var match = language.match(/([A-Za-z]+)-([A-Za-z]+)/);
     if (match)
@@ -18,29 +16,36 @@
       for (var name in obj)
         this[language][scope + ":" + name] = obj[name];
     },
-    scope: function scope(scope, locale) {
-      locale = locale || currentLocale;
-      return function(name) {
-        var scopedName = scope + ":" + name;
-        return locale[scopedName] || "unable to find locale string " + 
-               scopedName;
-      }
-    },
-    createLocale: function makeLocale(languages) {
-      var self = this;
-      var locale = {};
+    createLocale: function createLocale(languages) {
+      // We especially want to do this in the case where the client
+      // is just passing in navigator.language, which is all lowercase
+      // in Safari.
+      languages = languages.map(normalizeLanguage);
+
+      var locale = {
+        languages: languages,
+        get: function get(scopedName) {
+          return locale[scopedName] || "unable to find locale string " + 
+                 scopedName;
+        },
+        scope: function scope(scope) {
+          return function(name) {
+            return locale.get(scope + ":" + name);
+          }
+        }
+      };
+      
       languages.forEach(function(language) {
-        // We especially want to do this in the case where the client
-        // is just passing in navigator.language, which is all lowercase
-        // in Safari.
-        language = normalizeLanguage(language);
-        if (language in self)
-          jQuery.extend.call(locale, self[language]);
+        if (language in jQuery.localization)
+          jQuery.extend.call(locale, jQuery.localization[language]);
       });
+      
       return locale;
     },
     init: function init(languages) {
-      currentLocale = this.createLocale(languages);
+      jQuery.locale = this.createLocale(languages);
     }
   };
+  
+  jQuery.localization.init([]);
 })(jQuery);

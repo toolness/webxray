@@ -9,7 +9,7 @@
       options = {};
 
     var hud = $('<div class="webxray-base webxray-hud"></div>');
-    var l10n = jQuery.localization.scope("hud-overlay", options.locale);
+    var l10n = (options.locale || jQuery.locale).scope("hud-overlay");
 
     function showDefaultContent() {
       hud.html(options.defaultContent || l10n("default-html"));

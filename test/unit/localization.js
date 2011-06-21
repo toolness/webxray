@@ -5,11 +5,11 @@ test("createLocale() normalizes language codes", function() {
     "foo": "bar",
   });
   var locale = jQuery.localization.createLocale(["en-us"]);
-  var l10n = jQuery.localization.scope("l10nTests", locale);
-  equal(l10n("foo"), "bar");
+  deepEqual(locale.languages, ["en-US"]);
+  equal(locale.get("l10nTests:foo"), "bar");
 });
 
-test("scope function inherits names from locales", function() {
+test("getting names inherits from different languages", function() {
   jQuery.localization.extend("en-US", "l10nTests", {
     "about": "about",
     "inherited-msg": "This should pass through!"
@@ -18,14 +18,13 @@ test("scope function inherits names from locales", function() {
     "about": "aboot"
   });
   var locale = jQuery.localization.createLocale(["en-US", "en-CA"]);
-  var l10n = jQuery.localization.scope("l10nTests", locale);
-  equal(l10n("about"), "aboot");
-  equal(l10n("inherited-msg"), "This should pass through!");
+  equal(locale.get("l10nTests:about"), "aboot");
+  equal(locale.get("l10nTests:inherited-msg"), "This should pass through!");
 });
 
 test("scope function works w/ nonexistent scope", function() {
   var locale = jQuery.localization.createLocale(["uu-UU"]);
-  var l10n = jQuery.localization.scope("nonexistent", locale);
+  var l10n = locale.scope("nonexistent");
   
   equal(l10n("foo"), "unable to find locale string nonexistent:foo");
 });
