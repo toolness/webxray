@@ -1,5 +1,14 @@
 module("localization");
 
+test("createLocale() normalizes language codes", function() {
+  jQuery.localization.extend("en-US", "l10nTests", {
+    "foo": "bar",
+  });
+  var locale = jQuery.localization.createLocale(["en-us"]);
+  var l10n = jQuery.localization.scope("l10nTests", locale);
+  equal(l10n("foo"), "bar");
+});
+
 test("scope function inherits names from locales", function() {
   jQuery.localization.extend("en-US", "l10nTests", {
     "about": "about",
