@@ -411,6 +411,7 @@
               dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
                 title: l10n("compose-a-replacement"),
                 instructions: l10n("replacement-instructions-html"),
+                languages: jQuery.locale.languages,
                 startHTML: startHTML,
                 baseURI: document.location.href
               }), "*");
