@@ -1,5 +1,20 @@
 module("localization");
 
+test("createLocale() inherits from non-region locales", function() {
+  jQuery.localization.extend("en", "l10nTests", {
+    "hey": "there",
+    "u": "2"
+  });
+  jQuery.localization.extend("en-CA", "l10nTests", {
+    "u": "3"
+  });
+  var locale = jQuery.localization.createLocale(["en-CA"]);
+  equal(locale.get("l10nTests:hey"), "there",
+        "fallback to non-region-specific l10n works");
+  equal(locale.get("l10nTests:u"), "3",
+        "region-specific l10n takes precedence");
+});
+
 test("createLocale() normalizes language codes", function() {
   jQuery.localization.extend("en-US", "l10nTests", {
     "foo": "bar",

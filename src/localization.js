@@ -1,11 +1,19 @@
 (function(jQuery) {
   "use strict";
 
+  function parseLanguage(language) {
+    var match = language.match(/([a-z]+)-([A-Z]+)/);
+    if (match)
+      return { language: match[1], region: match[2] }
+    else
+      return { language: language, region: null }
+  }
+  
   function normalizeLanguage(language) {
     var match = language.match(/([A-Za-z]+)-([A-Za-z]+)/);
     if (match)
       return match[1].toLowerCase() + "-" + match[2].toUpperCase();
-    return language;
+    return language.toLowerCase();
   }
   
   jQuery.localization = {
@@ -36,6 +44,9 @@
       };
       
       languages.forEach(function(language) {
+        var parsed = parseLanguage(language);
+        if (parsed.region && parsed.language in jQuery.localization)
+          jQuery.extend.call(locale, jQuery.localization[parsed.language]);
         if (language in jQuery.localization)
           jQuery.extend.call(locale, jQuery.localization[language]);
       });
