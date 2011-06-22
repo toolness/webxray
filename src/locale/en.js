@@ -1,4 +1,4 @@
-jQuery.localization.extend("en-US", "hud-overlay", {
+jQuery.localization.extend("en", "hud-overlay", {
   "default-html": "<span>Web X-Ray Goggles activated! Press ESC to deactivate.</span>",
   "element": "element",
   "with": "with",
@@ -10,16 +10,16 @@ jQuery.localization.extend("en-US", "hud-overlay", {
   "ancestor-intro": "It is inside a"
 });
 
-jQuery.localization.extend("en-US", "input", {
+jQuery.localization.extend("en", "input", {
   "link-click-blocked": 'If you would like to follow that link, please deactivate the goggles first by pressing ESC.'
 });
 
-jQuery.localization.extend("en-US", "hack-recording-playback", {
+jQuery.localization.extend("en", "hack-recording-playback", {
   "success": 'Hack rebusted!',
   "failure": 'Hack rebusting failed. Perhaps the page changed since the hack was first busted?'
 });
 
-jQuery.localization.extend("en-US", "command-manager", {
+jQuery.localization.extend("en", "command-manager", {
   "executed": "Busted",
   "undid": 'Unbusted',
   "redid": 'Rebusted',
@@ -27,7 +27,7 @@ jQuery.localization.extend("en-US", "command-manager", {
   "cannot-redo-html": '<span>Nothing left to redo!</span>'
 });
 
-jQuery.localization.extend("en-US", "mix-master", {
+jQuery.localization.extend("en", "mix-master", {
   "too-big-to-change": "Changing that would be a bad idea.",
   "too-big-to-remix-html": "<div>That <code>&lt;${tagName}&gt;</code> element is too big for me to remix. Try selecting a smaller one!</div>",
   "deletion": "deletion",

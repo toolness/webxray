@@ -14,7 +14,7 @@
     return;
   }
 
-  jQuery.localization.init(["en-US", jQuery.webxraySettings.language]);
+  jQuery.localization.init(["en", jQuery.webxraySettings.language]);
 
   function waitForCSSToLoad(cb) {
     // Sadly, link elements don't fire load events on most/all browsers,
