@@ -25,6 +25,7 @@
   , "static-files/get-bookmarklet-url.js"
   , "src/localization.js"
   , "src/locale/en.js"
+  , "src/locale/es.js"
   , "src/settings.js"
   , "src/settings.local.js"
   , "src/utils.js"
