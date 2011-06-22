@@ -45,7 +45,8 @@
       
       languages.forEach(function(language) {
         var parsed = parseLanguage(language);
-        if (parsed.region && parsed.language in jQuery.localization)
+        if (parsed.language != language &&
+            parsed.language in jQuery.localization)
           jQuery.extend.call(locale, jQuery.localization[parsed.language]);
         if (language in jQuery.localization)
           jQuery.extend.call(locale, jQuery.localization[language]);
