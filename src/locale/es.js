@@ -35,3 +35,14 @@ jQuery.localization.extend("es", "mix-master", {
   "compose-a-replacement": "Haz una substitución",
   "replacement-instructions-html": "<span>Cuando hayas hecho tu substitución de HTML, presiona el botón <strong>Ok</strong>.</span>"
 });
+
+jQuery.localization.extend("es", "dialog-common", {
+  "ok": "Ok",
+  "nevermind": "Nevermind"
+});
+
+jQuery.localization.extend("es", "mix-master-dialog", {
+  "html-header": "HTML Source Code",
+  "skeleton-header": "What Your Browser Sees",
+  "rendering-header": "What You See"
+});
