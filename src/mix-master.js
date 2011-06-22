@@ -4,10 +4,11 @@
   var $ = jQuery;
   var GLOBAL_RECORDING_VAR = 'webxrayRecording';
 
-  function CommandManager(hud, focused) {
+  function CommandManager(hud, focused, locale) {
     var undoStack = [];
     var redoStack = [];
     var transitionEffects = TransitionEffectManager();
+    var l10n = locale.scope('command-manager');
 
     function updateStatus(verb, command) {
       var span = $('<span></span>');
@@ -37,21 +38,21 @@
         redoStack.splice(0);
         transitionEffects.observe(command);
         command.execute();
-        updateStatus('Busted', command);
+        updateStatus(l10n('executed'), command);
       },
       undo: function() {
         if (undoStack.length) {
           focused.unfocus();
-          updateStatus('Unbusted', internalUndo());
+          updateStatus(l10n('undid'), internalUndo());
         } else
-          $(hud.overlay).html('<span>Nothing left to undo!</span>');
+          $(hud.overlay).html(l10n('cannot-undo-html'));
       },
       redo: function() {
         if (redoStack.length) {
           focused.unfocus();
-          updateStatus('Rebusted', internalRedo());
+          updateStatus(l10n('redid'), internalRedo());
         } else
-          $(hud.overlay).html('<span>Nothing left to redo!</span>');
+          $(hud.overlay).html(l10n('cannot-redo-html'));
       },
       getRecording: function() {
         var recording = [];
@@ -210,8 +211,10 @@
 
   function MixMaster(options) {
     var focused = options.focusedOverlay;
-    var commandManager = CommandManager(options.hud, focused);
-
+    var locale = options.locale || jQuery.locale;
+    var commandManager = CommandManager(options.hud, focused, locale);
+    var l10n = locale.scope('mix-master');
+    
     var self = {
       transitionEffects: commandManager.transitionEffects,
       undo: function() { commandManager.undo(); },
@@ -276,7 +279,7 @@
         var elementToDelete = focused.getPrimaryElement();
         if (elementToDelete) {
           if ($(elementToDelete).is('html, body')) {
-            var msg = "Deleting that would be a bad idea."
+            var msg = l10n('too-big-to-change');
             jQuery.transparentMessage($('<div></div>').text(msg));
             return;
           }
@@ -285,7 +288,7 @@
           // since it allows us to place a "bookmark" in the DOM
           // that can easily be undone if the user wishes.
           var placeholder = $('<span class="webxray-deleted"></span>');
-          commandManager.run(ReplaceWithCmd('deletion', elementToDelete,
+          commandManager.run(ReplaceWithCmd(l10n('deletion'), elementToDelete,
                                             placeholder));
         }
       },
@@ -301,7 +304,7 @@
       replaceElement: function(elementToReplace, html) {
         var newContent = self.htmlToJQuery(html);
         commandManager.transitionEffects.disableDuring(function() {
-          commandManager.run(ReplaceWithCmd('replacement',
+          commandManager.run(ReplaceWithCmd(l10n('replacement'),
                                             elementToReplace,
                                             newContent));
         });
@@ -360,7 +363,7 @@
         var focusedHTML = $(focusedElement).outerHtml();
 
         if ($(focusedElement).is('html, body')) {
-          var msg = "Changing that would be a bad idea."
+          var msg = l10n("too-big-to-change");
           jQuery.transparentMessage($('<div></div>').text(msg));
           return;
         }
@@ -368,11 +371,9 @@
         if (focusedHTML.length == 0 ||
             focusedHTML.length > MAX_HTML_LENGTH) {
           var tagName = focusedElement.nodeName.toLowerCase();
-          var msg = $("<div>That " +
-                      "<code>&lt;" + tagName + "&gt;</code> element " +
-                      "is too big for me to remix. Try selecting " +
-                      "a smaller one!</div>");
-          jQuery.transparentMessage(msg);
+          var msg = l10n("too-big-to-remix-html").replace("${tagName}",
+                                                          tagName);
+          jQuery.transparentMessage($(msg));
           return;
         }
 
@@ -408,10 +409,8 @@
             element: focusedElement,
             onLoad: function(dialog) {
               dialog.iframe.get(0).contentWindow.postMessage(JSON.stringify({
-                title: "Compose A Replacement",
-                instructions: "<span>When you're done composing your " +
-                              "replacement HTML, press the " +
-                              "<strong>Ok</strong> button.",
+                title: l10n("compose-a-replacement"),
+                instructions: l10n("replacement-instructions-html"),
                 startHTML: startHTML,
                 baseURI: document.location.href
               }), "*");

@@ -11,6 +11,7 @@ test("jQuery.mixMaster()", function() {
     focused.set(domNode);
 
     var mixMaster = $.mixMaster({
+      locale: jQuery.localization.createLocale(["en-US"]),
       hud: hud, 
       focusedOverlay: focused
     });
