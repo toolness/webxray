@@ -1,5 +1,14 @@
 module("localization");
 
+test("jQuery.fn.localize() works", function() {
+  var div = jQuery('<div><span data-l10n="blargy:fnargy"></span></div>');
+  jQuery.localization.extend("en", "blargy", {
+    "fnargy": "hallo"
+  });
+  div.localize(jQuery.localization.createLocale(["en"]));
+  equal(div.find("span").text(), "hallo");
+});
+
 test("createLocale() inherits from non-region locales", function() {
   jQuery.localization.extend("en", "l10nTests", {
     "hey": "there",

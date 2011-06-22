@@ -1,6 +1,8 @@
 (function(jQuery) {
   "use strict";
 
+  var $ = jQuery;
+  
   function parseLanguage(language) {
     var match = language.match(/([a-z]+)-([A-Z]+)/);
     if (match)
@@ -15,6 +17,17 @@
       return match[1].toLowerCase() + "-" + match[2].toUpperCase();
     return language.toLowerCase();
   }
+  
+  jQuery.fn.extend({
+    localize: function localize(locale) {
+      locale = locale || jQuery.locale;
+
+      this.find("[data-l10n]").each(function() {
+        var scopedName = $(this).attr("data-l10n");
+        $(this).text(locale.get(scopedName));
+      });
+    }
+  });
   
   jQuery.localization = {
     extend: function extend(language, scope, obj) {
