@@ -38,11 +38,11 @@ jQuery.localization.extend("es", "mix-master", {
 
 jQuery.localization.extend("es", "dialog-common", {
   "ok": "Ok",
-  "nevermind": "Nevermind"
+  "nevermind": "No importa"
 });
 
 jQuery.localization.extend("es", "mix-master-dialog", {
-  "html-header": "HTML Source Code",
-  "skeleton-header": "What Your Browser Sees",
-  "rendering-header": "What You See"
+  "html-header": "Código fuente HTML",
+  "skeleton-header": "Lo que tu navegador ve",
+  "rendering-header": "Lo que tú ves"
 });
