@@ -3,6 +3,26 @@
 
   var $ = jQuery;
 
+  jQuery.fn.extend({
+    postMessage: function(message, targetOrigin) {
+      if (jQuery.browser.mozilla && typeof(self) == "object" &&
+          self.port && self.port.emit) {
+        // We're most likely in a Jetpack, and need to work around
+        // bug 666547.
+        var script = document.createElement("script");
+
+        script.text = "(" + uneval(function(message) {
+          var i = document.querySelector(".webxray-dialog-inner > iframe");
+          i.contentWindow.postMessage(message, "*");
+          document.body.removeChild(document.currentScript);
+        }) + ")(" + uneval(message) + ");";
+
+        document.body.appendChild(script);
+      } else
+        this[0].contentWindow.postMessage(message, targetOrigin);
+    }
+  });
+
   jQuery.extend({
     getModalDialogDimensions: function() {
       var div = $('<div class="webxray-base webxray-dialog-overlay">' +
@@ -31,7 +51,7 @@
         url: options.url
       });
       dialog.iframe.one("load", function() {
-        this.contentWindow.postMessage(options.payload, "*");
+        $(this).postMessage(options.payload, "*");
         $(this).show().bind("message", function(event, data) {
           if (data == "close")
             dialog.close();
