@@ -9,13 +9,19 @@
           self.port && self.port.emit) {
         // We're most likely in a Jetpack, and need to work around
         // bug 666547.
+        
+        if (!this.attr("id"))
+          // Likelyhood of a naming collision here is very low,
+          // and it's only a temporary workaround anyways.
+          this.attr("id", "webxray-iframe-" + Math.random());
+        
         var script = document.createElement("script");
 
-        script.text = "(" + uneval(function(message) {
-          var i = document.querySelector(".webxray-dialog-inner > iframe");
-          i.contentWindow.postMessage(message, "*");
+        script.text = "(" + uneval(function(id, message) {
+          var iframe = document.getElementById(id);
+          iframe.contentWindow.postMessage(message, "*");
           document.body.removeChild(document.currentScript);
-        }) + ")(" + uneval(message) + ");";
+        }) + ")(" + uneval(this.attr("id")) + ", " + uneval(message) + ");";
 
         document.body.appendChild(script);
       } else
