@@ -47,10 +47,12 @@
 
   function loadPrerequisites(cb) {
     var script = getMyScript();
-    var baseURI = script.attr("src").match(/(.*)webxray\.js$/)[1];
-
-    jQuery.webxraySettings.baseURI = baseURI;
-
+    
+    if (jQuery.webxraySettings.baseURI.length == 0) {
+      var baseURI = script.attr("src").match(/(.*)webxray\.js$/)[1];
+      jQuery.webxraySettings.baseURI = baseURI;
+    }
+    
     var cssURL = jQuery.webxraySettings.url("cssURL");
     var cssLink = $('link[href="' + cssURL + '"]');
     var active = $('<div id="webxray-is-active"></div>');
