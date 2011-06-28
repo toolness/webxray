@@ -140,7 +140,7 @@
           if (!isActive) {
             isActive = true;
             for (var name in listeners)
-              eventSource.addEventListener(name, self, true);
+              eventSource.addEventListener(name, self.handleEvent, true);
             self.emit('activate');
           }
         },
@@ -148,7 +148,7 @@
           if (isActive) {
             isActive = false;
             for (var name in listeners)
-              eventSource.removeEventListener(name, self, true);
+              eventSource.removeEventListener(name, self.handleEvent, true);
             self.emit('deactivate');
           }
         }
