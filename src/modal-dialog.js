@@ -5,25 +5,28 @@
 
   jQuery.fn.extend({
     postMessage: function(message, targetOrigin) {
-      if (jQuery.browser.mozilla && typeof(self) == "object" &&
-          self.port && self.port.emit) {
+      if ((jQuery.browser.mozilla && typeof(self) == "object" &&
+           self.port && self.port.emit) ||
+          (typeof(chrome) == "object" && chrome.extension)) {
         // We're most likely in a Jetpack, and need to work around
-        // bug 666547.
-        
+        // bug 666547. Or, we're in a Chrome extension and are
+        // stymied by http://stackoverflow.com/q/4062879.
+
         if (!this.attr("id"))
           // Likelyhood of a naming collision here is very low,
           // and it's only a temporary workaround anyways.
           this.attr("id", "webxray-iframe-" + Math.random());
-        
+
         var script = document.createElement("script");
 
-        script.text = "(" + uneval(function(id, message) {
+        script.text = "(" + (function(id, message) {
           var iframe = document.getElementById(id);
           iframe.contentWindow.postMessage(message, "*");
-          document.body.removeChild(document.currentScript);
-        }) + ")(" + uneval(this.attr("id")) + ", " + uneval(message) + ");";
+        }).toString() + ")(" + JSON.stringify(this.attr("id")) + ", " +
+        JSON.stringify(message) + ");";
 
         document.body.appendChild(script);
+        document.body.removeChild(script);
       } else
         this[0].contentWindow.postMessage(message, targetOrigin);
     }
