@@ -1,3 +1,4 @@
 static-files/webxray.js
+browser-addon/chrome/webxray.js
 src/settings.local.js
 static-files/mix-master-dialog
