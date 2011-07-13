@@ -120,8 +120,11 @@
           // since it allows us to place a "bookmark" in the DOM
           // that can easily be undone if the user wishes.
           var placeholder = $('<span class="webxray-deleted"></span>');
-          commandManager.run("ReplaceWithCmd", l10n('deletion'),
-                             elementToDelete, placeholder);
+          commandManager.run("ReplaceWithCmd", {
+            name: l10n('deletion'),
+            elementToReplace: elementToDelete,
+            newContent: placeholder
+          });
         }
       },
       infoForFocusedElement: function infoForFocusedElement(open) {
@@ -136,8 +139,11 @@
       replaceElement: function(elementToReplace, html) {
         var newContent = self.htmlToJQuery(html);
         transitionEffects.disableDuring(function() {
-          commandManager.run("ReplaceWithCmd", l10n('replacement'),
-                             elementToReplace, newContent);
+          commandManager.run("ReplaceWithCmd", {
+            name: l10n('replacement'),
+            elementToReplace: elementToReplace,
+            newContent: newContent
+          });
         });
         return newContent;
       },

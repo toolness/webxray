@@ -43,7 +43,7 @@
       // with old-style serializations.
       var name = state.__cmd__ || ReplaceWithCmd.name;
       var constructor = registry[name];
-      var cmd = constructor(state);
+      var cmd = constructor({state: state});
       cmd.registeredName = name;
       return cmd;
     }
@@ -55,10 +55,9 @@
         name = name || constructor.name;
         registry[name] = constructor;
       },
-      run: function(name) {
+      run: function(name, options) {
         var constructor = registry[name];
-        var args = Array.prototype.slice.call(arguments, 1);
-        var command = constructor.apply(null, args);
+        var command = constructor(options);
         command.registeredName = name;
         focused.unfocus();
         undoStack.push(command);
@@ -144,8 +143,11 @@
     return self;
   }
   
-  function ReplaceWithCmd(name, elementToReplace, newContent) {
-    var isExecuted = false;
+  function ReplaceWithCmd(options) {
+    var name = options.name,
+        elementToReplace = options.elementToReplace,
+        newContent = options.newContent,
+        isExecuted = false;
 
     function deserialize(state) {
       if (typeof(state.isExecuted) == 'undefined')
@@ -168,8 +170,8 @@
       }
     }
 
-    if (typeof(name) == "object" && !elementToReplace && !newContent)
-      deserialize(name);
+    if (options.state)
+      deserialize(options.state);
 
     return jQuery.eventEmitter({
       name: name,
