@@ -28,16 +28,17 @@
         focusedOverlay: focused,
         commandManager: commandManager
       });
+      var persistence = jQuery.commandManagerPersistence(commandManager);
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
         mixMaster: mixMaster,
         commandManager: commandManager,
+        persistence: persistence,
         eventSource: options.eventSource,
         onQuit: function() {
           self.emit('quit');
         }
       });
-      var persistence = jQuery.commandManagerPersistence(commandManager);
       var indicator = jQuery.blurIndicator(input, window);
 
       maybeLoadRecording(persistence);

@@ -24,7 +24,7 @@
       var commandManager = options.commandManager;
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
-      var persistence = jQuery.commandManagerPersistence(commandManager);
+      var persistence = options.persistence;
 
       function handleKey(event) {
         if (event.altKey || event.ctrlKey ||
