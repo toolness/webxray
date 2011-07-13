@@ -2,7 +2,6 @@
   "use strict";
 
   var $ = jQuery;
-  var GLOBAL_RECORDING_VAR = 'webxrayRecording';
 
   function NullTransitionEffectManager() {
     return {
@@ -42,7 +41,7 @@
     var hud = options.hud;
     var focused = options.focusedOverlay;
     var locale = options.locale || jQuery.locale;
-    var commandManager = options.commandManager || jQuery.commandManager();
+    var commandManager = options.commandManager;
     var l10n = locale.scope('mix-master');
     var transitionEffects;
     
@@ -87,43 +86,6 @@
           var msg = locale.get('command-manager:cannot-redo-html');
           $(hud.overlay).html(msg);
         }
-      },
-      saveHistoryToDOM: function saveHistoryToDOM() {
-        $('#webxray-serialized-history-v1').remove();
-        var serializedHistory = $('<div></div>');
-        serializedHistory.attr('id', 'webxray-serialized-history-v1')
-                         .text(commandManager.serializeUndoStack()).hide();
-        $(document.body).append(serializedHistory);
-      },
-      loadHistoryFromDOM: function loadHistoryFromDOM() {
-        var serializedHistory = $('#webxray-serialized-history-v1');
-        if (serializedHistory.length)
-          try {
-            commandManager.deserializeUndoStack(serializedHistory.text());
-          } catch (e) {
-            jQuery.warn("deserialization of history in DOM failed", e);
-          }
-      },
-      isRecordingInGlobal: function isRecordingInGlobal(global) {
-        return (GLOBAL_RECORDING_VAR in global);
-      },
-      playRecordingFromGlobal: function playRecordingFromGlobal(global) {
-        var msg, recording, success;
-
-        try {
-          recording = JSON.stringify(global[GLOBAL_RECORDING_VAR]);
-          commandManager.playRecording(recording);
-          success = true;
-        } catch (e) {
-          success = false;
-          jQuery.warn("payback of recording from global failed", e);
-        }
-        delete global[GLOBAL_RECORDING_VAR];
-        return success;
-      },
-      convertRecordingToJS: function convertRecordingToJS(recording) {
-        return ";(function(){window." + GLOBAL_RECORDING_VAR + "=" +
-               recording + "})();";
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')

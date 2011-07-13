@@ -29,11 +29,8 @@ a:hover {
   <li><p>Paste your clipboard into your URL bar.</p></li>
 </ol>
 <script src="../jquery.min.js"></script>
-<script src="../src/localization.js"></script>
 <script src="../src/get-bookmarklet-url.js"></script>
-<script src="../src/event-emitter.js"></script>
-<script src="../src/mix-master.js"></script>
-<script src="../src/command-manager.js"></script>
+<script src="../src/command-manager-persistence.js"></script>
 <script src="../src/compression.js"></script>
 <script>
 "use strict";
@@ -46,8 +43,8 @@ $(window).ready(function() {
     var recording = jQuery.decompressUriComponentToStr(match[1]);
     var url = decodeURIComponent(match[2]);
     $('#r').text(recording);
-    var mixMaster = jQuery.mixMaster({});
-    var recordingJS = mixMaster.convertRecordingToJS(recording);
+    var persistence = jQuery.commandManagerPersistence();
+    var recordingJS = persistence.convertRecordingToJS(recording);
     var path = loc.pathname.match(/(.*)share\/$/)[1];
     var baseURI = loc.protocol + '//' + loc.host + path;
     var bm = jQuery.getGogglesBookmarkletURL(baseURI) + recordingJS;

@@ -3,10 +3,10 @@
 
   var $ = jQuery;
 
-  function maybeLoadRecording(mixMaster) {
-    if (mixMaster.isRecordingInGlobal(window)) {
+  function maybeLoadRecording(persistence) {
+    if (persistence.isRecordingInGlobal(window)) {
       var msg,
-          success = mixMaster.playRecordingFromGlobal(window);
+          success = persistence.playRecordingFromGlobal(window);
       if (success)
         msg = jQuery.locale.get('hack-recording-playback:success');
       else
@@ -37,10 +37,11 @@
           self.emit('quit');
         }
       });
+      var persistence = jQuery.commandManagerPersistence(commandManager);
       var indicator = jQuery.blurIndicator(input, window);
 
-      maybeLoadRecording(mixMaster);
-      mixMaster.loadHistoryFromDOM();
+      maybeLoadRecording(persistence);
+      persistence.loadHistoryFromDOM();
       $(document.body).append(hud.overlay);
       focused.on('change', hud.onFocusChange);
       input.activate();

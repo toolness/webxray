@@ -87,16 +87,18 @@ test("jQuery.mixMaster()", function() {
     element.remove();
     element = makeSpan();
 
-    testWithElement(element, function testPlayRecordingFromGlobal(mixMaster) {
-      recordingJS = mixMaster.convertRecordingToJS(recording);
-      equal(mixMaster.isRecordingInGlobal(window), false,
+    testWithElement(element, function(mixMaster, element, hud, focused,
+                                      commandManager) {
+      var persistence = jQuery.commandManagerPersistence(commandManager);
+      recordingJS = persistence.convertRecordingToJS(recording);
+      equal(persistence.isRecordingInGlobal(window), false,
             "Recording is not in global before eval");
       eval(recordingJS);
-      equal(mixMaster.isRecordingInGlobal(window), true,
+      equal(persistence.isRecordingInGlobal(window), true,
             "Recording is in global after eval");
-      var success = mixMaster.playRecordingFromGlobal(window);
+      var success = persistence.playRecordingFromGlobal(window);
       ok(success, "playRecordingFromGlobal() succeeds");
-      equal(mixMaster.isRecordingInGlobal(window), false,
+      equal(persistence.isRecordingInGlobal(window), false,
             "Recording is not in global after playRecordingFromGlobal()");
 
       equals(element.html(), '<span>u</span>',
@@ -109,11 +111,13 @@ test("jQuery.mixMaster()", function() {
 
     element.remove();
 
-    testWithElement(element, function testPlayFailure(mixMaster) {
+    testWithElement(element, function(mixMaster, element, hud, focused,
+                                      commandManager) {
+      var persistence = jQuery.commandManagerPersistence(commandManager);
       eval(recordingJS);
-      var success = mixMaster.playRecordingFromGlobal(window);
+      var success = persistence.playRecordingFromGlobal(window);
       ok(!success, "playRecordingFromGlobal() fails");
-      equal(mixMaster.isRecordingInGlobal(window), false,
+      equal(persistence.isRecordingInGlobal(window), false,
             "Recording is not in global after play failure");
     });
   })();
@@ -148,16 +152,23 @@ test("jQuery.mixMaster()", function() {
     element.remove();
   })();
 
-  mixTest(function(mixMaster, element, hud, focused) {
+  mixTest(function(mixMaster, element, hud, focused, commandManager) {
+    var persistence = jQuery.commandManagerPersistence(commandManager);
     equal($('#webxray-serialized-history-v1').length, 0);
     mixMaster.replaceElement(focused.getPrimaryElement(), '<p>hi</p>');
-    mixMaster.saveHistoryToDOM();
+    persistence.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1);
     ok($('#webxray-serialized-history-v1').text().length);
 
-    var mm = jQuery.mixMaster({hud: hud, focusedOverlay: focused});
+    var cmdMgr = jQuery.commandManager();
+    var mm = jQuery.mixMaster({
+      hud: hud,
+      focusedOverlay: focused,
+      commandManager: cmdMgr
+    });
     
-    mm.loadHistoryFromDOM();
+    persistence = jQuery.commandManagerPersistence(cmdMgr);
+    persistence.loadHistoryFromDOM();
     equal($('#webxray-serialized-history-v1').length, 1,
           "existing history DOM is not removed after load");
     equal(element.html(), '<p>hi</p>',
@@ -167,14 +178,14 @@ test("jQuery.mixMaster()", function() {
           "undo history is loaded properly");
     
     var oldHistory = $('#webxray-serialized-history-v1').text();
-    mm.saveHistoryToDOM();
+    persistence.saveHistoryToDOM();
     equal($('#webxray-serialized-history-v1').length, 1,
           "history DOM exists after save");
     ok($('#webxray-serialized-history-v1').text() != oldHistory,
        "history DOM is replaced after save");
 
     $('#webxray-serialized-history-v1').text('garbage');
-    mixMaster.loadHistoryFromDOM();
+    persistence.loadHistoryFromDOM();
     ok(true, "loadHistoryFromDOM() with bogus history data doesn't throw");
     
     $('#webxray-serialized-history-v1').remove();
