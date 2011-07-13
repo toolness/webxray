@@ -1,3 +1,5 @@
+"use strict";
+
 module("get-bookmarklet-url");
 
 test("jQuery.getGogglesBookmarkletURL()", function() {

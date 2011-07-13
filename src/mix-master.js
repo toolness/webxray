@@ -122,8 +122,8 @@
         return success;
       },
       convertRecordingToJS: function convertRecordingToJS(recording) {
-        return ";(function(){" + GLOBAL_RECORDING_VAR + "=" + recording + 
-               "})();";
+        return ";(function(){window." + GLOBAL_RECORDING_VAR + "=" +
+               recording + "})();";
       },
       getRecording: function getRecording() {
         return JSON.stringify(commandManager.getRecording());

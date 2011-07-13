@@ -1,3 +1,5 @@
+"use strict";
+
 module("event-emitter");
 
 test("jQuery.eventEmitter()", function() {

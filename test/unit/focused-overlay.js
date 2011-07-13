@@ -1,3 +1,5 @@
+"use strict";
+
 module("focused-overlay");
 
 test("ancestor index is reset properly on unfocus", function() {

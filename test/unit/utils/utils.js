@@ -1,3 +1,5 @@
+"use strict";
+
 module("utils", htmlFixture("utils"));
 
 test("isVoidElement()", function() {

@@ -1,3 +1,5 @@
+"use strict";
+
 module("uproot", {
   setup: function() {
     var iframes = jQuery('<div id="iframes"></div>');

@@ -1,3 +1,5 @@
+"use strict";
+
 module("settings");
 
 test("jQuery.webxraySettings.url()", function() {

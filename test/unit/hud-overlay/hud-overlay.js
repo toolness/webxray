@@ -1,3 +1,5 @@
+"use strict";
+
 module("hud-overlay", htmlFixture('hud-overlay'));
 
 test("jQuery.hudOverlay() defaultContent works", function() {

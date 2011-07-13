@@ -1,3 +1,5 @@
+"use strict";
+
 module("compression");
 
 test("jQuery.compressStrToUriComponent()", function() {

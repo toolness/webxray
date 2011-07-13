@@ -1,3 +1,5 @@
+"use strict";
+
 module('ui');
 
 test('jQuery.xRayUI()', function() {

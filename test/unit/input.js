@@ -1,3 +1,5 @@
+"use strict";
+
 module("input");
 
 test("jQuery.xRayInput() activate/deactivate", function() {

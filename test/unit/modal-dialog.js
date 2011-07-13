@@ -1,3 +1,5 @@
+"use strict";
+
 module("modal-dialog");
 
 test("jQuery.getModalDialogDimensions()", function() {

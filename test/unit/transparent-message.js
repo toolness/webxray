@@ -1,3 +1,5 @@
+"use strict";
+
 module('transparent-message');
 
 asyncTest('jQuery.transparentMessage() w/o duration', function() {

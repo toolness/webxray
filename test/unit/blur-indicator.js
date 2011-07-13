@@ -1,3 +1,5 @@
+"use strict";
+
 module("blur-indicator");
 
 test("jQuery.blurIndicator()", function() {

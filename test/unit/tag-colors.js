@@ -1,3 +1,5 @@
+"use strict";
+
 module("tag-colors");
 
 test("jQuery.colorForTag()", function() {
