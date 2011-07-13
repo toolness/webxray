@@ -3,20 +3,9 @@
 
   var $ = jQuery;
   
-  function CommandManager(options) {
-    var hud = options.hud;
-    var focused = options.focusedOverlay;
-    var locale = options.locale || jQuery.locale;
+  function CommandManager() {
     var undoStack = [];
     var redoStack = [];
-    var transitionEffects = options.transitionEffects;
-    var l10n = locale.scope('command-manager');
-
-    function updateStatus(verb, command) {
-      var span = $('<span></span>');
-      span.text(verb + ' ' + command.name + '.');
-      $(hud.overlay).empty().append(span);
-    }
 
     function internalUndo() {
       var command = undoStack.pop();
@@ -38,105 +27,90 @@
       return state;
     }
     
+    function createCommand(name, options) {
+      var constructor = registry[name];
+      var command = constructor(options);
+      command.registeredName = name;
+      self.emit('command-created', command);
+      return command;
+    }
+    
     function deserializeCommand(state) {
       // The fallback here is just for backwards compatibility
       // with old-style serializations.
-      var name = state.__cmd__ || ReplaceWithCmd.name;
-      var constructor = registry[name];
-      var cmd = constructor({state: state});
-      cmd.registeredName = name;
-      return cmd;
+      var name = state.__cmd__ || ReplaceWithCmd.name;      
+      return createCommand(name, {state: state});
     }
     
     var registry = {};
     
-    var self = {
+    var self = jQuery.eventEmitter({
       register: function(constructor, name) {
         name = name || constructor.name;
         registry[name] = constructor;
       },
       run: function(name, options) {
-        var constructor = registry[name];
-        var command = constructor(options);
-        command.registeredName = name;
-        focused.unfocus();
+        var command = createCommand(name, options);
         undoStack.push(command);
         redoStack.splice(0);
-        transitionEffects.observe(command);
         command.execute();
-        updateStatus(l10n('executed'), command);
+        return command;
       },
-      undo: function() {
-        if (undoStack.length) {
-          focused.unfocus();
-          updateStatus(l10n('undid'), internalUndo());
-        } else
-          $(hud.overlay).html(l10n('cannot-undo-html'));
+      canUndo: function() {
+        return (undoStack.length > 0);
       },
-      redo: function() {
-        if (redoStack.length) {
-          focused.unfocus();
-          updateStatus(l10n('redid'), internalRedo());
-        } else
-          $(hud.overlay).html(l10n('cannot-redo-html'));
+      canRedo: function() {
+        return (redoStack.length > 0);
       },
+      undo: internalUndo,
+      redo: internalRedo,
       getRecording: function() {
         var recording = [];
         var timesUndone = 0;
-        transitionEffects.disableDuring(function() {
-          while (undoStack.length) {
-            var cmd = undoStack[undoStack.length - 1];
-            internalUndo();
-            recording.splice(0, 0, serializeCommand(cmd));
-            timesUndone++;
-          }
-          for (var i = 0; i < timesUndone; i++)
-            internalRedo();
-        });
+        while (undoStack.length) {
+          var cmd = undoStack[undoStack.length - 1];
+          internalUndo();
+          recording.splice(0, 0, serializeCommand(cmd));
+          timesUndone++;
+        }
+        for (var i = 0; i < timesUndone; i++)
+          internalRedo();
         return recording;
       },
       playRecording: function(recording) {
         undoStack.splice(0);
         redoStack.splice(0);
-        transitionEffects.disableDuring(function() {
-          for (var i = 0; i < recording.length; i++) {
-            var cmd = deserializeCommand(recording[i]);
-            transitionEffects.observe(cmd);
-            undoStack.push(cmd);
-            cmd.execute();
-          }
-        });
+        for (var i = 0; i < recording.length; i++) {
+          var cmd = deserializeCommand(recording[i]);
+          undoStack.push(cmd);
+          cmd.execute();
+        }
       },
       serializeUndoStack: function() {
         var commands = [];
         var timesUndone = 0;
-        transitionEffects.disableDuring(function() {
-          while (undoStack.length) {
-            var cmd = undoStack[undoStack.length - 1];
-            commands.push(serializeCommand(cmd));
-            internalUndo();
-            timesUndone++;
-          }
-          for (var i = 0; i < timesUndone; i++)
-            internalRedo();
-        });
+        while (undoStack.length) {
+          var cmd = undoStack[undoStack.length - 1];
+          commands.push(serializeCommand(cmd));
+          internalUndo();
+          timesUndone++;
+        }
+        for (var i = 0; i < timesUndone; i++)
+          internalRedo();
         return commands;
       },
       deserializeUndoStack: function(commands) {
         undoStack.splice(0);
         redoStack.splice(0);
-        transitionEffects.disableDuring(function() {
-          for (var i = 0; i < commands.length; i++) {
-            var cmd = deserializeCommand(commands[i]);
-            transitionEffects.observe(cmd);
-            undoStack.push(cmd);
-            internalUndo();
-          }
-          for (var i = 0; i < commands.length; i++)
-            internalRedo();
-        });
+        for (var i = 0; i < commands.length; i++) {
+          var cmd = deserializeCommand(commands[i]);
+          undoStack.push(cmd);
+          internalUndo();
+        }
+        for (var i = 0; i < commands.length; i++)
+          internalRedo();
       }
-    };
+    });
 
     self.register(ReplaceWithCmd);
 

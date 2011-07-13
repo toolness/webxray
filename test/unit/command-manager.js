@@ -2,7 +2,7 @@
 
 module("command-manager");
 
-test("jQuery.commandManager() works w/ multiple cmd types", function() {
+test("jQuery.commandManager()", function() {
   var log = [];
   
   function genericCmd(name, options) {
@@ -19,17 +19,7 @@ test("jQuery.commandManager() works w/ multiple cmd types", function() {
   function cmdB(options) { return genericCmd("B", options); }
   
   function makeCommandManager() {
-    var cmdMgr = jQuery.commandManager({
-      hud: {},
-      focusedOverlay: {
-        focus: function() {},
-        unfocus: function() {}
-      },
-      transitionEffects: {
-        observe: function() {},
-        disableDuring: function(cb) { cb(); }
-      }
-    });
+    var cmdMgr = jQuery.commandManager();
   
     cmdMgr.register(cmdA);
     cmdMgr.register(cmdB);
@@ -38,14 +28,33 @@ test("jQuery.commandManager() works w/ multiple cmd types", function() {
   }
   
   var cmdMgr = makeCommandManager();
+  
+  equal(cmdMgr.canUndo(), false, "canUndo() returns false");
+  equal(cmdMgr.canRedo(), false, "canRedo() returns false");
+
   cmdMgr.run("cmdA", {x: 1});
   cmdMgr.run("cmdB", {x: 5});
-  
+
+  equal(cmdMgr.canRedo(), false, "canRedo() still returns false");
+  equal(cmdMgr.canUndo(), true, "canUndo() returns true");
+
   deepEqual(log, ["execute A x:1", "execute B x:5"],
             "different constructors are registered " +
             "and executed properly");
+
   log = [];
-  
+
+  cmdMgr.undo();
+
+  equal(cmdMgr.canRedo(), true, "canRedo() returns true");
+
+  cmdMgr.redo();
+
+  deepEqual(log, ["undo B x:5", "execute B x:5"],
+            "undo/redo are logged properly.");
+
+  log = [];
+
   var serialized = cmdMgr.serializeUndoStack();
   deepEqual(log, ["undo B x:5", "undo A x:1",
                   "execute A x:1", "execute B x:5"],

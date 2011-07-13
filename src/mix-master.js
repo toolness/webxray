@@ -4,53 +4,90 @@
   var $ = jQuery;
   var GLOBAL_RECORDING_VAR = 'webxrayRecording';
 
-  function TransitionEffectManager() {
-    var isEnabled = true;
+  function NullTransitionEffectManager() {
     return {
-      disableDuring: function disableDuring(fn) {
-        if (isEnabled) {
-          isEnabled = false;
-          fn();
+      enableDuring: function enableDuring(fn) { fn(); }
+    };
+  }
+  
+  function TransitionEffectManager(commandManager) {
+    var isEnabled = false;
+
+    commandManager.on('command-created', function(cmd) {
+      cmd.on('before-replace', function before(elementToReplace) {
+        if (!isEnabled)
+          return;
+        var overlay = $(elementToReplace).overlay();
+        cmd.on('after-replace', function after(newContent) {
+          cmd.removeListener('after-replace', after);
+          overlay.applyTagColor(newContent, 0.25)
+                 .resizeToAndFadeOut(newContent);            
+        });
+      });
+    });
+    
+    return {
+      enableDuring: function enableDuring(fn) {
+        if (!isEnabled) {
           isEnabled = true;
+          fn();
+          isEnabled = false;
         } else
           fn();
-      },
-      observe: function(cmd) {
-        cmd.on('before-replace', function before(elementToReplace) {
-          if (!isEnabled)
-            return;
-          var overlay = $(elementToReplace).overlay();
-          cmd.on('after-replace', function after(newContent) {
-            cmd.removeListener('after-replace', after);
-            overlay.applyTagColor(newContent, 0.25)
-                   .resizeToAndFadeOut(newContent);            
-          });
-        });
-      },
-      setEnabled: function(enabled) {
-        isEnabled = enabled;
       }
     };
   }
 
   function MixMaster(options) {
+    var hud = options.hud;
     var focused = options.focusedOverlay;
     var locale = options.locale || jQuery.locale;
-    var transitionEffects = TransitionEffectManager();
-    var commandManager = jQuery.commandManager({
-      hud: options.hud,
-      focusedOverlay: focused,
-      locale: locale,
-      transitionEffects: transitionEffects
-    });
+    var commandManager = jQuery.commandManager();
     var l10n = locale.scope('mix-master');
+    var transitionEffects;
     
     if (options.disableTransitionEffects)
-      transitionEffects.setEnabled(false);
+      transitionEffects = NullTransitionEffectManager();
+    else
+      transitionEffects = TransitionEffectManager(commandManager);
+
+    function updateStatus(verb, command) {
+      var span = $('<span></span>');
+      span.text(verb + ' ' + command.name + '.');
+      $(hud.overlay).empty().append(span);
+    }
+
+    function runCommand(name, options) {
+      focused.unfocus();
+      var command = commandManager.run(name, options);
+      updateStatus(locale.get('command-manager:executed'), command);
+    }
     
     var self = {
-      undo: function() { commandManager.undo(); },
-      redo: function() { commandManager.redo(); },
+      undo: function() {
+        if (commandManager.canUndo()) {
+          focused.unfocus();
+          transitionEffects.enableDuring(function() {
+            updateStatus(locale.get('command-manager:undid'),
+                         commandManager.undo());
+          });
+        } else {
+          var msg = locale.get('command-manager:cannot-undo-html');
+          $(hud.overlay).html(msg);
+        }
+      },
+      redo: function() {
+        if (commandManager.canRedo()) {
+          focused.unfocus();
+          transitionEffects.enableDuring(function() {
+            updateStatus(locale.get('command-manager:redid'),
+                         commandManager.redo());
+          });
+        } else {
+          var msg = locale.get('command-manager:cannot-redo-html');
+          $(hud.overlay).html(msg);
+        }
+      },
       saveHistoryToDOM: function saveHistoryToDOM() {
         $('#webxray-serialized-history-v1').remove();
         var serializedHistory = $('<div></div>');
@@ -120,10 +157,12 @@
           // since it allows us to place a "bookmark" in the DOM
           // that can easily be undone if the user wishes.
           var placeholder = $('<span class="webxray-deleted"></span>');
-          commandManager.run("ReplaceWithCmd", {
-            name: l10n('deletion'),
-            elementToReplace: elementToDelete,
-            newContent: placeholder
+          transitionEffects.enableDuring(function() {
+            runCommand("ReplaceWithCmd", {
+              name: l10n('deletion'),
+              elementToReplace: elementToDelete,
+              newContent: placeholder
+            });
           });
         }
       },
@@ -138,12 +177,10 @@
       },
       replaceElement: function(elementToReplace, html) {
         var newContent = self.htmlToJQuery(html);
-        transitionEffects.disableDuring(function() {
-          commandManager.run("ReplaceWithCmd", {
-            name: l10n('replacement'),
-            elementToReplace: elementToReplace,
-            newContent: newContent
-          });
+        runCommand("ReplaceWithCmd", {
+          name: l10n('replacement'),
+          elementToReplace: elementToReplace,
+          newContent: newContent
         });
         return newContent;
       },
