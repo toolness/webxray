@@ -71,9 +71,10 @@
         }
         for (var i = 0; i < timesUndone; i++)
           self.redo();
-        return recording;
+        return JSON.stringify(recording);
       },
       playRecording: function(recording) {
+        recording = JSON.parse(recording);
         undoStack.splice(0);
         redoStack.splice(0);
         for (var i = 0; i < recording.length; i++) {
@@ -93,9 +94,10 @@
         }
         for (var i = 0; i < timesUndone; i++)
           self.redo();
-        return commands;
+        return JSON.stringify(commands);
       },
       deserializeUndoStack: function(commands) {
+        commands = JSON.parse(commands);
         undoStack.splice(0);
         redoStack.splice(0);
         for (var i = 0; i < commands.length; i++) {

@@ -62,13 +62,13 @@ test("jQuery.commandManager()", function() {
             "during serializeUndoStack()");
   log = [];
 
-  deepEqual(serialized, [{x: 5, __cmd__:"cmdB"},
-                         {x: 1, __cmd__:"cmdA"}],
+  deepEqual(JSON.parse(serialized),
+            [{x: 5, __cmd__:"cmdB"},
+             {x: 1, __cmd__:"cmdA"}],
             "different constructors are serialized properly");
-  serialized = JSON.stringify(serialized);
   
   cmdMgr = makeCommandManager();
-  cmdMgr.deserializeUndoStack(JSON.parse(serialized));
+  cmdMgr.deserializeUndoStack(serialized);
   deepEqual(log, ["undo B x:5", "undo A x:1",
                   "execute A x:1", "execute B x:5"],
             "different constructors are undone/exec'd properly" +

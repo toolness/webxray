@@ -126,16 +126,16 @@
                recording + "})();";
       },
       getRecording: function getRecording() {
-        return JSON.stringify(commandManager.getRecording());
+        return commandManager.getRecording();
       },
       playRecording: function playRecording(recording) {
-        commandManager.playRecording(JSON.parse(recording));
+        commandManager.playRecording(recording);
       },
       serializeHistory: function serializeHistory() {
-        return JSON.stringify(commandManager.serializeUndoStack());
+        return commandManager.serializeUndoStack();
       },
       deserializeHistory: function deserializeHistory(history) {
-        commandManager.deserializeUndoStack(JSON.parse(history));
+        commandManager.deserializeUndoStack(history);
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')
