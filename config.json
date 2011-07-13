@@ -37,6 +37,7 @@
   , "src/focused-overlay.js"
   , "src/hud-overlay.js"
   , "src/transparent-message.js"
+  , "src/style-info.js"
   , "src/mix-master.js"
   , "src/command-manager.js"
   , "src/command-manager-persistence.js"

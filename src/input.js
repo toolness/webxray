@@ -3,20 +3,23 @@
 
   var $ = jQuery;
 
+  var pressed = {};
+
   var keys = {
     DELETE: 8,
     LEFT: 37,
     UP: 38,
     RIGHT: 39,
     DOWN: 40,
-    ESC: 27
+    ESC: 27,
+    SPACE: 32
   };
 
   var alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   
   for (var i = 0; i < alphabet.length; i++)
     keys[alphabet[i]] = alphabet.charCodeAt(i);
-  
+
   jQuery.extend({
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
@@ -25,8 +28,18 @@
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
       var persistence = options.persistence;
+      var styleInfo = jQuery.styleInfoOverlay({focused: focused});
 
-      function handleKey(event) {
+      function handleKeyUp(event) {
+        switch (event.keyCode) {
+          case keys.C:
+          styleInfo.hide();
+          return true;
+        }
+        return false;
+      }
+
+      function handleKeyDown(event) {
         if (event.altKey || event.ctrlKey ||
             event.altGraphKey || event.metaKey) {
           return false;
@@ -94,16 +107,36 @@
           case keys.I:
           mixMaster.infoForFocusedElement();
           return true;
+          
+          case keys.SPACE:
+          if (pressed[keys.C]) {
+            pressed[keys.C] = false;
+            styleInfo.lock(self);
+          }
+          return true;
+
+          case keys.C:
+          if (!pressed[keys.C])
+            styleInfo.show();
+          return true;
         }
         return false;
       }
 
       var listeners = {
         keydown: function(event) {
-          if (handleKey(event)) {
+          if (handleKeyDown(event)) {
             event.preventDefault();
             event.stopPropagation();
           }
+          pressed[event.keyCode] = true;
+        },
+        keyup: function(event) {
+          if (handleKeyUp(event)) {
+            event.preventDefault();
+            event.stopPropagation();
+          }
+          pressed[event.keyCode] = false;
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {
