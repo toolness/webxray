@@ -13,9 +13,9 @@ test("jQuery.mixMaster()", function() {
     var mixMaster = $.mixMaster({
       locale: jQuery.localization.createLocale(["en-US"]),
       hud: hud, 
-      focusedOverlay: focused
+      focusedOverlay: focused,
+      disableTransitionEffects: true
     });
-    mixMaster.transitionEffects.setEnabled(false);
     
     fn(mixMaster, element, hud, focused);
 

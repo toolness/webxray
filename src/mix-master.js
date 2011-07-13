@@ -45,8 +45,10 @@
     });
     var l10n = locale.scope('mix-master');
     
+    if (options.disableTransitionEffects)
+      transitionEffects.setEnabled(false);
+    
     var self = {
-      transitionEffects: transitionEffects,
       undo: function() { commandManager.undo(); },
       redo: function() { commandManager.redo(); },
       saveHistoryToDOM: function saveHistoryToDOM() {
