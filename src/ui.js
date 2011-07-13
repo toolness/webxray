@@ -22,13 +22,16 @@
       var focused = jQuery.focusedOverlay({
         useAnimation: true
       });
+      var commandManager = jQuery.commandManager();
       var mixMaster = jQuery.mixMaster({
         hud: hud,
-        focusedOverlay: focused
+        focusedOverlay: focused,
+        commandManager: commandManager
       });
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
         mixMaster: mixMaster,
+        commandManager: commandManager,
         eventSource: options.eventSource,
         onQuit: function() {
           self.emit('quit');

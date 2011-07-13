@@ -21,6 +21,7 @@
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
+      var commandManager = options.commandManager;
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
 
@@ -79,7 +80,7 @@
             payload: jQuery.webxraySettings.url("sharePageURL") +
                      "?r=" +
                      jQuery.compressStrToUriComponent(
-                       mixMaster.getRecording()
+                       commandManager.getRecording()
                      ) +
                      "&u=" + encodeURIComponent(window.location.href)
           });

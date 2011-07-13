@@ -112,7 +112,7 @@
 
         try {
           recording = JSON.stringify(global[GLOBAL_RECORDING_VAR]);
-          self.playRecording(recording);
+          commandManager.playRecording(recording);
           success = true;
         } catch (e) {
           success = false;
@@ -124,12 +124,6 @@
       convertRecordingToJS: function convertRecordingToJS(recording) {
         return ";(function(){window." + GLOBAL_RECORDING_VAR + "=" +
                recording + "})();";
-      },
-      getRecording: function getRecording() {
-        return commandManager.getRecording();
-      },
-      playRecording: function playRecording(recording) {
-        commandManager.playRecording(recording);
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')

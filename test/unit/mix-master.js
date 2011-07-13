@@ -52,11 +52,12 @@ test("jQuery.mixMaster()", function() {
     var element = makeSpan();
     var recording, recordingJS;
     
-    testWithElement(element, function(mixMaster, element, hud, focused) {
+    testWithElement(element, function(mixMaster, element, hud, focused,
+                                      commandManager) {
       mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
       focused.set(element.children().get(0));
       mixMaster.replaceElement(focused.getPrimaryElement(), '<span>u</span>');
-      recording = mixMaster.getRecording();
+      recording = commandManager.getRecording();
       equals(element.html(), '<span>u</span>',
              'getRecording() doesn\'t change DOM');
     });
@@ -66,8 +67,9 @@ test("jQuery.mixMaster()", function() {
     element = makeSpan();
 
     function testPlayRecording() {
-      testWithElement(element, function(mixMaster) {
-        mixMaster.playRecording(recording);
+      testWithElement(element, function(mixMaster, element, hud, focused,
+                                        commandManager) {
+        commandManager.playRecording(recording);
         equals(element.html(), '<span>u</span>',
                'playRecording() transforms DOM as expected');
         mixMaster.undo();
