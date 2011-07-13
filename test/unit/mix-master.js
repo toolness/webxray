@@ -12,14 +12,16 @@ test("jQuery.mixMaster()", function() {
     var domNode = element.children().get(0);
     focused.set(domNode);
 
+    var cmdMgr = jQuery.commandManager();
     var mixMaster = $.mixMaster({
       locale: jQuery.localization.createLocale(["en-US"]),
       hud: hud, 
       focusedOverlay: focused,
+      commandManager: cmdMgr,
       disableTransitionEffects: true
     });
     
-    fn(mixMaster, element, hud, focused);
+    fn(mixMaster, element, hud, focused, cmdMgr);
 
     focused.destroy();
     hud.destroy();
@@ -118,21 +120,23 @@ test("jQuery.mixMaster()", function() {
     var element = makeTestElement();
     var history;
     
-    testWithElement(element, function(mixMaster, element, hud, focused) {
+    testWithElement(element, function(mixMaster, element, hud, focused,
+                                      commandManager) {
       mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hi</em>');
       focused.set(element.children().get(0));
       mixMaster.replaceElement(focused.getPrimaryElement(), '<span>u</span>');
-      history = mixMaster.serializeHistory();
+      history = commandManager.serializeUndoStack();
       equals(element.html(), '<span>u</span>',
-             'serializeHistory() doesn\'t change DOM');
+             'serializeUndoStack() doesn\'t change DOM');
     });
     
     equals(typeof(history), 'string', "history is a string");
 
-    testWithElement(element, function(mixMaster) {
-      mixMaster.deserializeHistory(history);
+    testWithElement(element, function(mixMaster, element, hud, focused,
+                                      commandManager) {
+      commandManager.deserializeUndoStack(history);
       equals(element.html(), '<span>u</span>',
-             'deserializeHistory() doesn\'t change DOM');
+             'deserializeUndoStack() doesn\'t change DOM');
       mixMaster.undo();
       equal(element.html(), '<em>hi</em>');
       mixMaster.undo();

@@ -42,7 +42,7 @@
     var hud = options.hud;
     var focused = options.focusedOverlay;
     var locale = options.locale || jQuery.locale;
-    var commandManager = jQuery.commandManager();
+    var commandManager = options.commandManager || jQuery.commandManager();
     var l10n = locale.scope('mix-master');
     var transitionEffects;
     
@@ -92,14 +92,14 @@
         $('#webxray-serialized-history-v1').remove();
         var serializedHistory = $('<div></div>');
         serializedHistory.attr('id', 'webxray-serialized-history-v1')
-                         .text(self.serializeHistory()).hide();
+                         .text(commandManager.serializeUndoStack()).hide();
         $(document.body).append(serializedHistory);
       },
       loadHistoryFromDOM: function loadHistoryFromDOM() {
         var serializedHistory = $('#webxray-serialized-history-v1');
         if (serializedHistory.length)
           try {
-            self.deserializeHistory(serializedHistory.text());
+            commandManager.deserializeUndoStack(serializedHistory.text());
           } catch (e) {
             jQuery.warn("deserialization of history in DOM failed", e);
           }
@@ -130,12 +130,6 @@
       },
       playRecording: function playRecording(recording) {
         commandManager.playRecording(recording);
-      },
-      serializeHistory: function serializeHistory() {
-        return commandManager.serializeUndoStack();
-      },
-      deserializeHistory: function deserializeHistory(history) {
-        commandManager.deserializeUndoStack(history);
       },
       htmlToJQuery: function htmlToJQuery(html) {
         if (html == '' || typeof(html) != 'string')
