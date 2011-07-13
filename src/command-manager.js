@@ -6,10 +6,11 @@
   function CommandManager(options) {
     var hud = options.hud;
     var focused = options.focusedOverlay;
+    var locale = options.locale || jQuery.locale;
     var undoStack = [];
     var redoStack = [];
     var transitionEffects = options.transitionEffects;
-    var l10n = options.locale.scope('command-manager');
+    var l10n = locale.scope('command-manager');
 
     function updateStatus(verb, command) {
       var span = $('<span></span>');
@@ -31,8 +32,24 @@
       return command;
     }
     
+    function deserializeCommand(state) {
+      // The fallback here is just for backwards compatibility
+      // with old-style serializations.
+      var name = state.__cmd__ || ReplaceWithCmd.name;
+      var constructor = registry[name];
+      return constructor(state);
+    }
+    
+    var registry = {};
+    
     var self = {
-      run: function(command) {
+      register: function(constructor) {
+        registry[constructor.name] = constructor;
+      },
+      run: function(name) {
+        var constructor = registry[name];
+        var args = Array.prototype.slice.call(arguments, 1);
+        var command = constructor.apply(null, args);
         focused.unfocus();
         undoStack.push(command);
         redoStack.splice(0);
@@ -74,8 +91,7 @@
         redoStack.splice(0);
         transitionEffects.disableDuring(function() {
           for (var i = 0; i < recording.length; i++) {
-            // TODO: Don't hard-code this.
-            var cmd = ReplaceWithCmd(recording[i]);
+            var cmd = deserializeCommand(recording[i]);
             transitionEffects.observe(cmd);
             undoStack.push(cmd);
             cmd.execute();
@@ -102,8 +118,7 @@
         redoStack.splice(0);
         transitionEffects.disableDuring(function() {
           for (var i = 0; i < commands.length; i++) {
-            // TODO: Don't hard-code this.
-            var cmd = ReplaceWithCmd(commands[i]);
+            var cmd = deserializeCommand(commands[i]);
             transitionEffects.observe(cmd);
             undoStack.push(cmd);
             internalUndo();
@@ -113,7 +128,9 @@
         });
       }
     };
-    
+
+    self.register(ReplaceWithCmd);
+
     return self;
   }
   
@@ -176,14 +193,12 @@
           isExecuted: isExecuted,
           name: name,
           selector: selector,
-          html: html
+          html: html,
+          __cmd__: ReplaceWithCmd.name
         };
       }
     });
   }
 
-  jQuery.extend({
-    commandManager: CommandManager,
-    replaceWithCmd: ReplaceWithCmd
-  });
+  jQuery.extend({commandManager: CommandManager});
 })(jQuery);
