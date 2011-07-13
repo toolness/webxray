@@ -111,10 +111,55 @@
     });
 
     self.register(ReplaceWithCmd);
-
+    self.register(ChangeAttributeCmd);
+    
     return self;
   }
   
+  function ChangeAttributeCmd(options) {
+    var name = options.name,
+        element = options.element,
+        attribute = options.attribute,
+        value = options.value;
+
+    function deserialize(state) {
+      name = state.name;
+      attribute = state.attribute;
+      value = state.value;
+      element = $(document.documentElement).find(state.selector);
+    }
+    
+    if (options.state)
+      deserialize(options.state);
+
+    function applyValue() {
+      this.emit('before-replace', element);
+      var oldValue = $(element).attr(attribute);
+      if (typeof(value) == 'undefined')
+        $(element).removeAttr(attribute);
+      else
+        $(element).attr(attribute, value);
+      value = oldValue;
+      this.emit('after-replace', element);
+    }
+
+    return jQuery.eventEmitter({
+      name: name,
+      execute: applyValue,
+      undo: applyValue,
+      serialize: function() {
+        var selector = $(document.documentElement).pathTo(element);
+
+        return {
+          name: name,
+          selector: selector,
+          attribute: attribute,
+          value: value
+        };
+      }
+    });
+  }
+
   function ReplaceWithCmd(options) {
     var name = options.name,
         elementToReplace = options.elementToReplace,

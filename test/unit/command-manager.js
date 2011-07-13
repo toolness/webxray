@@ -2,6 +2,65 @@
 
 module("command-manager");
 
+test("ChangeAttributeCmd", function() {
+  var $ = jQuery;
+  var cmdMgr = jQuery.commandManager();
+  var element = $('<p></p>')[0];
+  
+  $(document.body).append(element);
+
+  cmdMgr.run("ChangeAttributeCmd", {
+    element: element,
+    name: "change style",
+    attribute: "style",
+    value: "font-size: 36pt"
+  });
+  equals($(element).attr("style"), "font-size: 36pt");
+  cmdMgr.run("ChangeAttributeCmd", {
+    element: element,
+    name: "change style",
+    attribute: "style",
+    value: "font-size: 36pt; color: pink;"
+  });
+  equals($(element).attr("style"), "font-size: 36pt; color: pink;");
+  cmdMgr.undo();
+  equals($(element).attr("style"), "font-size: 36pt");
+  cmdMgr.undo();
+  equals($(element).attr("style"), undefined);
+  cmdMgr.redo();
+  equals($(element).attr("style"), "font-size: 36pt");
+  cmdMgr.redo();
+  equals($(element).attr("style"), "font-size: 36pt; color: pink;");
+
+  var recording = cmdMgr.getRecording();
+
+  $(element).remove();
+  element = $('<p></p>')[0];
+  $(document.body).append(element);
+
+  cmdMgr = jQuery.commandManager();
+  cmdMgr.playRecording(recording);
+  equals($(element).attr("style"), "font-size: 36pt; color: pink;");
+  cmdMgr.undo();
+  equals($(element).attr("style"), "font-size: 36pt");
+  cmdMgr.undo();
+  equals($(element).attr("style"), undefined);
+  
+  ok(!cmdMgr.canUndo());
+  
+  $(element).attr("style", "");
+  cmdMgr.run("ChangeAttributeCmd", {
+    element: element,
+    name: "change style",
+    attribute: "style",
+    value: "font-size: 36pt"
+  });
+  equals($(element).attr("style"), "font-size: 36pt");
+  cmdMgr.undo();
+  equals($(element).attr("style"), "");
+  $(element).remove();
+});
+
 test("jQuery.commandManager()", function() {
   var log = [];
   

@@ -115,6 +115,7 @@
   jQuery.extend({
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
+      var commandManager = options.commandManager;
       var body = options.body || document.body;
       var isVisible = false;
       
@@ -146,7 +147,10 @@
           input.deactivate();
           overlay.addClass("webxray-style-info-locked");
           overlay.find('.webxray-row').click(makeCssValueEditable);
-          
+
+          var primary = focused.getPrimaryElement();
+          var startStyle = $(primary).attr("style");
+
           function handleKeyDown(event) {
             if (event.keyCode == input.keys.I) {
               if (!overlay.find('form').length) {
@@ -165,6 +169,20 @@
           window.addEventListener("keydown", handleKeyDown, true);
           
           close.click(function(event) {
+            var endStyle = $(primary).attr("style");
+            if (startStyle != endStyle) {
+              if (typeof(startStyle) == 'undefined')
+                $(primary).removeAttr("style")
+              else
+                $(primary).attr("style", startStyle);
+              commandManager.run("ChangeAttributeCmd", {
+                name: "style change",
+                attribute: "style",
+                value: endStyle,
+                element: primary
+              });
+            }
+
             overlay.removeClass("webxray-style-info-locked");
             close.unbind();
             self.hide();
