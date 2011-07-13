@@ -24,6 +24,7 @@
       var commandManager = options.commandManager;
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
+      var persistence = jQuery.commandManagerPersistence(commandManager);
 
       function handleKey(event) {
         if (event.altKey || event.ctrlKey ||
@@ -69,7 +70,7 @@
           return true;
 
           case keys.T:
-          mixMaster.saveHistoryToDOM();
+          persistence.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
           return true;
 

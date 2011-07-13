@@ -76,7 +76,7 @@
     loadPrerequisites(function() {
       var ui = jQuery.xRayUI({eventSource: document});
       ui.on('quit', function() {
-        ui.mixMaster.saveHistoryToDOM();
+        ui.persistence.saveHistoryToDOM();
         $(document).trigger('unload');
       });
       $(document).unload(function() {

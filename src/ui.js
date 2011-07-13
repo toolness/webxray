@@ -48,7 +48,7 @@
       $(window).focus();
 
       var self = jQuery.eventEmitter({
-        mixMaster: mixMaster,
+        persistence: persistence,
         unload: function() {
           if (!isUnloaded) {
             isUnloaded = true;
