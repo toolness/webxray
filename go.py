@@ -5,6 +5,7 @@
     
       serve   - run web server on port %(port)s
       compile - generate %(compiledFilename)s
+      clean   - delete all generated files
 """
 
 from wsgiref.simple_server import make_server
@@ -92,6 +93,10 @@ if __name__ == "__main__":
             f.write(chunk)
         f.close()
         print "wrote %s" % cfg['compiledFilename']
+    elif cmd == 'clean':
+        if os.path.exists(cfg['compiledFilename']):
+            os.remove(cfg['compiledFilename'])
+        print "removed generated files."
     else:
         print "unknown command: %s" % cmd
         sys.exit(1)
