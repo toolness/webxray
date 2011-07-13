@@ -7,20 +7,6 @@
     var undoStack = [];
     var redoStack = [];
 
-    function internalUndo() {
-      var command = undoStack.pop();
-      redoStack.push(command);
-      command.undo();
-      return command;
-    }
-    
-    function internalRedo() {
-      var command = redoStack.pop();
-      undoStack.push(command);
-      command.execute();
-      return command;
-    }
-    
     function serializeCommand(cmd) {
       var state = cmd.serialize();
       state.__cmd__ = cmd.registeredName;
@@ -62,19 +48,29 @@
       canRedo: function() {
         return (redoStack.length > 0);
       },
-      undo: internalUndo,
-      redo: internalRedo,
+      undo: function() {
+        var command = undoStack.pop();
+        redoStack.push(command);
+        command.undo();
+        return command;
+      },
+      redo: function() {
+        var command = redoStack.pop();
+        undoStack.push(command);
+        command.execute();
+        return command;
+      },
       getRecording: function() {
         var recording = [];
         var timesUndone = 0;
         while (undoStack.length) {
           var cmd = undoStack[undoStack.length - 1];
-          internalUndo();
+          self.undo();
           recording.splice(0, 0, serializeCommand(cmd));
           timesUndone++;
         }
         for (var i = 0; i < timesUndone; i++)
-          internalRedo();
+          self.redo();
         return recording;
       },
       playRecording: function(recording) {
@@ -92,11 +88,11 @@
         while (undoStack.length) {
           var cmd = undoStack[undoStack.length - 1];
           commands.push(serializeCommand(cmd));
-          internalUndo();
+          self.undo();
           timesUndone++;
         }
         for (var i = 0; i < timesUndone; i++)
-          internalRedo();
+          self.redo();
         return commands;
       },
       deserializeUndoStack: function(commands) {
@@ -105,10 +101,10 @@
         for (var i = 0; i < commands.length; i++) {
           var cmd = deserializeCommand(commands[i]);
           undoStack.push(cmd);
-          internalUndo();
+          self.undo();
         }
         for (var i = 0; i < commands.length; i++)
-          internalRedo();
+          self.redo();
       }
     });
 
