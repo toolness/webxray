@@ -29,8 +29,10 @@
         commandManager: commandManager
       });
       var persistence = jQuery.commandManagerPersistence(commandManager);
+      var styleInfo = jQuery.styleInfoOverlay({focused: focused});
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
+        styleInfoOverlay: styleInfo,
         mixMaster: mixMaster,
         commandManager: commandManager,
         persistence: persistence,

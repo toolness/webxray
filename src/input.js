@@ -28,7 +28,7 @@
       var eventSource = options.eventSource;
       var onQuit = options.onQuit;
       var persistence = options.persistence;
-      var styleInfo = jQuery.styleInfoOverlay({focused: focused});
+      var styleInfo = options.styleInfoOverlay;
 
       function handleKeyUp(event) {
         switch (event.keyCode) {
