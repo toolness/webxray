@@ -32,24 +32,34 @@
       return command;
     }
     
+    function serializeCommand(cmd) {
+      var state = cmd.serialize();
+      state.__cmd__ = cmd.registeredName;
+      return state;
+    }
+    
     function deserializeCommand(state) {
       // The fallback here is just for backwards compatibility
       // with old-style serializations.
       var name = state.__cmd__ || ReplaceWithCmd.name;
       var constructor = registry[name];
-      return constructor(state);
+      var cmd = constructor(state);
+      cmd.registeredName = name;
+      return cmd;
     }
     
     var registry = {};
     
     var self = {
-      register: function(constructor) {
-        registry[constructor.name] = constructor;
+      register: function(constructor, name) {
+        name = name || constructor.name;
+        registry[name] = constructor;
       },
       run: function(name) {
         var constructor = registry[name];
         var args = Array.prototype.slice.call(arguments, 1);
         var command = constructor.apply(null, args);
+        command.registeredName = name;
         focused.unfocus();
         undoStack.push(command);
         redoStack.splice(0);
@@ -78,7 +88,7 @@
           while (undoStack.length) {
             var cmd = undoStack[undoStack.length - 1];
             internalUndo();
-            recording.splice(0, 0, cmd.serialize());
+            recording.splice(0, 0, serializeCommand(cmd));
             timesUndone++;
           }
           for (var i = 0; i < timesUndone; i++)
@@ -104,7 +114,7 @@
         transitionEffects.disableDuring(function() {
           while (undoStack.length) {
             var cmd = undoStack[undoStack.length - 1];
-            commands.push(cmd.serialize());
+            commands.push(serializeCommand(cmd));
             internalUndo();
             timesUndone++;
           }
@@ -193,8 +203,7 @@
           isExecuted: isExecuted,
           name: name,
           selector: selector,
-          html: html,
-          __cmd__: ReplaceWithCmd.name
+          html: html
         };
       }
     });

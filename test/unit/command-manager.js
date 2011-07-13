@@ -10,9 +10,7 @@ test("jQuery.commandManager() works w/ multiple cmd types", function() {
       name: name,
       execute: function() { log.push("execute " + name); },
       undo: function() { log.push("undo " + name); },
-      serialize: function() {
-        return {__cmd__: "cmd" + name};
-      }
+      serialize: function() { return {}; }
     };
   }
 
