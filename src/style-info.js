@@ -238,10 +238,6 @@
         if (!isNameValid)
           return;
 
-        //var value = style.getPropertyValue(name);
-        //if (value.match(/^(none|auto|normal)/))
-        //  return;
-
         names.push(name);
       });
 
