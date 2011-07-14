@@ -198,6 +198,10 @@
         hide: function() {
           isVisible = false;
           overlay.hide();
+        },
+        destroy: function() {
+          // TODO: Remove the event listeners if we're locked.
+          overlay.remove();
         }
       };
 

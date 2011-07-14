@@ -64,6 +64,8 @@
             input = null;
             hud.destroy();
             hud = null;
+            styleInfo.destroy();
+            styleInfo = null;
             indicator = null;
           }
         }
