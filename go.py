@@ -33,25 +33,30 @@ index_html = """
 """
 
 def build_compiled_file(cfg):
+    contents = []
     for filename in cfg['compiledFileParts']:
         if '.local.' in filename:
             if not os.path.exists(filename):
                 continue
-        contents = open(filename, 'r').read()
-        yield contents
+        contents.append(open(filename, 'r').read())
+    return ''.join(contents)
 
 def make_app(cfg):
     def app(environ, start_response):
         path = environ['PATH_INFO']
 
         if path == '/%(staticFilesDir)s%(compiledFile)s' % cfg:
-            start_response('200 OK', [('Content-Type',
-                                       'application/javascript')])
-            return build_compiled_file(cfg)
+            compiled = build_compiled_file(cfg)
+            start_response('200 OK',
+                           [('Content-Type', 'application/javascript'),
+                            ('Content-Length', str(len(compiled)))])
+            return [compiled]
         elif path == '/':
-            start_response('200 OK', [('Content-Type',
-                                       'text/html')])
-            return [(index_html % cfg).encode('utf-8')]
+            index = (index_html % cfg).encode('utf-8')
+            start_response('200 OK',
+                           [('Content-Type', 'text/html'),
+                            ('Content-Length', str(len(index)))])
+            return [index]
         
         if path.endswith('/'):
             path = '%sindex.html' % path
@@ -89,8 +94,7 @@ if __name__ == "__main__":
         server.serve_forever()
     elif cmd == 'compile':
         f = open(cfg['compiledFilename'], 'w')
-        for chunk in build_compiled_file(cfg):
-            f.write(chunk)
+        f.write(build_compiled_file(cfg))
         f.close()
         print "wrote %s" % cfg['compiledFilename']
     elif cmd == 'clean':
