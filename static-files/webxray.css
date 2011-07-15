@@ -234,6 +234,15 @@ div#webxray-wait-for-css-to-load {
   pointer-events: auto !important;
 }
 
+.webxray-color-block {
+  display: inline-block;
+  vertical-align: baseline;
+  border: 1px solid white;
+  margin-left: 8px;
+  min-width: 6px;
+  min-height: 6px;
+}
+
 .webxray-close-button:hover {
   background-color: rgba(0, 0, 0, 0.9);
 }

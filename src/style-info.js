@@ -100,6 +100,11 @@
         valueCell.addClass("webxray-value-different-from-parent");
       if (normalizeProperty(element.style, name) == value)
         valueCell.addClass("webxray-value-matches-inline-style");
+      if (name.match(/color$/)) {
+        var colorBlock = $('<div class="webxray-color-block"></div>');
+        colorBlock.css('background-color', value);
+        valueCell.append(colorBlock);
+      }
     }
 
     var self = {
