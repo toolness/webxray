@@ -121,16 +121,16 @@
     var startStyle = $(primary).attr("style");
 
     function handleKeyDown(event) {
+      if (overlay.find('form').length)
+        return;
       if (event.keyCode == keys.I) {
-        if (!overlay.find('form').length) {
-          var hover = overlay.find('.webxray-row:hover');
-          if (hover.length) {
-            var property = hover.find('.webxray-name').text();
-            var url = 'https://developer.mozilla.org/en/CSS/' + property;
-            open(url, 'info');
-            event.preventDefault();
-            event.stopPropagation();
-          }
+        var hover = overlay.find('.webxray-row:hover');
+        if (hover.length) {
+          var property = hover.find('.webxray-name').text();
+          var url = 'https://developer.mozilla.org/en/CSS/' + property;
+          open(url, 'info');
+          event.preventDefault();
+          event.stopPropagation();
         }
       }
     }
