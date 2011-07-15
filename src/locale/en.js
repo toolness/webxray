@@ -48,5 +48,6 @@ jQuery.localization.extend("en", "mix-master-dialog", {
 });
 
 jQuery.localization.extend("en", "style-info", {
-  "tap-space": "Tap the space bar to edit this style."
+  "tap-space": "Tap the space bar to edit this style.",
+  "style-change": "style change"
 });

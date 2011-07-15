@@ -102,6 +102,54 @@
     });
   }
 
+  function ModalOverlay(overlay, primary, keys) {
+    var startStyle = $(primary).attr("style");
+
+    function handleKeyDown(event) {
+      if (event.keyCode == keys.I) {
+        if (!overlay.find('form').length) {
+          var hover = overlay.find('.webxray-row:hover');
+          if (hover.length) {
+            var property = hover.find('.webxray-name').text();
+            var url = 'https://developer.mozilla.org/en/CSS/' + property;
+            open(url, 'info');
+            event.preventDefault();
+            event.stopPropagation();
+          }
+        }
+      }
+    }
+    
+    function confirmChanges() {
+      var endStyle = $(primary).attr("style");
+      if (startStyle != endStyle) {
+        if (typeof(startStyle) == 'undefined')
+          $(primary).removeAttr("style")
+        else
+          $(primary).attr("style", startStyle);
+        self.emit('change-style', endStyle);
+      }
+      self.close();
+    }
+
+    overlay.addClass("webxray-style-info-locked");
+    overlay.find('.webxray-row').bind('click', makeCssValueEditable);
+    overlay.find('.webxray-close-button').bind('click', confirmChanges);
+    window.addEventListener("keydown", handleKeyDown, true);  
+
+    var self = jQuery.eventEmitter({
+      close: function() {
+        overlay.removeClass("webxray-style-info-locked");
+        overlay.find('.webxray-row').unbind('click', makeCssValueEditable);
+        overlay.find('.webxray-close-button').unbind('click', confirmChanges);
+        window.removeEventListener("keydown", handleKeyDown, true);
+        self.emit('close');
+      }
+    });
+
+    return self;
+  }
+
   jQuery.extend({
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
@@ -110,29 +158,28 @@
       var body = options.body || document.body;
       var isVisible = false;
       var l10n = locale.scope("style-info");
+      var modalOverlay = null;
       
       var overlay = $('<div class="webxray-base webxray-style-info"></div>');
-      var instructions = $('<div class="webxray-instructions"></div>');
-      var close = $('<div class="webxray-close-button"></div>');
-      close.text(locale.get("dialog-common:ok"));
-      instructions.text(l10n("tap-space"));
       $(body).append(overlay);
       overlay.hide();
       
-      focused.on('change', function() {
-        if (isVisible) {
-          refresh();
-        }
-      });
+      focused.on('change', refresh);
       
       function refresh() {
-        overlay.empty();
-        overlay.append(instructions).append(close);
+        if (!isVisible)
+          return;
+
         var primary = focused.getPrimaryElement();
+        overlay.empty();
         
         if (primary) {
           var info = $(primary).getStyleInfo();
-          overlay.prepend(info);
+          var instructions = $('<div class="webxray-instructions"></div>');
+          var close = $('<div class="webxray-close-button"></div>');
+          instructions.text(l10n("tap-space"));
+          close.text(locale.get("dialog-common:ok"));
+          overlay.append(info).append(instructions).append(close);
           overlay.show();
         } else {
           overlay.hide();
@@ -141,51 +188,25 @@
 
       var self = {
         lock: function(input) {
-          input.deactivate();
-          overlay.addClass("webxray-style-info-locked");
-          overlay.find('.webxray-row').click(makeCssValueEditable);
-
           var primary = focused.getPrimaryElement();
-          var startStyle = $(primary).attr("style");
-
-          function handleKeyDown(event) {
-            if (event.keyCode == input.keys.I) {
-              if (!overlay.find('form').length) {
-                var hover = overlay.find('.webxray-row:hover');
-                if (hover.length) {
-                  var property = hover.find('.webxray-name').text();
-                  var url = 'https://developer.mozilla.org/en/CSS/' + property;
-                  open(url, 'info');
-                  event.preventDefault();
-                  event.stopPropagation();
-                }
-              }
-            }
-          }
           
-          window.addEventListener("keydown", handleKeyDown, true);
-          
-          close.click(function(event) {
-            var endStyle = $(primary).attr("style");
-            if (startStyle != endStyle) {
-              if (typeof(startStyle) == 'undefined')
-                $(primary).removeAttr("style")
-              else
-                $(primary).attr("style", startStyle);
+          if (primary) {
+            input.deactivate();
+            modalOverlay = ModalOverlay(overlay, primary, input.keys);
+            modalOverlay.on('change-style', function(style) {
               commandManager.run("ChangeAttributeCmd", {
-                name: "style change",
+                name: l10n("style-change"),
                 attribute: "style",
-                value: endStyle,
+                value: style,
                 element: primary
               });
-            }
-
-            overlay.removeClass("webxray-style-info-locked");
-            close.unbind();
-            self.hide();
-            input.activate();
-            window.removeEventListener("keydown", handleKeyDown, true);
-          });
+            });
+            modalOverlay.on('close', function() {
+              modalOverlay = null;
+              self.hide();
+              input.activate();
+            });
+          }
         },
         show: function() {
           isVisible = true;
@@ -197,7 +218,9 @@
           overlay.hide();
         },
         destroy: function() {
-          // TODO: Remove the event listeners if we're locked.
+          if (modalOverlay)
+            modalOverlay.close();
+          focused.removeListener('change', refresh);
           overlay.remove();
         }
       };
