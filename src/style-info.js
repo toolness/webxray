@@ -56,16 +56,6 @@
     return value;
   }
 
-  function anyRuleMatches(rules, name, value) {
-    for (var i = 0; i < rules.length; i++) {
-      var rule = rules[i];
-      
-      if (normalizeProperty(rule.style, name) == value)
-        return true;
-    }
-    return false;
-  }
-  
   function makeCssValueEditable() {
     if ($(this).find('form').length)
       return;
