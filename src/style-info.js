@@ -40,12 +40,7 @@
   };
 
   function normalizeProperty(style, name) {
-    var value;
-    
-    if (style instanceof CSSStyleDeclaration)
-      value = style.getPropertyValue(name);
-    else
-      value = $(style).css(name);
+    var value = style.getPropertyValue(name);
 
     if (value) {
       var urlMatch = value.match(/url\("?([^"]*)"?\)/);
@@ -60,46 +55,66 @@
     if ($(this).find('form').length)
       return;
 
-    var self = $(this).find('.webxray-value');
-    var info = self.closest(".webxray-rows");
-    var element = info.data("linked-element");
-    var property = self.prev('.webxray-name').text();
-    var originalValue = self.text();
+    var row = $(this);
+    var valueCell = $(this).find('.webxray-value');
+    var originalValue = valueCell.text();
     var form = $('<form><input type="text"></input></form>');
     var textField = form.find("input");
 
-    self.empty().append(form);
+    valueCell.empty().append(form);
     textField.val(originalValue).select().focus();
 
-    function cancel() {
+    function revertToOriginal() {
       form.remove();
-      self.text(originalValue);
+      valueCell.text(originalValue);
     }
     
-    textField.blur(cancel);
+    textField.blur(revertToOriginal);
     textField.keydown(function(event) {
+      // TODO: Use named constant
       if (event.keyCode == 27)
-        cancel();
+        revertToOriginal();
     });
 
     form.submit(function() {
       var newValue = textField.val();
-
-      $(this).remove();
-      if (newValue == '') {
-        $(element).css(property, '');
-        self.removeClass('webxray-value-matches-inline-style');
-        self.text(normalizeProperty(element, property));
-      } else {
-        if (newValue != originalValue) {
-          self.addClass('webxray-value-matches-inline-style');
-          $(element).css(property, newValue);
-          self.text(normalizeProperty(element, property));
-        } else
-          self.text(originalValue);
-      }
+      revertToOriginal();
+      row.data("propertyWidget").changeValue(newValue);
       return false;
     });
+  }
+
+  function buildPropertyWidget(element, row, style, parentStyle, name) {
+    var nameCell = $('<div class="webxray-name"></div>');
+    var valueCell = $('<div class="webxray-value"></div>');
+
+    nameCell.text(name);
+    row.append(nameCell);
+    row.append(valueCell);
+
+    function refreshValue() {
+      var value = normalizeProperty(style, name);
+      valueCell.text(value);
+      valueCell.attr("class", "webxray-value");
+      if (parentStyle && normalizeProperty(parentStyle, name) != value)
+        valueCell.addClass("webxray-value-different-from-parent");
+      if (normalizeProperty(element.style, name) == value)
+        valueCell.addClass("webxray-value-matches-inline-style");
+    }
+
+    var self = {
+      changeValue: function(newValue) {
+        var originalValue = valueCell.text();
+        if (newValue != originalValue) {
+          $(element).css(name, newValue);
+          style = window.getComputedStyle(element);
+          refreshValue();
+        }
+      }
+    };
+    
+    row.data("propertyWidget", self);
+    refreshValue();
   }
 
   function ModalOverlay(overlay, primary, keys) {
@@ -210,8 +225,8 @@
         },
         show: function() {
           isVisible = true;
-          refresh();
           overlay.show();
+          refresh();
         },
         hide: function() {
           isVisible = false;
@@ -242,7 +257,6 @@
       var info = $('<div class="webxray-rows"></div>');
       var names = [];
 
-      info.data("linked-element", element);
       jQuery.each(style, function() {
         var name = this;
         var isNameValid = false;
@@ -267,21 +281,8 @@
 
       for (var i = 0; i < names.length + (NUM_COLS-1); i += NUM_COLS) {
         var row = $('<div class="webxray-row"></div>');
-        for (var j = 0; j < NUM_COLS; j++) {
-          var name = names[i+j];
-          var value = normalizeProperty(style, name);
-          var nameCell = $('<div class="webxray-name"></div>');
-          var valueCell = $('<div class="webxray-value"></div>');
-          
-          nameCell.text(name);
-          valueCell.text(value);
-          if (parentStyle && normalizeProperty(parentStyle, name) != value)
-            valueCell.addClass("webxray-value-different-from-parent");
-          if (normalizeProperty(element.style, name) == value)
-            valueCell.addClass("webxray-value-matches-inline-style");
-          row.append(nameCell);
-          row.append(valueCell);
-        }
+        for (var j = 0; j < NUM_COLS; j++)
+          buildPropertyWidget(element, row, style, parentStyle, names[i+j]);
         info.append(row);
       }
 
