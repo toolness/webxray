@@ -10,7 +10,7 @@ test("jQuery.fn.getStyleInfo()", function() {
   $(document.body).append(element);
   info = element.getStyleInfo();
   var diff = info.find(".webxray-value-different-from-parent")
-                 .prev(":contains('background-color')");
+                 .prev(":contains('background\u2011color')");
   equal(diff.length, 1,
         "values different from parent have expected class");
   element.remove();

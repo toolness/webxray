@@ -88,7 +88,9 @@
     var nameCell = $('<div class="webxray-name"></div>');
     var valueCell = $('<div class="webxray-value"></div>');
 
-    nameCell.text(name);
+    // Replace hyphens with non-breaking ones to keep
+    // the presentation looking nice.
+    nameCell.text(name.replace(/-/g, '\u2011'));
     row.append(nameCell);
     row.append(valueCell);
 
@@ -108,6 +110,7 @@
     }
 
     var self = {
+      name: name,
       changeValue: function(newValue) {
         var originalValue = valueCell.text();
         if (newValue != originalValue) {
@@ -131,7 +134,7 @@
       if (event.keyCode == keys.I) {
         var hover = overlay.find('.webxray-row:hover');
         if (hover.length) {
-          var property = hover.find('.webxray-name').text();
+          var property = hover.data('propertyWidget').name;
           var url = 'https://developer.mozilla.org/en/CSS/' + property;
           open(url, 'info');
           event.preventDefault();
