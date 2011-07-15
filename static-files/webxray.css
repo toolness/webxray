@@ -275,6 +275,8 @@ div#webxray-wait-for-css-to-load {
 
 .webxray-style-info .webxray-rows .webxray-row form,
 .webxray-style-info .webxray-rows .webxray-row input {
+  font-family: inherit;
+  font-size: inherit;
   display: inline;
   margin: 0;
   padding: 0;

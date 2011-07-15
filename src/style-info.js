@@ -56,6 +56,7 @@
       return;
 
     var row = $(this);
+    var nameCell = $(this).find('.webxray-name');
     var valueCell = $(this).find('.webxray-value');
     var originalValue = valueCell.text();
     var form = $('<form><input type="text"></input></form>');
@@ -63,6 +64,10 @@
 
     valueCell.empty().append(form);
     textField.val(originalValue).select().focus();
+
+    // The -1 is needed on Firefox, or else the whole field will
+    // wrap to the next line.
+    textField.width(row.width() - nameCell.outerWidth() - 1);
 
     function revertToOriginal() {
       form.remove();
