@@ -46,3 +46,7 @@ jQuery.localization.extend("en", "mix-master-dialog", {
   "skeleton-header": "What Your Browser Sees",
   "rendering-header": "What You See"
 });
+
+jQuery.localization.extend("en", "style-info", {
+  "tap-space": "Tap the space bar to edit this style."
+});

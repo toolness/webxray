@@ -116,12 +116,16 @@
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
       var commandManager = options.commandManager;
+      var locale = options.locale || jQuery.locale;
       var body = options.body || document.body;
       var isVisible = false;
+      var l10n = locale.scope("style-info");
       
       var overlay = $('<div class="webxray-base webxray-style-info"></div>');
+      var instructions = $('<div class="webxray-instructions"></div>');
       var close = $('<div class="webxray-close-button"></div>');
-      overlay.append(close);
+      close.text(locale.get("dialog-common:ok"));
+      instructions.text(l10n("tap-space"));
       $(body).append(overlay);
       overlay.hide();
       
@@ -133,12 +137,15 @@
       
       function refresh() {
         overlay.empty();
-        overlay.append(close);
+        overlay.append(instructions).append(close);
         var primary = focused.getPrimaryElement();
         
         if (primary) {
           var info = $(primary).getStyleInfo();
           overlay.prepend(info);
+          overlay.show();
+        } else {
+          overlay.hide();
         }
       }
 

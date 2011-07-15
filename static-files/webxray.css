@@ -238,6 +238,14 @@ div#webxray-wait-for-css-to-load {
   background-color: rgba(0, 0, 0, 0.9);
 }
 
+.webxray-style-info-locked .webxray-instructions {
+  visibility: hidden;
+}
+
+.webxray-instructions {
+  padding-top: 1em;
+}
+
 .webxray-close-button {
   float: right;
   padding: 0.5em;
@@ -248,10 +256,6 @@ div#webxray-wait-for-css-to-load {
 
 .webxray-style-info-locked .webxray-close-button {
   visibility: visible;
-}
-
-.webxray-close-button:before {
-  content: "X";
 }
 
 .webxray-style-info .webxray-rows {
