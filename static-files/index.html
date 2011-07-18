@@ -32,18 +32,33 @@ a {
 a:hover {
   background: yellow;
 }
+
+.new-features {
+  float: right;
+  width: 15em;
+  font-size: 9pt;
+  margin-left: 1em;
+  padding-left: 1em;
+  padding-right: 1em;
+  border: 1px dotted gray;
+}
+
+.new-features h2 {
+  font-size: 12pt;
+}
 </style>
 <a href="https://github.com/toolness/webxray/tree/style-info-experiment"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
+<div class="new-features">
+  <h2>New CSS Support</h2>
+  <p>The goggles now support the viewing and editing of computed CSS information. Press <kbd>C</kbd> and hold it down to observe the computed CSS style of the element you're hovering over. Properties in yellow have computed values that are different from their immediate parent.</p>
+  <p>If you want to edit the CSS, you can "pin" the info panel by tapping the space bar. Then you can move your mouse to the different CSS properties and edit them by clicking on values.</p>
+</div>
 <h1>Web X-Ray Goggles</h1>
 <p>These goggles provide a simple, easy way for non-technical people to inspect Web pages, learn about how they are put together, and remix them. They are part of the <a href="http://hackasaurus.org">Hackasaurus</a> backpack.</p>
 <div id="msie-fail" style="display: none;">
 <p>Unfortunately, the goggles don't yet work with Microsoft Internet Explorer, which seems to be what you're using. For now, please try viewing this page with <a href="http://www.mozilla.com/en-US/firefox/?from=getfirefox">Mozilla Firefox</a> or <a href="http://www.google.com/chrome">Google Chrome</a>.</p>
 </div>
 <div id="try-goggles">
-<h2>About This Experimental Edition</h2>
-<p>This is a special, experimental version of the goggles which adds computed CSS information and editing capabilities. Press <kbd>C</kbd> and hold it down to observe the computed CSS style of the element you're hovering over. Properties in yellow have computed values that are different from their immediate parent.</p>
-<p>If you want to edit the CSS, you can "pin" the info panel by tapping the space bar. Then you can move your mouse to the different CSS properties and edit them by clicking on values you want to edit.</p>
-<p>Unfortunately, there's lots of rough edges in this proof-of-concept: the CSS info panel is always stuck at the top-left corner of the page, for instance. The CSS properties displayed are also jumbled into one big list, rather than being categorized in any useful way, and CSS box model information isn't displayed at all. But hopefully it gets the general idea across.</p>
 <h2>Getting Started</h2>
 <p>If you've never used the goggles before, you should start out with <a href="missions/one/">Mission One</a>.</p>
 <h2>Reference</h2>
