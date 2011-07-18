@@ -20,6 +20,8 @@ test("jQuery.styleInfoOverlay()", function() {
   var focused = jQuery.eventEmitter({
     getPrimaryElement: function() {
       return document.documentElement;
+    },
+    unfocus: function() {
     }
   });
   var input = {

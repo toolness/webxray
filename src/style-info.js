@@ -122,6 +122,7 @@
           $(element).css(name, newValue);
           style = window.getComputedStyle(element);
           refreshValue();
+          row.trigger('css-property-change');
         }
       }
     };
@@ -130,9 +131,31 @@
     refreshValue();
   }
 
+  function PrimaryTranslucentOverlay(overlay, primary) {
+    var tOverlay = $(primary).overlayWithTagColor(0.2);
+
+    function onCssPropertyChange() {
+      tOverlay.show();
+      tOverlay.resizeTo(primary, function() {
+        tOverlay.fadeOut();
+      });
+    }
+
+    overlay.bind('css-property-change', onCssPropertyChange);
+    tOverlay.hide();
+
+    return {
+      destroy: function() {
+        overlay.unbind('css-property-change', onCssPropertyChange);
+        tOverlay.remove();
+      }
+    };
+  }
+
   function ModalOverlay(overlay, primary, keys) {
     var startStyle = $(primary).attr("style");
-
+    var translucentOverlay = PrimaryTranslucentOverlay(overlay, primary);
+    
     function handleKeyDown(event) {
       if (overlay.find('form').length)
         return;
@@ -171,6 +194,7 @@
         overlay.find('.webxray-row').unbind('click', makeCssValueEditable);
         overlay.find('.webxray-close-button').unbind('click', confirmChanges);
         window.removeEventListener("keydown", handleKeyDown, true);
+        translucentOverlay.destroy();
         self.emit('close');
       }
     });
@@ -195,7 +219,7 @@
       focused.on('change', refresh);
       
       function refresh() {
-        if (!isVisible)
+        if (!isVisible || modalOverlay)
           return;
 
         var primary = focused.getPrimaryElement();
@@ -234,6 +258,7 @@
               self.hide();
               input.activate();
             });
+            focused.unfocus();
           }
         },
         show: function() {
