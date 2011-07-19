@@ -48,7 +48,7 @@
     "word-spacing",
     "word-wrap",
     "z-index"
-  };
+  ];
 
   function normalizeProperty(style, name) {
     var value = style.getPropertyValue(name);
