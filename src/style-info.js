@@ -3,7 +3,7 @@
 
   var $ = jQuery;
 
-  var cssProperties = [
+  var DEFAULT_PROPERTIES = [
     "background-attachment",
     "background-clip",
     "background-color",
@@ -48,7 +48,7 @@
     "word-spacing",
     "word-wrap",
     "z-index"
-  ];
+  ].sort();
 
   function normalizeProperty(style, name) {
     var value = style.getPropertyValue(name);
@@ -245,6 +245,7 @@
       var focused = options.focused;
       var commandManager = options.commandManager;
       var locale = options.locale || jQuery.locale;
+      var propertyNames = options.propertyNames;
       var mouseMonitor = options.mouseMonitor;
       var body = options.body || document.body;
       var isVisible = false;
@@ -265,7 +266,7 @@
         overlay.empty();
         
         if (primary) {
-          var info = $(primary).getStyleInfo();
+          var info = $(primary).getStyleInfo(propertyNames);
           var instructions = $('<div class="webxray-instructions"></div>');
           var close = $('<div class="webxray-close-button"></div>');
           instructions.text(l10n("tap-space"));
@@ -303,6 +304,9 @@
       }
       
       var self = {
+        setPropertyNames: function(newPropertyNames) {
+          propertyNames = newPropertyNames;
+        },
         lock: function(input) {
           var primary = focused.getPrimaryElement();
           
@@ -351,7 +355,8 @@
   });
   
   jQuery.fn.extend({
-    getStyleInfo: function getStyleInfo() {
+    getStyleInfo: function getStyleInfo(propertyNames) {
+      var names = propertyNames || DEFAULT_PROPERTIES;
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
       var style = window.getComputedStyle(element);
@@ -361,10 +366,6 @@
         parentStyle = window.getComputedStyle(element.parentNode);
 
       var info = $('<div class="webxray-rows"></div>');
-      var names = cssProperties.slice();
-
-      names.sort();
-
       var NUM_COLS = 1;
 
       for (var i = 0; i < names.length + (NUM_COLS-1); i += NUM_COLS) {
