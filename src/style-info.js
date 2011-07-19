@@ -171,33 +171,36 @@
       }
     }
     
-    function confirmChanges() {
+    function recordChanges() {
       var endStyle = $(primary).attr("style");
       if (startStyle != endStyle) {
         if (typeof(startStyle) == 'undefined')
           $(primary).removeAttr("style")
         else
           $(primary).attr("style", startStyle);
+        startStyle = endStyle;
         self.emit('change-style', endStyle);
       }
-      self.close();
     }
-
+    
     overlay.addClass("webxray-style-info-locked");
+    overlay.bind('css-property-change', recordChanges);
     overlay.find('.webxray-row').bind('click', makeCssValueEditable);
-    overlay.find('.webxray-close-button').bind('click', confirmChanges);
     window.addEventListener("keydown", handleKeyDown, true);  
 
     var self = jQuery.eventEmitter({
       close: function() {
         overlay.removeClass("webxray-style-info-locked");
+        overlay.unbind('css-property-change', recordChanges);
         overlay.find('.webxray-row').unbind('click', makeCssValueEditable);
-        overlay.find('.webxray-close-button').unbind('click', confirmChanges);
+        overlay.find('.webxray-close-button').unbind('click', self.close);
         window.removeEventListener("keydown", handleKeyDown, true);
         translucentOverlay.destroy();
         self.emit('close');
       }
     });
+
+    overlay.find('.webxray-close-button').bind('click', self.close);
 
     return self;
   }
