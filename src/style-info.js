@@ -99,36 +99,37 @@
     row.append(nameCell);
     row.append(valueCell);
 
-    function refreshValue() {
-      var value = normalizeProperty(style, name);
-      valueCell.text(value);
-      valueCell.attr("class", "webxray-value");
-      if (parentStyle && normalizeProperty(parentStyle, name) != value)
-        valueCell.addClass("webxray-value-different-from-parent");
-      if (normalizeProperty(element.style, name) == value)
-        valueCell.addClass("webxray-value-matches-inline-style");
-      if (name.match(/color$/)) {
-        var colorBlock = $('<div class="webxray-color-block"></div>');
-        colorBlock.css('background-color', value);
-        valueCell.append(colorBlock);
-      }
-    }
-
     var self = {
       name: name,
+      refresh: function() {
+        var value = normalizeProperty(style, name);
+        if (valueCell.text() == value)
+          return;
+        valueCell.text(value);
+        valueCell.attr("class", "webxray-value");
+        if (parentStyle && normalizeProperty(parentStyle, name) != value)
+          valueCell.addClass("webxray-value-different-from-parent");
+        if (normalizeProperty(element.style, name) == value)
+          valueCell.addClass("webxray-value-matches-inline-style");
+        if (name.match(/color$/)) {
+          var colorBlock = $('<div class="webxray-color-block"></div>');
+          colorBlock.css('background-color', value);
+          valueCell.append(colorBlock);
+        }
+      },
       changeValue: function(newValue) {
         var originalValue = valueCell.text();
         if (newValue != originalValue) {
           $(element).css(name, newValue);
           style = window.getComputedStyle(element);
-          refreshValue();
+          self.refresh();
           row.trigger('css-property-change');
         }
       }
     };
     
     row.data("propertyWidget", self);
-    refreshValue();
+    self.refresh();
   }
 
   function PrimaryTranslucentOverlay(overlay, primary) {
@@ -152,14 +153,15 @@
     };
   }
 
-  function ModalOverlay(overlay, primary, keys) {
+  function ModalOverlay(overlay, primary, input) {
     var startStyle = $(primary).attr("style");
     var translucentOverlay = PrimaryTranslucentOverlay(overlay, primary);
     
     function handleKeyDown(event) {
       if (overlay.find('form').length)
         return;
-      if (event.keyCode == keys.I) {
+      switch (event.keyCode) {
+        case input.keys.I:
         var hover = overlay.find('.webxray-row:hover');
         if (hover.length) {
           var property = hover.data('propertyWidget').name;
@@ -168,6 +170,15 @@
           event.preventDefault();
           event.stopPropagation();
         }
+        break;
+
+        case input.keys.LEFT:
+        case input.keys.RIGHT:
+        input.handleEvent(event);
+        overlay.find('.webxray-row').each(function() {
+          $(this).data("propertyWidget").refresh();
+        });
+        break;
       }
     }
     
@@ -247,7 +258,7 @@
           
           if (primary) {
             input.deactivate();
-            modalOverlay = ModalOverlay(overlay, primary, input.keys);
+            modalOverlay = ModalOverlay(overlay, primary, input);
             modalOverlay.on('change-style', function(style) {
               commandManager.run("ChangeAttributeCmd", {
                 name: l10n("style-change"),
