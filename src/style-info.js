@@ -121,7 +121,6 @@
         var originalValue = valueCell.text();
         if (newValue != originalValue) {
           $(element).css(name, newValue);
-          style = window.getComputedStyle(element);
           self.refresh();
           row.trigger('css-property-change');
         }
