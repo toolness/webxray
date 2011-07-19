@@ -47,7 +47,7 @@ $(window).ready(function() {
     var recordingJS = persistence.convertRecordingToJS(recording);
     var path = loc.pathname.match(/(.*)share\/$/)[1];
     var baseURI = loc.protocol + '//' + loc.host + path;
-    var bm = jQuery.getGogglesBookmarkletURL(baseURI) + recordingJS;
+    var bm = Webxray.getBookmarkletURL(baseURI) + recordingJS;
     $('#url').attr('href', url).text(url);
     $('#code').val(bm).focus().select();
   }

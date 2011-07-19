@@ -86,7 +86,7 @@ var intervalID = setInterval(function() {
 
 $(window).ready(function() {
   var textArea = $("#bookmarklet textarea");
-  textArea.val($.getGogglesBookmarkletURL());
+  textArea.val(Webxray.getBookmarkletURL());
   textArea.focus().select();
 });
 </script>

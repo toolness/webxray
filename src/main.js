@@ -75,7 +75,7 @@
   $(window).ready(function() {
     loadPrerequisites(function() {
       var ui = jQuery.xRayUI({eventSource: document});
-      jQuery.triggerWhenGogglesLoad(ui);
+      Webxray.triggerWhenLoaded(ui);
       ui.on('quit', function() {
         ui.persistence.saveHistoryToDOM();
         $(document).trigger('unload');
