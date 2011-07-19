@@ -175,9 +175,17 @@
         case input.keys.LEFT:
         case input.keys.RIGHT:
         input.handleEvent(event);
-        overlay.find('.webxray-row').each(function() {
-          $(this).data("propertyWidget").refresh();
-        });
+        if (primary.parentNode) {
+          overlay.show().find('.webxray-row').each(function() {
+            $(this).data("propertyWidget").refresh();
+          });
+        } else {
+          // Um, our target element is no longer attached to
+          // the document. Just exit the style editing mode.
+
+          // TODO: Is this the most humane behavior?
+          self.close();
+        }
         break;
       }
     }
