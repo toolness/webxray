@@ -262,7 +262,9 @@ div#webxray-wait-for-css-to-load {
 }
 
 .webxray-close-button {
-  float: right;
+  position: absolute;
+  right: 1em;
+  bottom: 1em;
   padding: 0.5em;
   border: 1px dotted white;
   cursor: pointer;
