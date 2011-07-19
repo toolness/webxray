@@ -3,40 +3,51 @@
 
   var $ = jQuery;
 
-  var cssProperties = {
-    directional: [
-      "margin-",
-      "padding-",
-      "border-",
-    ],
-    groups: [
-      "background-",
-      "font-",
-      "text-",
-      "list-style-"
-    ],
-    properties: [
-      "top",
-      "left",
-      "bottom",
-      "right",
-      "color",
-      "clear",
-      "cursor",
-      "direction",
-      "display",
-      "position",
-      "float",
-      "letter-spacing",
-      "line-height",
-      "opacity",
-      "visibility",
-      "white-space",
-      "vertical-align",
-      "word-spacing",
-      "word-wrap",
-      "z-index"
-    ]
+  var cssProperties = [
+    "background-attachment",
+    "background-clip",
+    "background-color",
+    "background-image",
+    "background-origin",
+    "background-position",
+    "background-repeat",
+    "background-size",
+    "font-family",
+    "font-size",
+    "font-style",
+    "font-variant",
+    "font-weight",
+    "list-style-image",
+    "list-style-position",
+    "list-style-type",
+    "text-align",
+    "text-anchor",
+    "text-decoration",
+    "text-indent",
+    "text-overflow",
+    "text-rendering",
+    "text-shadow",
+    "text-transform",
+    "top",
+    "left",
+    "bottom",
+    "right",
+    "color",
+    "clear",
+    "cursor",
+    "direction",
+    "display",
+    "position",
+    "float",
+    "letter-spacing",
+    "line-height",
+    "opacity",
+    "visibility",
+    "white-space",
+    "vertical-align",
+    "word-spacing",
+    "word-wrap",
+    "z-index"
   };
 
   function normalizeProperty(style, name) {
@@ -350,25 +361,7 @@
         parentStyle = window.getComputedStyle(element.parentNode);
 
       var info = $('<div class="webxray-rows"></div>');
-      var names = [];
-
-      jQuery.each(style, function() {
-        var name = this;
-        var isNameValid = false;
-        
-        cssProperties.groups.forEach(function(begin) {
-          if (name.indexOf(begin) == 0)
-            isNameValid = true;
-        });
-        cssProperties.properties.forEach(function(prop) {
-          if (name == prop)
-            isNameValid = true;
-        });
-        if (!isNameValid)
-          return;
-
-        names.push(name);
-      });
+      var names = cssProperties.slice();
 
       names.sort();
 
