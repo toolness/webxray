@@ -134,43 +134,6 @@
         });
         return newContent;
       },
-      // At hack jams, users frequently want to be able to change what
-      // appears to be a foreground image, but which is actually a
-      // background image defined in a CSS stylesheet. Since the
-      // goggles don't yet support CSS remixing, let's "imprint"
-      // certain styles inline so that users can edit them.
-      imprintCSSInline: function(focusedElement) {
-        var all = $(focusedElement);
-        var wasAnythingChanged = false;
-        var props = [
-          {name: 'background-image', defaultValue: 'none'},
-          {name: 'background-repeat', defaultValue: 'repeat'}
-        ];
-        
-        all.add(all.find('*')).each(function() {
-          var element = this;
-          var applyInlineCSS = false;
-          var inlineCSS = {};
-          
-          props.forEach(function(prop) {
-            var value = $(element).css(prop.name);
-            
-            if (value && value.length && value != prop.defaultValue) {
-              if (prop.onlyIfDefined && !(prop.onlyIfDefined in inlineCSS))
-                return;
-              applyInlineCSS = true;
-              inlineCSS[prop.name] = value;
-            }
-          });
-          
-          if (applyInlineCSS) {
-            $(element).css(inlineCSS);
-            wasAnythingChanged = true;
-          }
-        });
-        
-        return wasAnythingChanged;
-      },
       replaceFocusedElementWithDialog: function(options) {
         var input = options.input;
         var dialogURL = options.dialogURL;
@@ -201,16 +164,6 @@
           return;
         }
 
-        // imprintCSSInline() is experimental code added shortly
-        // before a hack jam; don't let it prevent the user from
-        // remixing if it doesn't work.
-        try {
-          if (self.imprintCSSInline(focusedElement))
-            focusedHTML = $(focusedElement).outerHtml();
-        } catch (e) {
-          jQuery.warn("imprintCSSInline() failed", e);
-        }
-        
         if (sendFullDocument) {
           $(document).uprootIgnoringWebxray(function (html, head, body) {
             begin({
