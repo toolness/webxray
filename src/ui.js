@@ -29,9 +29,11 @@
         commandManager: commandManager
       });
       var persistence = jQuery.commandManagerPersistence(commandManager);
+      var mouseMonitor = jQuery.mouseMonitor();
       var styleInfo = jQuery.styleInfoOverlay({
         focused: focused,
-        commandManager: commandManager
+        commandManager: commandManager,
+        mouseMonitor: mouseMonitor
       });
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
@@ -67,6 +69,8 @@
             styleInfo.destroy();
             styleInfo = null;
             indicator = null;
+            mouseMonitor.unload();
+            mouseMonitor = null;
           }
         },
 

@@ -36,7 +36,8 @@ test("jQuery.styleInfoOverlay()", function() {
   };
   var overlay = jQuery.styleInfoOverlay({
     focused: focused,
-    commandManager: {}
+    commandManager: {},
+    mouseMonitor: jQuery.mouseMonitor()
   });
   overlay.show();
   focused.emit('change');

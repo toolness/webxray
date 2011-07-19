@@ -213,10 +213,16 @@ div#webxray-wait-for-css-to-load {
     background-color: rgb(0, 1, 2);
 }
 
+.webxray-style-info.webxray-on-other-side {
+  left: auto;
+  right: 0px;
+}
+
 .webxray-style-info {
   position: fixed;
   top: 0px;
   left: 0px;
+  right: auto;
   z-index: 2147483646;
   background: rgba(0, 0, 0, 0.7);
   color: white;

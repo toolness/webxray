@@ -2,6 +2,13 @@
 
 module("input");
 
+test("jQuery.mouseMonitor()", function() {
+  var mm = jQuery.mouseMonitor();
+  ok(mm.lastPosition.pageX == 0, mm.lastPosition.pageY == 0);
+  mm.on('move', function() {});
+  mm.unload();
+});
+
 test("jQuery.xRayInput() activate/deactivate", function() {
   var $ = jQuery;
   var input = $.xRayInput({eventSource: document});

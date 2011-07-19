@@ -21,6 +21,27 @@
     keys[alphabet[i]] = alphabet.charCodeAt(i);
 
   jQuery.extend({
+    mouseMonitor: function mouseMonitor() {
+      function onMouseMove(event) {
+        self.lastPosition.pageX = event.pageX;
+        self.lastPosition.pageY = event.pageY;
+        self.emit('move', self);
+      }
+      $(document).mousemove(onMouseMove);
+      
+      var self = jQuery.eventEmitter({
+        lastPosition: {
+          pageX: 0,
+          pageY: 0
+        },
+        unload: function() {
+          $(document).unbind('mousemove', onMouseMove);
+          self.removeAllListeners();
+        }
+      });
+      
+      return self;
+    },
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;

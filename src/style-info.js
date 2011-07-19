@@ -234,6 +234,7 @@
       var focused = options.focused;
       var commandManager = options.commandManager;
       var locale = options.locale || jQuery.locale;
+      var mouseMonitor = options.mouseMonitor;
       var body = options.body || document.body;
       var isVisible = false;
       var l10n = locale.scope("style-info");
@@ -265,12 +266,38 @@
         }
       }
 
+      function isMouseInOverlay() {
+        var mouse = mouseMonitor.lastPosition;
+        var pos = overlay.offset();
+        var width = overlay.width();
+        var height = overlay.height();
+        var xDiff = mouse.pageX - pos.left;
+        var yDiff = mouse.pageY - pos.top;
+        var isInOverlay = (xDiff > 0 && xDiff < width) &&
+                          (yDiff > 0 && yDiff < height);
+
+        return isInOverlay;
+      }
+
+      function maybeSwitchSides() {
+        if (isMouseInOverlay())
+          overlay.toggleClass('webxray-on-other-side');
+        // The overlay switched sides; now see if we're in the
+        // overlay on the other side.
+        if (isMouseInOverlay())
+          // We're on the overlay on the other side too, so we're
+          // just going to annoy the user if we switch its side.
+          // So, we'll restore the overlay to its original position.
+          overlay.toggleClass('webxray-on-other-side');
+      }
+      
       var self = {
         lock: function(input) {
           var primary = focused.getPrimaryElement();
           
           if (primary) {
             input.deactivate();
+            mouseMonitor.removeListener('move', maybeSwitchSides);
             modalOverlay = ModalOverlay(overlay, primary, input);
             modalOverlay.on('change-style', function(style) {
               commandManager.run("ChangeAttributeCmd", {
@@ -292,8 +319,11 @@
           isVisible = true;
           overlay.show();
           refresh();
+          mouseMonitor.on('move', maybeSwitchSides);
+          maybeSwitchSides();
         },
         hide: function() {
+          mouseMonitor.removeListener('move', maybeSwitchSides);
           isVisible = false;
           overlay.hide();
         },
