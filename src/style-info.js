@@ -176,6 +176,7 @@
         case input.keys.RIGHT:
         input.handleEvent(event);
         if (primary.parentNode) {
+          startStyle = $(primary).attr("style");
           overlay.show().find('.webxray-row').each(function() {
             $(this).data("propertyWidget").refresh();
           });
