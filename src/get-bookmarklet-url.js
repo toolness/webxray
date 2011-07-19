@@ -1,6 +1,8 @@
 (function(jQuery) {
   "use strict";
 
+  var GLOBAL_GOGGLES_LOAD_CB = 'webxrayWhenGogglesLoad';
+
   jQuery.extend({
     getGogglesBookmarkletURL: function getGogglesBookmarkletURL(baseURI) {
       baseURI = baseURI || document.baseURI;
@@ -9,6 +11,16 @@
       var code = baseCode.replace('http://localhost:8000/', baseURI);
       
       return 'javascript:' + code;
+    },
+    whenGogglesLoad: function whenGogglesLoad(cb, global) {
+      global = global || window;
+      global[GLOBAL_GOGGLES_LOAD_CB] = cb;
+    },
+    triggerWhenGogglesLoad: function triggerWhenGogglesLoad(ui, global) {
+      global = global || window;
+      if (GLOBAL_GOGGLES_LOAD_CB in global &&
+          typeof(global[GLOBAL_GOGGLES_LOAD_CB]) == 'function')
+        global[GLOBAL_GOGGLES_LOAD_CB](ui);
     }
   });
 })(jQuery);
