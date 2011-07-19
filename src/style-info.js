@@ -103,8 +103,13 @@
       name: name,
       refresh: function() {
         var value = normalizeProperty(style, name);
+        
+        // TODO: It might be possible for us to return from this
+        // function when in fact we need to change class information.
+        // Need to think about this more.
         if (valueCell.text() == value)
           return;
+
         valueCell.text(value);
         valueCell.attr("class", "webxray-value");
         if (parentStyle && normalizeProperty(parentStyle, name) != value)
