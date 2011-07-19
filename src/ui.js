@@ -68,7 +68,16 @@
             styleInfo = null;
             indicator = null;
           }
-        }
+        },
+
+        // These exports are primarily for use by third-party code.
+        jQuery: jQuery,
+        focusedOverlay: focused,
+        hudOverlay: hud,
+        mixMaster: mixMaster,
+        styleInfoOverlay: styleInfo,
+        commandManager: commandManager,
+        input: input
       });
 
       return self;
