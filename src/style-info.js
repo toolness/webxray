@@ -269,7 +269,7 @@
           var info = $(primary).getStyleInfo(propertyNames);
           var instructions = $('<div class="webxray-instructions"></div>');
           var close = $('<div class="webxray-close-button"></div>');
-          instructions.text(l10n("tap-space"));
+          instructions.html(l10n("tap-space-html"));
           close.text(locale.get("dialog-common:ok"));
           overlay.append(info).append(instructions).append(close);
           overlay.show();

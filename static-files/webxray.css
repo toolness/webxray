@@ -291,11 +291,11 @@ div#webxray-wait-for-css-to-load {
   border: none;
   outline: none;
   color: yellow;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.15);
 }
 
 .webxray-style-info-locked .webxray-row:hover {
-  background: black;
+  background: #660066;
   cursor: pointer;
 }
 
@@ -312,4 +312,11 @@ div#webxray-wait-for-css-to-load {
 .webxray-value-matches-css-rule, .webxray-value-matches-inline-style,
 .webxray-value-different-from-parent {
   color: yellow;
+}
+
+.webxray-base kbd {
+  border-radius: 2px/2px;
+  background: gray;
+  padding: 2px;
+  font-family: inherit;
 }
