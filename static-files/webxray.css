@@ -314,7 +314,8 @@ div#webxray-wait-for-css-to-load {
   color: yellow;
 }
 
-.webxray-base kbd {
+.webxray-kbd {
+  display: inline;
   border-radius: 2px/2px;
   background: gray;
   padding: 2px;
