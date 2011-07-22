@@ -75,6 +75,9 @@
   $(window).ready(function() {
     loadPrerequisites(function() {
       var ui = jQuery.xRayUI({eventSource: document});
+      var welcomeMsg = $("<div></div>");
+      welcomeMsg.html(jQuery.locale.get("hud-overlay:default-html"));
+      jQuery.transparentMessage(welcomeMsg);
       Webxray.triggerWhenLoaded(ui);
       ui.on('quit', function() {
         ui.persistence.saveHistoryToDOM();
