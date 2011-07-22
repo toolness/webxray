@@ -3,18 +3,6 @@
 
   var $ = jQuery;
 
-  function maybeLoadRecording(persistence) {
-    if (persistence.isRecordingInGlobal(window)) {
-      var msg,
-          success = persistence.playRecordingFromGlobal(window);
-      if (success)
-        msg = jQuery.locale.get('hack-recording-playback:success');
-      else
-        msg = jQuery.locale.get('hack-recording-playback:failure');
-      jQuery.transparentMessage($('<div></div>').text(msg));
-    }
-  }
-
   jQuery.extend({
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
@@ -48,15 +36,15 @@
       });
       var indicator = jQuery.blurIndicator(input, window);
 
-      maybeLoadRecording(persistence);
-      persistence.loadHistoryFromDOM();
-      $(document.body).append(hud.overlay);
-      focused.on('change', hud.onFocusChange);
-      input.activate();
-      $(window).focus();
-
       var self = jQuery.eventEmitter({
         persistence: persistence,
+        start: function() {
+          persistence.loadHistoryFromDOM();
+          $(document.body).append(hud.overlay);
+          focused.on('change', hud.onFocusChange);
+          input.activate();
+          $(window).focus();
+        },
         unload: function() {
           if (!isUnloaded) {
             isUnloaded = true;
