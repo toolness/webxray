@@ -333,7 +333,7 @@ function createDialog(data) {
   setInterval(scaleAndPan, 500);
   scaleAndPan(true);
   
-  var rendered = previewDoc.find(data.startHTML.selector).renderDom();
+  var rendered = selected.renderDom();
   var focused = jQuery.focusedOverlay();
 
   rendered = rendered.wrap('<div></div>').parent();
