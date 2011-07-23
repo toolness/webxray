@@ -268,29 +268,9 @@ function enableDragAndDrop(rendering) {
   initialize();
 }
 
-function createDialog(data) {
-  $("#header h1").text(data.title);
-  
-  var previewDoc = $("#preview").contents();
-  var stylesheet = $('<link rel="stylesheet"></link>');
-
-  // TODO: We need to be able to set the doctype too,
-  // for full fidelity to the original page.
-  previewDoc.find("head").html(data.startHTML.head);
-  stylesheet.attr('href', $("link#webxray").get(0).href);
-  previewDoc.find("head").append(stylesheet);
-  previewDoc.find("body").html(data.startHTML.body);
-  
-  // The selector has to be relative to the body element;
-  // for some reason, the nth-of-type CSS selector doesn't
-  // work for html and body elements in iframes.
-  var selected = previewDoc.find("body").find(data.startHTML.selector);
-  var stayVisible = selected.find("*");
-  stayVisible = stayVisible.add(selected.parents()).add(selected);
-  previewDoc.find("*").not(stayVisible).hide();
-  
+function startContinuousDynamicScale(selected, parentIframe) {
   function setZoom(zoom) {
-    $("#preview").contents().find("html").css({
+    parentIframe.contents().find("html").css({
       '-webkit-transform': 'scale(' + zoom + ')',
       '-webkit-transform-origin': 'top left',
       '-moz-transform': 'scale(' + zoom + ')',
@@ -300,7 +280,7 @@ function createDialog(data) {
   
   function scaleAndPan(isInstant) {
     var contentWidth = selected.outerWidth(true);
-    var frameWidth = $("#preview").width();
+    var frameWidth = parentIframe.width();
     var zoom = 1.0;
     if (contentWidth > frameWidth) {
       zoom = frameWidth / contentWidth;
@@ -323,8 +303,8 @@ function createDialog(data) {
     if (!isInstant)
       options.duration = 1000;
     
-    $("#preview").height(selected.outerHeight(true));
-    $("#preview").scrollTo({
+    parentIframe.height(selected.outerHeight(true));
+    parentIframe.scrollTo({
       top: offset.top,
       left: offset.left
     }, options);
@@ -332,7 +312,36 @@ function createDialog(data) {
   
   setInterval(scaleAndPan, 500);
   scaleAndPan(true);
+}
+
+jQuery.fn.extend({
+  hideEverythingExcept: function(selected) {
+    var stayVisible = selected.find("*");
+    stayVisible = stayVisible.add(selected.parents()).add(selected);
+    this.find("*").not(stayVisible).hide();
+  }
+});
+
+function createDialog(data) {
+  $("#header h1").text(data.title);
   
+  var previewDoc = $("#preview").contents();
+  var stylesheet = $('<link rel="stylesheet"></link>');
+
+  // TODO: We need to be able to set the doctype too,
+  // for full fidelity to the original page.
+  previewDoc.find("head").html(data.startHTML.head);
+  stylesheet.attr('href', $("link#webxray").get(0).href);
+  previewDoc.find("head").append(stylesheet);
+  previewDoc.find("body").html(data.startHTML.body);
+  
+  // The selector has to be relative to the body element;
+  // for some reason, the nth-of-type CSS selector doesn't
+  // work for html and body elements in iframes.
+  var selected = previewDoc.find("body").find(data.startHTML.selector);
+  previewDoc.hideEverythingExcept(selected);
+  startContinuousDynamicScale(selected, $("#preview"));
+
   var rendered = selected.renderDom();
   var focused = jQuery.focusedOverlay();
 
