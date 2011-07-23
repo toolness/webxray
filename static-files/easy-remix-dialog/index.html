@@ -362,7 +362,15 @@ function createDialog(data) {
       focused.unfocus();
   });
   $("#dom-rendering").append(rendered);
+  
+  return {
+    getHTML: function getHTML() {
+      return selected.outerHtml();
+    }
+  };
+}
 
+function makeSamplesDraggable() {
   $("span.sample").attr("draggable", "true");
   $("span.sample").bind('dragstart', function(event) {
     var e = event.originalEvent;
@@ -384,15 +392,10 @@ function createDialog(data) {
       e.dataTransfer.setData('text/html', html);
     }      
   });
-  
-  return {
-    getHTML: function getHTML() {
-      return selected.outerHtml();
-    }
-  };
 }
 
 $(window).ready(function() {
+  makeSamplesDraggable();
   $(document.body).hide();
 
   var isInIframe = !(top === self);
