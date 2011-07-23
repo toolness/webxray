@@ -99,6 +99,8 @@ span.sample {
   <div class="sample-list"><ul><li>Item one</li><li>Item two</li></ul></div>
 </div>
 <script>
+"use strict";
+
 // TODO: consider automatically absolutifying src and href URLs.
 // TODO: add infinite undo/redo.
 // TODO: make it possible to create/delete attributes.
@@ -266,6 +268,130 @@ function enableDragAndDrop(rendering) {
   initialize();
 }
 
+function createDialog(data) {
+  $("#header h1").text(data.title);
+  
+  var previewDoc = $("#preview").contents();
+  var stylesheet = $('<link rel="stylesheet"></link>');
+
+  // TODO: We need to be able to set the doctype too,
+  // for full fidelity to the original page.
+  previewDoc.find("head").html(data.startHTML.head);
+  stylesheet.attr('href', $("link#webxray").get(0).href);
+  previewDoc.find("head").append(stylesheet);
+  previewDoc.find("body").html(data.startHTML.body);
+  
+  // The selector has to be relative to the body element;
+  // for some reason, the nth-of-type CSS selector doesn't
+  // work for html and body elements in iframes.
+  var selected = previewDoc.find("body").find(data.startHTML.selector);
+  var stayVisible = selected.find("*");
+  stayVisible = stayVisible.add(selected.parents()).add(selected);
+  previewDoc.find("*").not(stayVisible).hide();
+  
+  function setZoom(zoom) {
+    $("#preview").contents().find("html").css({
+      '-webkit-transform': 'scale(' + zoom + ')',
+      '-webkit-transform-origin': 'top left',
+      '-moz-transform': 'scale(' + zoom + ')',
+      '-moz-transform-origin': 'top left'
+    });
+  }
+  
+  function scaleAndPan(isInstant) {
+    var contentWidth = selected.outerWidth(true);
+    var frameWidth = $("#preview").width();
+    var zoom = 1.0;
+    if (contentWidth > frameWidth) {
+      zoom = frameWidth / contentWidth;
+    }
+    setZoom(1.0);
+    var originalOffset = selected.offset();
+    setZoom(zoom);
+    var offset = selected.offset();
+    
+    // Firefox doesn't apply transformations to
+    // offset coordinates, so we'll need to do it
+    // manually.
+    if (zoom != 1.0 && offset.top == originalOffset.top) {
+      offset.top *= zoom;
+      offset.left *= zoom;
+    }
+
+    var options = {};
+    
+    if (!isInstant)
+      options.duration = 1000;
+    
+    $("#preview").height(selected.outerHeight(true));
+    $("#preview").scrollTo({
+      top: offset.top,
+      left: offset.left
+    }, options);
+  }
+  
+  setInterval(scaleAndPan, 500);
+  scaleAndPan(true);
+  
+  var rendered = previewDoc.find(data.startHTML.selector).renderDom();
+  var focused = jQuery.focusedOverlay();
+
+  rendered = rendered.wrap('<div></div>').parent();
+
+  rendered.mouseover(function(event) {
+    var target = $(event.target);
+
+    if (!target.is('div.element'))
+      target = target.closest('div.element');
+    var linkedNode = target.data("linked-node");
+    if (linkedNode)
+      focused.set(linkedNode);
+  });
+
+  enableDragAndDrop(rendered);
+  rendered.bind('dragend', function() {
+    focused.unfocus();
+  });
+  rendered.mouseout(function(event) {
+    focused.unfocus();
+  });
+  var editables = rendered.find(".text, .attributes .value");
+  editables.makeTextEditable();
+  rendered.click(function(event) {
+    if ($(event.target).is(".text, .attributes .value"))
+      focused.unfocus();
+  });
+  $("#dom-rendering").append(rendered);
+
+  $("span.sample").attr("draggable", "true");
+  $("span.sample").bind('dragstart', function(event) {
+    var e = event.originalEvent;
+    var id = $(this).attr('id');
+
+    e.dataTransfer.effectAllowed = 'all';
+
+    switch (id) {
+      case "sample-text":
+      e.dataTransfer.setData('text/plain', "here is sample text.");
+      break;
+
+      case "sample-image":
+      e.dataTransfer.setData('text/html', '<img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png">');
+      break;
+
+      default:
+      var html = $("div#samples").find("." + id).html();
+      e.dataTransfer.setData('text/html', html);
+    }      
+  });
+  
+  return {
+    getHTML: function getHTML() {
+      return selected.outerHtml();
+    }
+  };
+}
+
 $(window).ready(function() {
   $(document.body).hide();
 
@@ -280,132 +406,18 @@ $(window).ready(function() {
     
     $(document.body).show();
 
-    $("#header h1").text(data.title);
-    
-    var previewDoc = $("#preview").contents();
-    var stylesheet = $('<link rel="stylesheet"></link>');
-
-    // TODO: We need to be able to set the doctype too,
-    // for full fidelity to the original page.
-    previewDoc.find("head").html(data.startHTML.head);
-    stylesheet.attr('href', $("link#webxray").get(0).href);
-    previewDoc.find("head").append(stylesheet);
-    previewDoc.find("body").html(data.startHTML.body);
-    
-    // The selector has to be relative to the body element;
-    // for some reason, the nth-of-type CSS selector doesn't
-    // work for html and body elements in iframes.
-    var selected = previewDoc.find("body").find(data.startHTML.selector);
-    var stayVisible = selected.find("*");
-    stayVisible = stayVisible.add(selected.parents()).add(selected);
-    previewDoc.find("*").not(stayVisible).hide();
-    
-    function setZoom(zoom) {
-      $("#preview").contents().find("html").css({
-        '-webkit-transform': 'scale(' + zoom + ')',
-        '-webkit-transform-origin': 'top left',
-        '-moz-transform': 'scale(' + zoom + ')',
-        '-moz-transform-origin': 'top left'
-      });
-    }
-    
-    function scaleAndPan(isInstant) {
-      var contentWidth = selected.outerWidth(true);
-      var frameWidth = $("#preview").width();
-      var zoom = 1.0;
-      if (contentWidth > frameWidth) {
-        zoom = frameWidth / contentWidth;
-      }
-      setZoom(1.0);
-      var originalOffset = selected.offset();
-      setZoom(zoom);
-      var offset = selected.offset();
-      
-      // Firefox doesn't apply transformations to
-      // offset coordinates, so we'll need to do it
-      // manually.
-      if (zoom != 1.0 && offset.top == originalOffset.top) {
-        offset.top *= zoom;
-        offset.left *= zoom;
-      }
-
-      var options = {};
-      
-      if (!isInstant)
-        options.duration = 1000;
-      
-      $("#preview").height(selected.outerHeight(true));
-      $("#preview").scrollTo({
-        top: offset.top,
-        left: offset.left
-      }, options);
-    }
-    
-    setInterval(scaleAndPan, 500);
-    scaleAndPan(true);
-    
-    var rendered = previewDoc.find(data.startHTML.selector).renderDom();
-    var focused = jQuery.focusedOverlay();
+    var dialog = createDialog(data);
 
     $("#ok.button").click(function() {
       if (!responseSent) {
         sendMessage({
           msg: 'ok',
-          endHTML: selected.outerHtml()
+          endHTML: dialog.getHTML()
         });
         responseSent = true;
       }
     });
 
-    rendered = rendered.wrap('<div></div>').parent();
-
-    rendered.mouseover(function(event) {
-      var target = $(event.target);
-
-      if (!target.is('div.element'))
-        target = target.closest('div.element');
-      var linkedNode = target.data("linked-node");
-      if (linkedNode)
-        focused.set(linkedNode);
-    });
-
-    enableDragAndDrop(rendered);
-    rendered.bind('dragend', function() {
-      focused.unfocus();
-    });
-    rendered.mouseout(function(event) {
-      focused.unfocus();
-    });
-    var editables = rendered.find(".text, .attributes .value");
-    editables.makeTextEditable();
-    rendered.click(function(event) {
-      if ($(event.target).is(".text, .attributes .value"))
-        focused.unfocus();
-    });
-    $("#dom-rendering").append(rendered);
-
-    $("span.sample").attr("draggable", "true");
-    $("span.sample").bind('dragstart', function(event) {
-      var e = event.originalEvent;
-      var id = $(this).attr('id');
-
-      e.dataTransfer.effectAllowed = 'all';
-
-      switch (id) {
-        case "sample-text":
-        e.dataTransfer.setData('text/plain', "here is sample text.");
-        break;
-
-        case "sample-image":
-        e.dataTransfer.setData('text/html', '<img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png">');
-        break;
-
-        default:
-        var html = $("div#samples").find("." + id).html();
-        e.dataTransfer.setData('text/html', html);
-      }      
-    });
-    
     $(document.body).hide().fadeIn();    
   }
   
