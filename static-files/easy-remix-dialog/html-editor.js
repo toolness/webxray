@@ -1,8 +1,8 @@
 (function (jQuery) {
   var $ = jQuery;
 
-  jQuery.Editor = function (idToEdit, textContent, onChange) {
-    var self = this;
+  jQuery.HtmlEditor = function (idToEdit, textContent, onChange) {
+    var self = {};
     var editor;
 
     // The interface of Ace widgets doesn't seem to be very well-defined,

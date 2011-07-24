@@ -10,7 +10,7 @@
 <script src="ace/theme-eclipse.js"></script>
 <script src="render-dom.js"></script>
 <script src="edit-dom.js"></script>
-<script src="editor.js"></script>
+<script src="html-editor.js"></script>
 <script src="../src/utils.js"></script>
 <script src="../src/tag-colors.js"></script>
 <script src="../src/event-emitter.js"></script>
@@ -84,24 +84,24 @@ span.sample {
   background: rgba(0, 0, 0, 0.25);
 }
 
-/* Hide the horizontal scrollbar of the editor. */
+/* Hide the horizontal scrollbar of the HTML editor. */
 .ace_scroller {
   overflow: hidden;
 }
 
-/* Hide the vertical scrollbar of the editor. */
+/* Hide the vertical scrollbar of the HTML editor. */
 .ace_sb {
   display: none;
 }
 
-#editor-container {
+#html-editor-container {
   position: relative;
   height: 280px;
   width: 280px;
   border: 1px dotted gray;
 }
 
-#editor { 
+#html-editor { 
   position: absolute;
   top: 3px;
   left: 3px;
@@ -356,7 +356,7 @@ jQuery.fn.extend({
   }
 });
 
-function makeDomEditor(selected) {
+function makeEditableDom(selected) {
   var rendered = selected.renderDom();
   var focused = jQuery.focusedOverlay();
 
@@ -388,6 +388,15 @@ function makeDomEditor(selected) {
   return rendered;
 }
 
+function makeHtmlEditor(container, selected) {
+  var widget = $('<div id="html-editor-container">' +
+                 '<pre id="html-editor"></pre></div>');
+  container.empty().append(widget);
+  jQuery.HtmlEditor("html-editor", selected.html(), function(html) {
+    selected.html(html);
+  });
+}
+
 function createDialog(data) {
   $("#header h1").text(data.title);
   
@@ -410,14 +419,9 @@ function createDialog(data) {
 
   $("#inner-html").change(function() {
     if (this.checked) {
-      var widget = $('<div id="editor-container">' +
-                     '<pre id="editor"></pre></div>');
-      $("#dom-rendering").empty().append(widget);
-      var editor = jQuery.Editor("editor", selected.html(), function(html) {
-        selected.html(html);
-      });
+      makeHtmlEditor($("#dom-rendering"), selected);
     } else {
-      $("#dom-rendering").empty().append(makeDomEditor(selected));
+      $("#dom-rendering").empty().append(makeEditableDom(selected));
     }
   }).trigger('change');
 
