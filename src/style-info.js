@@ -86,7 +86,13 @@
       row.data("propertyWidget").clearPreview();
     }
     
-    textField.blur(revertToOriginal);
+    function confirmChange() {
+      var newValue = textField.val();
+      revertToOriginal();
+      row.data("propertyWidget").changeValue(newValue);
+    }
+    
+    textField.blur(confirmChange);
     textField.keydown(function(event) {
       // TODO: Use named constant
       if (event.keyCode == 27)
@@ -97,9 +103,7 @@
     });
 
     form.submit(function() {
-      var newValue = textField.val();
-      revertToOriginal();
-      row.data("propertyWidget").changeValue(newValue);
+      confirmChange();
       return false;
     });
   }
