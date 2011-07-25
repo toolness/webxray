@@ -25,7 +25,7 @@
       editor.renderer.setShowGutter(false);
       editor.setHighlightActiveLine(false);
       session.setUseWrapMode(true);
-      session.setWrapLimitRange(65, 65);
+      session.setWrapLimitRange(64, 64);
       session.getDocument().on("change", function() {
         onChange(self.getText());
       });
