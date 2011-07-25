@@ -83,6 +83,7 @@
     function revertToOriginal() {
       form.remove();
       valueCell.text(originalValue);
+      row.data("propertyWidget").clearPreview();
     }
     
     textField.blur(revertToOriginal);
@@ -90,6 +91,9 @@
       // TODO: Use named constant
       if (event.keyCode == 27)
         revertToOriginal();
+    });
+    textField.keyup(function(event) {
+      row.data("propertyWidget").previewValue(textField.val());
     });
 
     form.submit(function() {
@@ -110,6 +114,8 @@
     row.append(nameCell);
     row.append(valueCell);
 
+    var lastPreviewValue = null;
+    
     var self = {
       name: name,
       refresh: function() {
@@ -132,6 +138,17 @@
           colorBlock.css('background-color', value);
           valueCell.append(colorBlock);
         }
+      },
+      clearPreview: function() {
+        if (lastPreviewValue !== null) {
+          jQuery.style(element, name, lastPreviewValue);
+          lastPreviewValue = null;
+        }
+      },
+      previewValue: function(newValue) {
+        self.clearPreview();
+        lastPreviewValue = jQuery.style(element, name);
+        jQuery.style(element, name, newValue);
       },
       changeValue: function(newValue) {
         var originalValue = valueCell.text();
