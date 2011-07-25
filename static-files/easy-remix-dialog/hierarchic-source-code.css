@@ -5,23 +5,14 @@ div.element {
   font-size: 9pt;
   color: rgba(0,0,0,0.75);
   border: 1px dotted black;
-  padding-bottom: 0.75em;
+  padding-bottom: 1.5em;
   margin-left: 0.5em;
   word-wrap: break-word;
 }
 
-div.element form {
-  display: inline;
-}
-
-div.element textarea {
-  border: none;
-  font-family: inherit;
-  font-size: inherit;
-  padding: 0;
-  margin: 0;
-  outline: none;
-  overflow: hidden;
+li > div.element {
+  margin-bottom: 0.5em;
+  margin-top: 0.5em;  
 }
 
 div.element > span.start {

@@ -59,19 +59,6 @@ div.button:hover {
   color: white;
 }
 
-div.trash {
-  float: left;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 9pt;
-  padding: 10px;
-}
-
-div.trash.active {
-  background: red;
-}
-
 span.sample {
   border: 1px dotted gray;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -111,10 +98,6 @@ span.sample {
   margin: 0;
 }
 
-#instructions {
-  height: 2.5em;
-}
-
 .tabs {
   position: absolute;
   right: 0px;
@@ -148,14 +131,6 @@ span.sample {
   <div class="button" id="ok">Ok</div>
 </div>
 <div id="header"><h1></h1></div>
-<div id="instructions">
-  <div class="pretty">
-    <p>Try dragging and dropping elements in the source code to move them around. Hold shift to copy instead of move. Click on text to change it. Want some inspiration? Drag content from other webpages into the source code, or try dragging these samples: <span class="sample" id="sample-link">link</span> <span class="sample" id="sample-image">image</span> <span class="sample" id="sample-text">text</span> <span class="sample" id="sample-list">list</span>.</p>
-  </div>
-  <div class="raw">
-    <p>This is raw HTML, and you are hard core.</p>
-  </div>
-</div>
 <div id="dom-rendering-column">
   <h2>Source Code</h2>
   <div class="tabs">
@@ -178,169 +153,6 @@ span.sample {
 // TODO: consider automatically absolutifying src and href URLs.
 // TODO: add infinite undo/redo.
 // TODO: make it possible to create/delete attributes.
-
-function enableDragAndDrop(rendering) {
-  var dropZoneHTML = '<div class="drop-zone"></div>'
-  
-  function activateDraggable(draggable) {
-    draggable.attr("draggable", "true");
-    draggable.bind('dragstart', function(event) {
-      var currDrag = rendering.find('.current-drag');
-
-      if (currDrag.length)
-        return;
-
-      var trash = $('<div class="trash">X</div>');
-      rendering.append(trash);
-      activateTrash(trash);
-      var offset = $(this).offset();
-      trash.offset({
-        left: offset.left + $(this).outerWidth(),
-        top: offset.top
-      });
-      
-      var linked = $(this).data("linked-node");
-      var e = event.originalEvent;
-      e.dataTransfer.effectAllowed = 'all';
-      if (linked.nodeType == linked.TEXT_NODE)
-        e.dataTransfer.setData('text/plain', linked.nodeValue);
-      else
-        e.dataTransfer.setData('text/html', $(linked).outerHtml());
-      $(this).addClass('current-drag');
-    });
-    draggable.bind('dragend', function(event) {
-      rendering.find('.current-drop').removeClass('current-drop');
-      rendering.find('.current-drag').removeClass('current-drag');
-      rendering.find("div.trash").remove();
-    });
-  }
-  
-  function activateDropZone(dropZone) {
-    dropZone.bind('dragenter', function(event) {
-      rendering.find('.current-drop').removeClass('current-drop');
-      $(this).addClass('current-drop');
-      return false;
-    });
-  }
-
-  function makeDropZones() {
-    rendering.find('.drop-zone').remove();
-    rendering.find('ul.children > li').append(dropZoneHTML);
-    rendering.find('span.start').not(".is-void > span").after(dropZoneHTML);
-
-    var dropZones = rendering.find('.drop-zone');
-    activateDropZone(dropZones);
-  }
-  
-  function initialize() {
-    var draggables = rendering.find('div.element, div.text');
-    activateDraggable(draggables);
-    makeDropZones();
-  }
-  
-  function activateTrash(trash) {
-    trash.bind('dragenter', function(event) {
-      $(this).addClass('active');
-    });
-  
-    trash.bind('dragleave', function(event) {
-      $(this).removeClass('active');
-    });
-  
-    trash.bind('drop', function(event) {
-      var currDrag = rendering.find('.current-drag');
-      var nodeToDelete = currDrag.data("linked-node");
-    
-      currDrag.slideUp(function() {
-        currDrag.parent().remove();
-        nodeToDelete.parentNode.removeChild(nodeToDelete);
-        makeDropZones();
-      });
-
-      return false;
-    });
-  
-    trash.bind('dragover', function(event) {
-      var currDrag = rendering.find('.current-drag');
-
-      if (currDrag.length) {
-        rendering.find('.current-drop').removeClass('current-drop');
-        event.preventDefault();
-      }
-    });
-  }
-  
-  rendering.bind('dragover', function(event) {
-    var currDrag = rendering.find('.current-drag');
-    var currDrop = rendering.find('.current-drop');
-    var makeCopy = event.shiftKey;
-    var isDropInsideDrag = currDrag.parent().has(currDrop.get(0)).length;
-    //console.log("over ", event.originalEvent.dataTransfer.types);
-
-    if (isDropInsideDrag && !makeCopy)
-      return;
-
-    event.preventDefault();
-  });
-  
-  rendering.bind('drop', function(event) {
-    var currDrag = rendering.find('.current-drag');
-    var dropTarget = rendering.find('.current-drop');
-    var nodeToMove = currDrag.data("linked-node");
-    var isLocalDrag = currDrag.length;
-    var makeCopy = event.shiftKey;
-    
-    function moveNode() {
-      if (dropTarget.prev("span.start").length) {
-        var parentElement = dropTarget.parent().data("linked-node");
-        if (!dropTarget.next("ul.children").length)
-          dropTarget.after('<ul class="children"></ul>');
-        $(parentElement).prepend(nodeToMove);
-        dropTarget.next("ul.children").prepend(currDrag.parent());
-      } else {
-        var element = dropTarget.prev().data("linked-node");
-        $(element).after(nodeToMove);
-        $(dropTarget).closest("li").after(currDrag.parent());
-      }
-      currDrag.slideDown();
-      makeDropZones();
-    }
-    
-    if (isLocalDrag && !makeCopy) {
-      currDrag.slideUp(moveNode);
-    } else {
-      var data = event.originalEvent.dataTransfer;
-      var html = data.getData('text/html');
-      var text = data.getData('text/plain');
-
-      if (html) {
-        nodeToMove = $(html).last().get(0);
-        currDrag = $(nodeToMove).renderDom();
-        currDrag.find(".text, .attributes .value").makeTextEditable();
-      } else if (text) {
-        // TODO: This should really be part of jQuery.fn.renderDom().
-        nodeToMove = document.createTextNode(text);
-        currDrag = $('<div class="text"></div>').text(text);
-        currDrag.data("linked-node", nodeToMove);
-        currDrag.makeTextEditable();
-      } else {
-        throw new Error("unsupported dataTransfer type");
-      }
-
-      activateDraggable(currDrag);
-      activateDraggable(currDrag.find('div.element, div.text'));
-      $(document.body).append(currDrag);
-      currDrag.hide();
-      currDrag.wrap('<li></li>');
-
-      moveNode();
-      // TODO: call rendering.trigger('dragend');?
-    }
-    return false;
-  });
-
-  initialize();
-}
 
 function startContinuousDynamicScale(selected, parentIframe) {
   function setZoom(zoom) {
@@ -412,10 +224,6 @@ function makeEditableDom(selected) {
       focused.set(linkedNode);
   });
 
-  enableDragAndDrop(rendered);
-  rendered.bind('dragend', function() {
-    focused.unfocus();
-  });
   rendered.mouseout(function(event) {
     focused.unfocus();
   });
@@ -489,8 +297,6 @@ function createDialog(data) {
     
     $(".tabs .tab").removeClass("selected");
     $(this).addClass("selected");
-    $("#instructions div").hide();
-    $("#instructions ." + view).show();
     switch (view) {
       case "pretty":
       $("#dom-rendering").empty().append(makeEditableDom(selected));
@@ -511,32 +317,7 @@ function createDialog(data) {
   };
 }
 
-function makeSamplesDraggable() {
-  $("span.sample").attr("draggable", "true");
-  $("span.sample").bind('dragstart', function(event) {
-    var e = event.originalEvent;
-    var id = $(this).attr('id');
-
-    e.dataTransfer.effectAllowed = 'all';
-
-    switch (id) {
-      case "sample-text":
-      e.dataTransfer.setData('text/plain', "here is sample text.");
-      break;
-
-      case "sample-image":
-      e.dataTransfer.setData('text/html', '<img src="http://upload.wikimedia.org/wikipedia/commons/6/63/Wikipedia-logo.png">');
-      break;
-
-      default:
-      var html = $("div#samples").find("." + id).html();
-      e.dataTransfer.setData('text/html', html);
-    }      
-  });
-}
-
 $(window).ready(function() {
-  makeSamplesDraggable();
   $(document.body).hide();
 
   var isInIframe = !(top === self);
