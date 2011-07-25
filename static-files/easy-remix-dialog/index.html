@@ -144,7 +144,9 @@ span.sample {
   <div class="button" id="ok">Ok</div>
 </div>
 <div id="header"><h1></h1></div>
+<div id="pretty-mode-instructions">
 <p>Try dragging and dropping elements in the source code to move them around. Hold shift to copy instead of move. Click on text to change it. Want some inspiration? Drag content from other webpages into the source code, or try dragging these samples: <span class="sample" id="sample-link">link</span> <span class="sample" id="sample-image">image</span> <span class="sample" id="sample-text">text</span> <span class="sample" id="sample-list">list</span>.</p>
+</div>
 <div id="dom-rendering-column">
   <h2>Source Code</h2>
   <div class="tabs">
@@ -478,11 +480,13 @@ function createDialog(data) {
     $(this).addClass("selected");
     switch ($(this).attr("id")) {
       case "pretty":
-      $("#dom-rendering").empty().append(makeEditableDom(selected));      
+      $("#dom-rendering").empty().append(makeEditableDom(selected));
+      $("#pretty-mode-instructions").css({visibility: "visible"});
       break;
       
       case "raw":
       makeHtmlEditor($("#dom-rendering"), selected);
+      $("#pretty-mode-instructions").css({visibility: "hidden"});
       break;
     }
   });
