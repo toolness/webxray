@@ -11,7 +11,6 @@
     language: navigator.language,
     baseURI: "",
     cssURL: "webxray.css",
-    mixMasterDialogURL: "http://labs.toolness.com/dom-tutorial/index.html",
     easyRemixDialogURL: "easy-remix-dialog/index.html",
     shareDialogURL: "share-dialog.html",
     sharePageURL: "share/",

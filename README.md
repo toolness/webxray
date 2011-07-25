@@ -29,28 +29,6 @@ Alternatively, if you want to compile the `static-files/webxray.js` file, run:
 
   [https://secure.toolness.com/webxray/]: https://secure.toolness.com/webxray/
 
-## Configuration
-
-The *Compose A Replacement* dialog used by the goggles is actually in a
-separate repository, and it's designed to be hosted on a separate domain for
-security purposes.
-
-By default, the goggles are configured to load the dialog at its official
-location. If you'd like to host your own dialog, though, you can:
-
-  1. Clone the [mix-master-dialog][] repository and follow its setup
-  instructions.
-
-  2. In the `webxray` repository, create a new file called
-  `src/settings.local.js`. Assuming your hosted instance of the dialog is at
-  http://127.0.0.1:8002/, fill it with this:
-
-        jQuery.webxraySettings.extend({
-          mixMasterDialogURL: "http://127.0.0.1:8002/"
-        });
-
-[mix-master-dialog]: https://github.com/hackasaurus/mix-master-dialog
-
 ## Reporting Bugs
 
 If you have any bugs to report, please file them in [Lighthouse][].

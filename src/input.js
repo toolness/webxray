@@ -87,8 +87,10 @@
           if (onQuit)
             onQuit();
           return true;
-          
+
+          // TODO: Eventually, remove keys.E.
           case keys.E:
+          case keys.R:
           mixMaster.replaceFocusedElementWithDialog({
             input: self,
             dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
@@ -96,13 +98,6 @@
           });
           return true;
           
-          case keys.R:
-          mixMaster.replaceFocusedElementWithDialog({
-            input: self,
-            dialogURL: jQuery.webxraySettings.url("mixMasterDialogURL")
-          });
-          return true;
-
           case keys.T:
           persistence.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
