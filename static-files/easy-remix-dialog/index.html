@@ -28,6 +28,7 @@ h1, h2 {
 }
 
 #dom-rendering-column {
+  position: relative;
   width: 480px;
   float: left;
 }
@@ -110,8 +111,28 @@ span.sample {
   margin: 0;
 }
 
-#raw-html-label {
-  font-size: 9pt;
+.tabs {
+  position: absolute;
+  right: 0px;
+  top: 1em;
+}
+
+.tabs .tab {
+  display: inline-block;
+  padding: 0.25em;
+  border: 1px solid #f0f0f0;
+  color: gray;
+  background: #f0f0f0;
+  cursor: pointer;
+}
+
+.tabs .tab.selected {
+  color: black;
+  background: white;
+}
+
+.tabs div.tab:hover {
+  color: black;
 }
 </style>
 <div id="buttons">
@@ -121,7 +142,11 @@ span.sample {
 <div id="header"><h1></h1></div>
 <p>Try dragging and dropping elements in the source code to move them around. Hold shift to copy instead of move. Click on text to change it. Want some inspiration? Drag content from other webpages into the source code, or try dragging these samples: <span class="sample" id="sample-link">link</span> <span class="sample" id="sample-image">image</span> <span class="sample" id="sample-text">text</span> <span class="sample" id="sample-list">list</span>.</p>
 <div id="dom-rendering-column">
-  <h2>Source Code <input id="raw-html" type="checkbox"> <label id="raw-html-label" for="raw-html">raw HTML</label></h2>
+  <h2>Source Code</h2>
+  <div class="tabs">
+    <div class="tab selected" id="pretty">Pretty</div>
+    <div class="tab" id="raw">Raw</div>
+  </div>
   <div id="dom-rendering"></div>
 </div>
 <div id="preview-column">
@@ -444,13 +469,21 @@ function createDialog(data) {
 
   startScaling();
   
-  $("#raw-html").change(function() {
-    if (this.checked) {
+  $(".tabs .tab").click(function() {
+    $(".tabs .tab").removeClass("selected");
+    $(this).addClass("selected");
+    switch ($(this).attr("id")) {
+      case "pretty":
+      $("#dom-rendering").empty().append(makeEditableDom(selected));      
+      break;
+      
+      case "raw":
       makeHtmlEditor($("#dom-rendering"), selected);
-    } else {
-      $("#dom-rendering").empty().append(makeEditableDom(selected));
+      break;
     }
-  }).trigger('change');
+  });
+  
+  $(".tabs .tab#pretty").click();
 
   return {
     getHTML: function getHTML() {
