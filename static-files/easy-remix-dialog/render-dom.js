@@ -7,8 +7,8 @@
     var attribs = $('<ul class="attributes"></ul>');
     for (var i = 0; i < node.attributes.length; i++) {
       var attr = node.attributes[i];
-      var name = $('<span class="name"></span>').text(attr.name);
-      var value = $('<span class="value"></span>').text(attr.value);
+      var name = $('<div class="name"></div>').text(attr.name);
+      var value = $('<div class="value"></div>').text(attr.value);
       value.data("linked-node", attr);
       attribs.append($('<li></li>').append(name).append(value));
     }
@@ -26,8 +26,8 @@
     node = $(node).get(0);
     
     var rendered = $('<div class="element"></div>');
-    var start = $('<span class="start"></span>');
-    var name = $('<span class="name"></span>');
+    var start = $('<div class="start"></div>');
+    var name = $('<div class="name"></div>');
     if ($(node).isVoidElement())
       rendered.addClass("is-void");
     name.text(node.nodeName.toLowerCase());
@@ -56,7 +56,7 @@
       }
     });
     if (children.children().length) {
-      var end = $('<span class="end"></span>').append(name.clone());
+      var end = $('<div class="end"></div>').append(name.clone());
       rendered.append(children).append(end);
     }
     rendered.addClass('tag-' + jQuery.colorForTag(name.text()).slice(1));
