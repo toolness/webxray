@@ -10,8 +10,12 @@ div.element {
   word-wrap: break-word;
 }
 
-div.element div.name, div.element div.value {
+div.element div.name {
   display: inline;
+}
+
+div.element div.value {
+  display: inline-block;
 }
 
 li > div.element {
