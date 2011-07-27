@@ -17,21 +17,31 @@
         $(event.target).attr("contentEditable", "true");
 
         target.bind('DOMNodeInserted.editableText', function(event) {
+          var self = this;
           var node = event.target;
           var parent = event.originalEvent.relatedNode;
+
+          // "flatten" the DOM content to be plain text.
           if (node.nodeType == node.ELEMENT_NODE) {
             var text = node.textContent;
-            if (text) {
-              var replacement = document.createTextNode(text);
-              try {
-                // TODO: Why does this sometimes fail?
-                parent.replaceChild(replacement, node);
-              } catch (e) {}
-            } else {
-              try {
-                // TODO: Why does this sometimes fail?
-                parent.removeChild(node);
-              } catch (e) {}
+            var replacement = document.createTextNode(text);
+            try {
+              // TODO: Why does this sometimes fail?
+              parent.replaceChild(replacement, node);
+            } catch (e) {}
+
+            // Safari and Chrome sometimes end up with no selection, so
+            // let's make sure the cursor lands somewhere.
+            var sel = window.getSelection();
+            if (sel.rangeCount == 0) {
+              if (!self.firstChild) {
+                var newNode = document.createTextNode('');
+                self.appendChild(newNode);
+              }
+              var range = document.createRange();
+              range.setStart(self.firstChild, 0);
+              range.setEnd(self.firstChild, 0);
+              sel.addRange(range);
             }
           }
         });
