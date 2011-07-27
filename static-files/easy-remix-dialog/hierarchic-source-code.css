@@ -90,7 +90,6 @@ div.element > div.end:after {
 }
 
 div.text {
-  display: inline;
   font-family: "Helvetica Neue";
   color: black;
 }

@@ -8,7 +8,7 @@
       this.click(function(event) {
         var target = $(event.target);
         
-        if ($(event.target).attr("contentEditable") != "inherit")
+        if (target.isContentEditable)
           return;
         
         var originalValue = target.text();
@@ -16,6 +16,25 @@
         
         $(event.target).attr("contentEditable", "true");
 
+        target.bind('DOMNodeInserted.editableText', function(event) {
+          var node = event.target;
+          var parent = event.originalEvent.relatedNode;
+          if (node.nodeType == node.ELEMENT_NODE) {
+            var text = node.textContent;
+            if (text) {
+              var replacement = document.createTextNode(text);
+              try {
+                // TODO: Why does this sometimes fail?
+                parent.replaceChild(replacement, node);
+              } catch (e) {}
+            } else {
+              try {
+                // TODO: Why does this sometimes fail?
+                parent.removeChild(node);
+              } catch (e) {}
+            }
+          }
+        });
         target.bind('keyup.editableText', function(event) {
           if (linkedNode)
             linkedNode.nodeValue = target.text();
