@@ -93,38 +93,38 @@ test("jQuery.xRayInput()", function() {
   ok(!stopped, "Typing valid key doesn't stop event propagation");
   checkLog([], 'nothing happens when invalid key pressed');
   
-  event.keyCode = input.keys.R;
+  event.keyCode = $.keys.R;
   input.handleEvent(event);
   ok(prevented, "Typing valid key prevents default event handling");
   ok(stopped, "Typing valid key stops event propagation");
   checkLog(['mixMaster.replaceFocusedElementWithDialog() called w/ 1 args'])
 
-  event.keyCode = input.keys.DELETE;
+  event.keyCode = $.keys.DELETE;
   input.handleEvent(event);
   checkLog(['mixMaster.deleteFocusedElement() called w/ 0 args'])
 
-  event.keyCode = input.keys.I;
+  event.keyCode = $.keys.I;
   input.handleEvent(event);
   checkLog(['mixMaster.infoForFocusedElement() called w/ 0 args']);
 
-  event.keyCode = input.keys.ESC;
+  event.keyCode = $.keys.ESC;
   input.handleEvent(event);
   checkLog(['onQuit() called'], 'ESC invokes onQuit');
 
   event.shiftKey = true;
-  event.keyCode = input.keys.LEFT;
+  event.keyCode = $.keys.LEFT;
   input.handleEvent(event);
   checkLog(['mixMaster.undo() called w/ 0 args']);
 
-  event.keyCode = input.keys.RIGHT;
+  event.keyCode = $.keys.RIGHT;
   input.handleEvent(event);
   checkLog(['mixMaster.redo() called w/ 0 args']);
 
-  event.keyCode = input.keys.UP;
+  event.keyCode = $.keys.UP;
   input.handleEvent(event);
   checkLog(['focusedOverlay.upfocus() called w/ 0 args']);
 
-  event.keyCode = input.keys.DOWN;
+  event.keyCode = $.keys.DOWN;
   input.handleEvent(event);
   checkLog(['focusedOverlay.downfocus() called w/ 0 args']);
 

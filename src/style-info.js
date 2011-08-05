@@ -93,8 +93,7 @@
     
     textField.blur(confirmChange);
     textField.keydown(function(event) {
-      // TODO: Use named constant
-      if (event.keyCode == 27)
+      if (event.keyCode == $.keys.ESC)
         revertToOriginal();
     });
     textField.keyup(function(event) {
@@ -197,7 +196,7 @@
       if (overlay.find('form').length)
         return;
       switch (event.keyCode) {
-        case input.keys.I:
+        case $.keys.I:
         var hover = overlay.find('.webxray-row:hover');
         if (hover.length) {
           var property = hover.data('propertyWidget').name;
@@ -208,8 +207,8 @@
         }
         break;
 
-        case input.keys.LEFT:
-        case input.keys.RIGHT:
+        case $.keys.LEFT:
+        case $.keys.RIGHT:
         input.handleEvent(event);
         if (primary.parentNode) {
           startStyle = $(primary).attr("style");

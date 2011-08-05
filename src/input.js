@@ -21,6 +21,7 @@
     keys[alphabet[i]] = alphabet.charCodeAt(i);
 
   jQuery.extend({
+    keys: keys,
     mouseMonitor: function mouseMonitor() {
       function onMouseMove(event) {
         self.lastPosition.pageX = event.pageX;
@@ -175,7 +176,6 @@
       var isActive = false;
 
       var self = jQuery.eventEmitter({
-        keys: keys,
         handleEvent: function handleEvent(event) {
           if (event.type in listeners)
             listeners[event.type](event);
