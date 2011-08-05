@@ -50,17 +50,13 @@
     "z-index"
   ].sort();
 
-  function normalizeProperty(style, name) {
-    var value = style.getPropertyValue(name);
-
-    if (value) {
-      var urlMatch = value.match(/url\("?([^"]*)"?\)/);
-    
-      if (urlMatch)
-        value = urlMatch[1];
+  jQuery.cssHooks.backgroundImage = {
+    set: function(elem, value) {
+      if (value != "none" && !value.match(/^\s*url\(.*\)/))
+        return "url(" + value + ")";
+      return value;
     }
-    return value;
-  }
+  };
 
   function makeCssValueEditable() {
     if ($(this).find('form').length)
@@ -123,7 +119,7 @@
     var self = {
       name: name,
       refresh: function() {
-        var value = normalizeProperty(style, name);
+        var value = $.normalizeStyleProperty(style, name);
         
         // TODO: It might be possible for us to return from this
         // function when in fact we need to change class information.
@@ -133,9 +129,10 @@
 
         valueCell.text(value);
         valueCell.attr("class", "webxray-value");
-        if (parentStyle && normalizeProperty(parentStyle, name) != value)
+        if (parentStyle &&
+            $.normalizeStyleProperty(parentStyle, name) != value)
           valueCell.addClass("webxray-value-different-from-parent");
-        if (normalizeProperty(element.style, name) == value)
+        if ($.normalizeStyleProperty(element.style, name) == value)
           valueCell.addClass("webxray-value-matches-inline-style");
         if (name.match(/color$/)) {
           var colorBlock = $('<div class="webxray-color-block"></div>');
@@ -262,6 +259,17 @@
   }
 
   jQuery.extend({
+    normalizeStyleProperty: function normalizeStyleProperty(style, name) {
+      var value = style.getPropertyValue(name);
+
+      if (name.match(/image$/) && value) {
+        var urlMatch = value.match(/url\("?([^"]*)"?\)/);
+
+        if (urlMatch)
+          value = urlMatch[1];
+      }
+      return value;
+    },
     styleInfoOverlay: function styleInfoOverlay(options) {
       var focused = options.focused;
       var commandManager = options.commandManager;

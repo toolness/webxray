@@ -16,6 +16,23 @@ test("jQuery.fn.getStyleInfo()", function() {
   element.remove();
 });
 
+test("jQuery.cssHooks", function() {
+  var $ = jQuery;
+  var div = $('<div></div>');
+  div.attr('style', "background-image: url(http://mozilla.org/favicon.ico)");
+  equal(jQuery.normalizeStyleProperty(div[0].style, 'background-image'),
+        'http://mozilla.org/favicon.ico',
+        'jQuery.normalizeStyleProperty() strips url()');
+  div.css('background-image', 'http://mozilla.org/favicon.ico2');
+  equal(jQuery.normalizeStyleProperty(div[0].style, 'background-image'),
+        'http://mozilla.org/favicon.ico2',
+        'jQuery.cssHooks.backgroundImage sets url()');
+  div.css('background-image', 'url(http://mozilla.org/favicon.ico3)');
+  equal(jQuery.normalizeStyleProperty(div[0].style, 'background-image'),
+        'http://mozilla.org/favicon.ico3',
+        'jQuery.cssHooks.backgroundImage sets url() only when necessary');
+});
+
 test("jQuery.styleInfoOverlay()", function() {
   var focused = jQuery.eventEmitter({
     getPrimaryElement: function() {
