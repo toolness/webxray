@@ -50,13 +50,16 @@
     "z-index"
   ].sort();
 
-  jQuery.cssHooks.backgroundImage = {
-    set: function(elem, value) {
-      if (value != "none" && !value.match(/^\s*url\(.*\)/))
-        return "url(" + value + ")";
-      return value;
-    }
-  };
+  DEFAULT_PROPERTIES.forEach(function(name) {
+    if (name.match(/image$/))
+      jQuery.cssHooks[jQuery.camelCase(name)] = {
+        set: function(elem, value) {
+          if (value != "none" && !value.match(/^\s*url\(.*\)/))
+            return "url(" + value + ")";
+          return value;
+        }
+      };
+  });
 
   function makeCssValueEditable() {
     if ($(this).find('form').length)
