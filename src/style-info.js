@@ -122,6 +122,9 @@
     
     var self = {
       name: name,
+      getValue: function() {
+        return valueCell.text();
+      },
       isBeingEdited: function() {
         return (row.find('form').length != 0);
       },
