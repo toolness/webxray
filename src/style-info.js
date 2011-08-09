@@ -63,8 +63,9 @@
 
   function makeCssValueEditable() {
     var row = $(this);
+    var widget = row.data("propertyWidget");
 
-    if (row.data("propertyWidget").isBeingEdited())
+    if (widget.isBeingEdited())
       return;
 
     var nameCell = $(this).find('.webxray-name');
@@ -83,13 +84,13 @@
     function revertToOriginal() {
       form.remove();
       valueCell.text(originalValue);
-      row.data("propertyWidget").clearPreview();
+      widget.clearPreview();
     }
     
     function confirmChange() {
       var newValue = textField.val();
       revertToOriginal();
-      row.data("propertyWidget").changeValue(newValue);
+      widget.changeValue(newValue);
     }
     
     textField.blur(confirmChange);
@@ -98,7 +99,7 @@
         revertToOriginal();
     });
     textField.keyup(function(event) {
-      row.data("propertyWidget").previewValue(textField.val());
+      widget.previewValue(textField.val());
     });
 
     form.submit(function() {
