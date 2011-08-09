@@ -43,6 +43,7 @@
     var locale = options.locale || jQuery.locale;
     var commandManager = options.commandManager;
     var l10n = locale.scope('mix-master');
+    var dialogPageMods = null;
     var transitionEffects;
     
     if (options.disableTransitionEffects)
@@ -134,6 +135,9 @@
         });
         return newContent;
       },
+      setDialogPageMods: function(mods) {
+        dialogPageMods = mods;
+      },
       replaceFocusedElementWithDialog: function(options) {
         var input = options.input;
         var dialogURL = options.dialogURL;
@@ -190,6 +194,7 @@
                 instructions: l10n("replacement-instructions-html"),
                 languages: jQuery.locale.languages,
                 startHTML: startHTML,
+                mods: dialogPageMods,
                 baseURI: document.location.href
               }), "*");
               dialog.iframe.fadeIn();
