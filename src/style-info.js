@@ -62,10 +62,11 @@
   });
 
   function makeCssValueEditable() {
-    if ($(this).find('form').length)
+    var row = $(this);
+
+    if (row.data("propertyWidget").isBeingEdited())
       return;
 
-    var row = $(this);
     var nameCell = $(this).find('.webxray-name');
     var valueCell = $(this).find('.webxray-value');
     var originalValue = valueCell.text();
@@ -120,6 +121,9 @@
     
     var self = {
       name: name,
+      isBeingEdited: function() {
+        return (row.find('form').length != 0);
+      },
       refresh: function() {
         var value = $.normalizeStyleProperty(style, name);
         
@@ -193,7 +197,7 @@
     var translucentOverlay = PrimaryTranslucentOverlay(overlay, primary);
     
     function handleKeyDown(event) {
-      if (overlay.find('form').length)
+      if (self.isBeingEdited())
         return;
       switch (event.keyCode) {
         case $.keys.I:
@@ -244,6 +248,9 @@
     window.addEventListener("keydown", handleKeyDown, true);  
 
     var self = jQuery.eventEmitter({
+      isBeingEdited: function() {
+        return (overlay.find('form').length != 0);
+      },
       close: function() {
         overlay.removeClass("webxray-style-info-locked");
         overlay.unbind('css-property-change', recordChanges);
@@ -334,7 +341,7 @@
           overlay.toggleClass('webxray-on-other-side');
       }
       
-      var self = {
+      var self = jQuery.eventEmitter({
         setPropertyNames: function(newPropertyNames) {
           propertyNames = newPropertyNames;
         },
@@ -357,8 +364,12 @@
               modalOverlay = null;
               self.hide();
               input.activate();
+              self.emit('unlock');
             });
             focused.unfocus();
+            self.emit('lock', {
+              element: primary
+            });
           }
         },
         show: function() {
@@ -367,11 +378,13 @@
           refresh();
           mouseMonitor.on('move', maybeSwitchSides);
           maybeSwitchSides();
+          self.emit('show');
         },
         hide: function() {
           mouseMonitor.removeListener('move', maybeSwitchSides);
           isVisible = false;
           overlay.hide();
+          self.emit('hide');
         },
         destroy: function() {
           if (modalOverlay)
@@ -379,7 +392,7 @@
           focused.removeListener('change', refresh);
           overlay.remove();
         }
-      };
+      });
 
       return self;
     }
