@@ -40,6 +40,7 @@
         undoStack.push(command);
         redoStack.splice(0);
         command.execute();
+        self.emit('state-change');
         return command;
       },
       canUndo: function() {
@@ -52,12 +53,14 @@
         var command = undoStack.pop();
         redoStack.push(command);
         command.undo();
+        self.emit('state-change');
         return command;
       },
       redo: function() {
         var command = redoStack.pop();
         undoStack.push(command);
         command.execute();
+        self.emit('state-change');
         return command;
       },
       getRecording: function() {
