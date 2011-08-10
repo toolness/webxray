@@ -49,7 +49,7 @@
           return locale[scopedName] || "unable to find locale string " + 
                  scopedName;
         },
-        scope: function scope(scope) {
+        scope: function scopeLocale(scope) {
           return function(name) {
             return locale.get(scope + ":" + name);
           }
