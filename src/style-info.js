@@ -346,6 +346,12 @@
       }
       
       var self = jQuery.eventEmitter({
+        isVisible: function() {
+          return isVisible;
+        },
+        isLocked: function() {
+          return (modalOverlay !== null);
+        },
         setPropertyNames: function(newPropertyNames) {
           propertyNames = newPropertyNames;
         },
