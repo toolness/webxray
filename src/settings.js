@@ -12,8 +12,6 @@
     baseURI: "",
     cssURL: "webxray.css",
     easyRemixDialogURL: "easy-remix-dialog/index.html",
-    shareDialogURL: "share-dialog.html",
-    sharePageURL: "share/",
     uprootDialogURL: "uproot-dialog.html"
   };
 })(jQuery);

@@ -85,41 +85,6 @@ test("jQuery.mixMaster()", function() {
 
     testPlayRecording();
     element.remove();
-    element = makeSpan();
-
-    testWithElement(element, function(mixMaster, element, hud, focused,
-                                      commandManager) {
-      var persistence = jQuery.commandManagerPersistence(commandManager);
-      recordingJS = persistence.convertRecordingToJS(recording);
-      equal(persistence.isRecordingInGlobal(window), false,
-            "Recording is not in global before eval");
-      eval(recordingJS);
-      equal(persistence.isRecordingInGlobal(window), true,
-            "Recording is in global after eval");
-      var success = persistence.playRecordingFromGlobal(window);
-      ok(success, "playRecordingFromGlobal() succeeds");
-      equal(persistence.isRecordingInGlobal(window), false,
-            "Recording is not in global after playRecordingFromGlobal()");
-
-      equals(element.html(), '<span>u</span>',
-             'playRecordingFromGlobal() transforms DOM as expected');
-      mixMaster.undo();
-      equal(element.html(), '<em>hi</em>');
-      mixMaster.undo();
-      equal(element.html(), '<div id="mixmastertest"></div>');
-    });
-
-    element.remove();
-
-    testWithElement(element, function(mixMaster, element, hud, focused,
-                                      commandManager) {
-      var persistence = jQuery.commandManagerPersistence(commandManager);
-      eval(recordingJS);
-      var success = persistence.playRecordingFromGlobal(window);
-      ok(!success, "playRecordingFromGlobal() fails");
-      equal(persistence.isRecordingInGlobal(window), false,
-            "Recording is not in global after play failure");
-    });
   })();
   
   (function testSerialization() {

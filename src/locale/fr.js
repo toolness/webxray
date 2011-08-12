@@ -14,11 +14,6 @@ jQuery.localization.extend("fr", "input", {
   "link-click-blocked": 'Avant de suivre ce lien, désactivez les lunettes en appuyant sur la touche « Esc ».'
 });
 
-jQuery.localization.extend("fr", "hack-recording-playback", {
-  "success": 'Modifications rejouées !',
-  "failure": 'Impossible de rejouer vos modifications. La page a peut-être changé depuis que vous les avez enregistrées.'
-});
-
 jQuery.localization.extend("fr", "command-manager", {
   "executed": "Effectué",
   "undid": 'Annulé',

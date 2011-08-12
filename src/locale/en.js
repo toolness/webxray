@@ -14,11 +14,6 @@ jQuery.localization.extend("en", "input", {
   "link-click-blocked": 'If you would like to follow that link, please deactivate the goggles first by pressing ESC.'
 });
 
-jQuery.localization.extend("en", "hack-recording-playback", {
-  "success": 'Hack rebusted!',
-  "failure": 'Hack rebusting failed. Perhaps the page changed since the hack was first busted?'
-});
-
 jQuery.localization.extend("en", "command-manager", {
   "executed": "Busted",
   "undid": 'Unbusted',

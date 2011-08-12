@@ -104,19 +104,6 @@
           jQuery.openUprootDialog(self);
           return true;
 
-          case keys.B:
-          jQuery.simpleModalDialog({
-            input: self,
-            url: jQuery.webxraySettings.url("shareDialogURL"),
-            payload: jQuery.webxraySettings.url("sharePageURL") +
-                     "?r=" +
-                     jQuery.compressStrToUriComponent(
-                       commandManager.getRecording()
-                     ) +
-                     "&u=" + encodeURIComponent(window.location.href)
-          });
-          return true;
-
           case keys.DELETE:
           mixMaster.deleteFocusedElement();
           return true;

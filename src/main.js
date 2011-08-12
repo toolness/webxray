@@ -72,27 +72,14 @@
     waitForCSSToLoad(cb);
   }
 
-  function maybeLoadRecording(persistence) {
-    if (persistence.isRecordingInGlobal(window)) {
-      var msg,
-          success = persistence.playRecordingFromGlobal(window);
-      if (success)
-        msg = jQuery.locale.get('hack-recording-playback:success');
-      else
-        msg = jQuery.locale.get('hack-recording-playback:failure');
-      jQuery.transparentMessage($('<div></div>').text(msg));
-    } else {
-      var welcomeMsg = $("<div></div>");
-      welcomeMsg.html(jQuery.locale.get("hud-overlay:default-html"));
-      jQuery.transparentMessage(welcomeMsg);
-    }
-  }
-
   $(window).ready(function() {
     loadPrerequisites(function() {
       var ui = jQuery.xRayUI({eventSource: document});
 
-      maybeLoadRecording(ui.persistence);
+      var welcomeMsg = $("<div></div>");
+      welcomeMsg.html(jQuery.locale.get("hud-overlay:default-html"));
+      jQuery.transparentMessage(welcomeMsg);
+
       ui.start();
       Webxray.triggerWhenLoaded(ui);
       ui.on('quit', function() {

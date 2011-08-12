@@ -14,11 +14,6 @@ jQuery.localization.extend("es", "input", {
   "link-click-blocked": 'Si quieres seguir ese link, desactiva antes las gafas presionando ESC.'
 });
 
-jQuery.localization.extend("es", "hack-recording-playback", {
-  "success": 'Hackeado!',
-  "failure": 'Hackeo fallido. Tal vez la página cambió desde el primer hackeo?'
-});
-
 jQuery.localization.extend("es", "command-manager", {
   "executed": "Ejecutado",
   "undid": 'Sin hackear',
