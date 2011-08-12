@@ -111,6 +111,10 @@
           case keys.I:
           mixMaster.infoForFocusedElement();
           return true;
+
+          case keys.X:
+          mixMaster.xpathForFocusedElement();
+          return true;
           
           case keys.SPACE:
           if (pressed[keys.C]) {
