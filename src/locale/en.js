@@ -46,3 +46,26 @@ jQuery.localization.extend("en", "style-info", {
   "tap-space-html": 'Tap <div class="webxray-kbd">space bar</div> to edit this style.',
   "style-change": "style change"
 });
+
+jQuery.localization.extend("en", "key-names", {
+  "LEFT": "←",
+  "RIGHT": "→",
+  "UP": "↑",
+  "DOWN": "↓",
+  "ESC": "esc",
+  "DELETE": "backspace",
+  "DELETE-MacIntel": "delete"
+});
+
+jQuery.localization.extend("en", "command-descriptions", {
+  "help": "This help reference",
+  "quit": "Deactivate goggles",
+  "remix": "Replace/remix selected element",
+  "css-quasimode": "View/edit computed style of selected element",
+  "remove": "Remove selected element",
+  "undo": "Undo",
+  "redo": "Redo",
+  "dom-ascend": "Ascend to parent element",
+  "dom-descend": "Descend to child element",
+  "uproot": "Tear-out (export) page"
+});

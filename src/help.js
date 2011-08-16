@@ -2,22 +2,43 @@
   "use strict";
 
   var $ = jQuery;
-  
-  var keys = [
-    {key: 'H', desc: 'This help reference'},
-    {key: 'esc', desc: 'Deactivate goggles'},
-    {key: 'R', desc: 'Replace/remix selected element'},
-    {key: 'C', desc: 'View/edit computed style of selected element'},
-    {key: 'delete', desc: 'Remove selected element'},
-    {key: '←', desc: 'Undo'},
-    {key: '→', desc: 'Redo'},
-    {key: '↑', desc: 'Ascend to parent element'},
-    {key: '↓', desc: 'Descend to child element'},
-    {key: 'T', desc: 'Tear-out (export) page'}
+
+  var keyboardHelp = [
+    {key: 'H', cmd: 'help'},
+    {key: 'ESC', cmd: 'quit'},
+    {key: 'R', cmd: 'remix'},
+    {key: 'C', cmd: 'css-quasimode'},
+    {key: 'DELETE', cmd: 'remove'},
+    {key: 'LEFT', cmd: 'undo'},
+    {key: 'RIGHT', cmd: 'redo'},
+    {key: 'UP', cmd: 'dom-ascend'},
+    {key: 'DOWN', cmd: 'dom-descend'},
+    {key: 'T', cmd: 'uproot'}
   ];
+
+  function createLocalizedHelp(keys, locale, platform) {
+    locale = locale || jQuery.locale;
+    platform = platform || navigator.platform;
+    
+    var descriptions = locale.scope('command-descriptions');
+    var localizedKeys = [];
+    keys.forEach(function(info) {
+      var localizedInfo = {key: null, desc: null};
+      var normalKey = "key-names:" + info.key;
+      var osKey = normalKey + "-" + platform;
+      
+      localizedInfo.key = locale[osKey] ||
+                          locale[normalKey] ||
+                          info.key;
+      localizedInfo.desc = descriptions(info.cmd);
+      localizedKeys.push(localizedInfo);
+    });
+    return localizedKeys;
+  }
   
   jQuery.extend({
-    createKeyboardHelpReference: function() {
+    createKeyboardHelpReference: function(locale, platform) {
+      var keys = createLocalizedHelp(keyboardHelp, locale, platform);
       var table = $('<div class="webxray-help-box"></div>');
       keys.forEach(function(info) {
         var row = $('<div class="webxray-help-row"></div>');
