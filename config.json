@@ -28,6 +28,7 @@
   , "src/locale/es.js"
   , "src/locale/fr.js"
   , "src/settings.js"
+  , "src/help.js"
   , "src/settings.local.js"
   , "src/utils.js"
   , "src/uproot.js"

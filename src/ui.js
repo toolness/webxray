@@ -40,7 +40,7 @@
         persistence: persistence,
         start: function() {
           persistence.loadHistoryFromDOM();
-          $(document.body).append(hud.overlay);
+          $(document.body).append(hud.overlayContainer);
           focused.on('change', hud.onFocusChange);
           input.activate();
           $(window).focus();

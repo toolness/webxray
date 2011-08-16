@@ -54,27 +54,45 @@
 
 /* Style for the message that appears in footer heads-up-display (HUD) */
 
+.webxray-hud-box {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  padding: 0.5em;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.7);
+  z-index: 2147483645;
+}
+
+.webxray-help {
+  display: inline-block;
+  border: 1px dotted white;
+  padding: 2px;
+  margin-left: 4px;
+  cursor: pointer;
+  font-size: 8pt;
+}
+
+div.webxray-help:hover {
+  background-color: yellow;
+  color: black;
+}
+
 .webxray-hud {
-    position: fixed;
-    bottom: 0px;
-    right: 0px;
-    padding: 0.5em;
-    color: white;
-    background-color: rgba(0, 0, 0, 0.7);
-    pointer-events: none;
-    z-index: 2147483645;
+  display: inline-block;
+  pointer-events: none;
 }
 
 .webxray-hud code {
-    font-family: Monaco, monospace;
-    color: inherit;
-    background: inherit;
-    font-size: 8pt;
-    display: inline;
+  font-family: Monaco, monospace;
+  color: inherit;
+  background: inherit;
+  font-size: 8pt;
+  display: inline;
 }
 
 .webxray-hud span.webxray-url {
-    color: #aaaaaa;
+  color: #aaaaaa;
 }
 
 /* Style for the tag label */
@@ -320,4 +338,26 @@ div#webxray-wait-for-css-to-load {
   background: gray;
   padding: 2px;
   font-family: inherit;
+}
+
+/* The help window. */
+
+.webxray-help-box {
+  display: table;
+}
+
+.webxray-help-row {
+  display: table-row;
+  line-height: 2em;
+}
+
+.webxray-help-key {
+  display: table-cell;
+  text-align: left;
+}
+
+.webxray-help-desc {
+  display: table-cell;
+  text-align: left;
+  padding-left: 10px;
 }

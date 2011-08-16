@@ -20,6 +20,10 @@
   for (var i = 0; i < alphabet.length; i++)
     keys[alphabet[i]] = alphabet.charCodeAt(i);
 
+  function isValidFocusTarget(target) {
+    return (!$(target).hasClass('webxray-base'));
+  }
+  
   jQuery.extend({
     keys: keys,
     mouseMonitor: function mouseMonitor() {
@@ -107,11 +111,15 @@
           case keys.DELETE:
           mixMaster.deleteFocusedElement();
           return true;
-          
+
+          case keys.H:
+          jQuery.transparentMessage(jQuery.createKeyboardHelpReference());
+          return true;
+
           case keys.I:
           mixMaster.infoForFocusedElement();
           return true;
-          
+
           case keys.SPACE:
           if (pressed[keys.C]) {
             pressed[keys.C] = false;
@@ -151,12 +159,16 @@
           }
         },
         mouseout: function(event) {
-          event.stopPropagation();
-          focused.unfocus();
+          if (isValidFocusTarget(event.target)) {
+            event.stopPropagation();
+            focused.unfocus();
+          }
         },
         mouseover: function(event) {
-          event.stopPropagation();
-          focused.set(event.target);
+          if (isValidFocusTarget(event.target)) {
+            event.stopPropagation();
+            focused.set(event.target);
+          }
         }
       };
 
