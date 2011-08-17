@@ -22,12 +22,15 @@
     return (!$(target).hasClass('webxray-base'));
   }
   
-  function styleOverlayInputHandlers(styleInfo) {
+  function styleOverlayInputHandlers(options) {
+    var styleInfo = options.styleInfoOverlay;
+    var quasimodeKeycode = keys[options.quasimodeKey];
+    var lockForEditingKeycode = keys[options.lockForEditingKey];
     var isQuasimodeActive = false;
 
     return {
       keyup: function(event) {
-        if (event.keyCode == keys.C) {
+        if (event.keyCode == quasimodeKeycode) {
           isQuasimodeActive = false;
           styleInfo.hide();
           return true;
@@ -41,14 +44,14 @@
         }
         
         switch (event.keyCode) {
-          case keys.SPACE:
+          case lockForEditingKeycode:
           if (isQuasimodeActive) {
             isQuasimodeActive = false;
             styleInfo.lock(this);
           }
           return true;
 
-          case keys.C:
+          case quasimodeKeycode:
           if (!isQuasimodeActive) {
             isQuasimodeActive = true;
             styleInfo.show();
@@ -237,7 +240,11 @@
       });
 
       self.add(self.simpleKeyBindings.handlers);
-      self.add(styleOverlayInputHandlers(styleInfo));
+      self.add(styleOverlayInputHandlers({
+        styleInfoOverlay: styleInfo,
+        lockForEditingKey: 'SPACE',
+        quasimodeKey: 'C'
+      }));
       
       return self;
     }
