@@ -47,6 +47,41 @@
       
       return self;
     },
+    inputManager: function inputManager(listeners, eventSource) {
+      var isActive = false;
+
+      var self = jQuery.eventEmitter({
+        handleEvent: function handleEvent(event) {
+          if (event.type in listeners)
+            listeners[event.type](event);
+          else
+            throw new Error("Unexpected event type: " + event.type);
+        },
+        activate: function() {
+          // We're listening during the capture phase to intercept
+          // any events at the earliest point before they're
+          // handled by the page itself. Because JQuery's bind() doesn't
+          // appear to allow for listening during the capture phase,
+          // we're using document.addEventListener() directly.
+          if (!isActive) {
+            isActive = true;
+            for (var name in listeners)
+              eventSource.addEventListener(name, self.handleEvent, true);
+            self.emit('activate');
+          }
+        },
+        deactivate: function() {
+          if (isActive) {
+            isActive = false;
+            for (var name in listeners)
+              eventSource.removeEventListener(name, self.handleEvent, true);
+            self.emit('deactivate');
+          }
+        }
+      });
+      
+      return self;
+    },
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
@@ -172,38 +207,8 @@
         }
       };
 
-      var isActive = false;
+      var self = jQuery.inputManager(listeners, eventSource);
 
-      var self = jQuery.eventEmitter({
-        handleEvent: function handleEvent(event) {
-          if (event.type in listeners)
-            listeners[event.type](event);
-          else
-            throw new Error("Unexpected event type: " + event.type);
-        },
-        activate: function() {
-          // We're listening during the capture phase to intercept
-          // any events at the earliest point before they're
-          // handled by the page itself. Because JQuery's bind() doesn't
-          // appear to allow for listening during the capture phase,
-          // we're using document.addEventListener() directly.
-          if (!isActive) {
-            isActive = true;
-            for (var name in listeners)
-              eventSource.addEventListener(name, self.handleEvent, true);
-            self.emit('activate');
-          }
-        },
-        deactivate: function() {
-          if (isActive) {
-            isActive = false;
-            for (var name in listeners)
-              eventSource.removeEventListener(name, self.handleEvent, true);
-            self.emit('deactivate');
-          }
-        }
-      });
-      
       return self;
     }
   });
