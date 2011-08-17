@@ -3,8 +3,6 @@
 
   var $ = jQuery;
 
-  var pressed = {};
-
   var keys = {
     DELETE: 8,
     LEFT: 37,
@@ -24,6 +22,44 @@
     return (!$(target).hasClass('webxray-base'));
   }
   
+  function styleOverlayInputHandlers(styleInfo) {
+    var isQuasimodeActive = false;
+
+    return {
+      keyup: function(event) {
+        if (event.keyCode == keys.C) {
+          isQuasimodeActive = false;
+          styleInfo.hide();
+          return true;
+        }
+        return false;
+      },
+      keydown: function(event) {
+        if (event.altKey || event.ctrlKey ||
+            event.altGraphKey || event.metaKey) {
+          return false;
+        }
+        
+        switch (event.keyCode) {
+          case keys.SPACE:
+          if (isQuasimodeActive) {
+            isQuasimodeActive = false;
+            styleInfo.lock(this);
+          }
+          return true;
+
+          case keys.C:
+          if (!isQuasimodeActive) {
+            isQuasimodeActive = true;
+            styleInfo.show();
+          }
+          return true;
+        }
+        return false;
+      }
+    };
+  }
+
   jQuery.extend({
     keys: keys,
     mouseMonitor: function mouseMonitor() {
@@ -53,7 +89,7 @@
       
       function eventListener(event) {
         for (var i = 0; i < handlerChains[event.type].length; i++) {
-          if (handlerChains[event.type][i](event)) {
+          if (handlerChains[event.type][i].call(this, event)) {
             event.preventDefault();
             event.stopPropagation();
             return;
@@ -68,9 +104,8 @@
 
       var self = jQuery.inputManager(listeners, eventSource).extend({
         add: function(handlers) {
-          for (var name in handlers) {
+          for (var name in handlers)
             handlerChains[name].push(handlers[name]);
-          }
         }
       });
       
@@ -83,7 +118,7 @@
         extend: jQuery.extend,
         handleEvent: function handleEvent(event) {
           if (event.type in listeners)
-            listeners[event.type](event);
+            listeners[event.type].call(self, event);
           else
             throw new Error("Unexpected event type: " + event.type);
         },
@@ -123,15 +158,6 @@
 
       var EVENTS = ['keydown', 'keyup', 'click', 'mouseout', 'mouseover'];
       var self = jQuery.inputHandlerChain(EVENTS, eventSource);
-      
-      function handleKeyUp(event) {
-        switch (event.keyCode) {
-          case keys.C:
-          styleInfo.hide();
-          return true;
-        }
-        return false;
-      }
 
       function handleKeyDown(event) {
         if (event.altKey || event.ctrlKey ||
@@ -187,32 +213,13 @@
           case keys.I:
           mixMaster.infoForFocusedElement();
           return true;
-
-          case keys.SPACE:
-          if (pressed[keys.C]) {
-            pressed[keys.C] = false;
-            styleInfo.lock(self);
-          }
-          return true;
-
-          case keys.C:
-          if (!pressed[keys.C])
-            styleInfo.show();
-          return true;
         }
         return false;
       }
 
       self.add({
         keydown: function(event) {
-          var wasHandled = handleKeyDown(event);
-          pressed[event.keyCode] = true;
-          return wasHandled;
-        },
-        keyup: function(event) {
-          var wasHandled = handleKeyUp(event);
-          pressed[event.keyCode] = false;
-          return wasHandled;
+          return handleKeyDown(event);
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {
@@ -235,6 +242,8 @@
         }
       });
 
+      self.add(styleOverlayInputHandlers(styleInfo));
+      
       return self;
     }
   });
