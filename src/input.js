@@ -47,10 +47,40 @@
       
       return self;
     },
+    inputHandlerChain: function inputHandlerChain(eventTypes, eventSource) {
+      var handlerChains = {};
+      var listeners = {};
+      
+      function eventListener(event) {
+        for (var i = 0; i < handlerChains[event.type].length; i++) {
+          if (handlerChains[event.type][i](event)) {
+            event.preventDefault();
+            event.stopPropagation();
+            return;
+          }
+        }
+      }
+      
+      eventTypes.forEach(function(eventName) {
+        handlerChains[eventName] = [];
+        listeners[eventName] = eventListener;
+      });
+
+      var self = jQuery.inputManager(listeners, eventSource).extend({
+        add: function(handlers) {
+          for (var name in handlers) {
+            handlerChains[name].push(handlers[name]);
+          }
+        }
+      });
+      
+      return self;
+    },
     inputManager: function inputManager(listeners, eventSource) {
       var isActive = false;
 
       var self = jQuery.eventEmitter({
+        extend: jQuery.extend,
         handleEvent: function handleEvent(event) {
           if (event.type in listeners)
             listeners[event.type](event);
@@ -91,6 +121,9 @@
       var persistence = options.persistence;
       var styleInfo = options.styleInfoOverlay;
 
+      var EVENTS = ['keydown', 'keyup', 'click', 'mouseout', 'mouseover'];
+      var self = jQuery.inputHandlerChain(EVENTS, eventSource);
+      
       function handleKeyUp(event) {
         switch (event.keyCode) {
           case keys.C:
@@ -170,44 +203,37 @@
         return false;
       }
 
-      var listeners = {
+      self.add({
         keydown: function(event) {
-          if (handleKeyDown(event)) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+          var wasHandled = handleKeyDown(event);
           pressed[event.keyCode] = true;
+          return wasHandled;
         },
         keyup: function(event) {
-          if (handleKeyUp(event)) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+          var wasHandled = handleKeyUp(event);
           pressed[event.keyCode] = false;
+          return wasHandled;
         },
         click: function(event) {
           if ($(event.target).closest('a').length) {
             var msg = jQuery.locale.get("input:link-click-blocked");
             jQuery.transparentMessage($('<div></div>').text(msg));
-            event.preventDefault();
-            event.stopPropagation();
+            return true;
           }
         },
         mouseout: function(event) {
           if (isValidFocusTarget(event.target)) {
-            event.stopPropagation();
             focused.unfocus();
+            return true;
           }
         },
         mouseover: function(event) {
           if (isValidFocusTarget(event.target)) {
-            event.stopPropagation();
             focused.set(event.target);
+            return true;
           }
         }
-      };
-
-      var self = jQuery.inputManager(listeners, eventSource);
+      });
 
       return self;
     }
