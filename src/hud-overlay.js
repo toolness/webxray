@@ -3,16 +3,6 @@
 
   var $ = jQuery;
   var MAX_URL_LENGTH = 35;
-
-  function createHelpButton() {
-    var help = $('<div class="webxray-base webxray-help">?</div>');
-
-    help.click(function() {
-      jQuery.transparentMessage(jQuery.createKeyboardHelpReference());
-    });
-    
-    return help;
-  }
   
   jQuery.hudOverlay = function hudOverlay(options) {
     if (options === undefined)
@@ -22,7 +12,7 @@
     var hud = $('<div class="webxray-base webxray-hud"></div>');
     var l10n = (options.locale || jQuery.locale).scope("hud-overlay");
 
-    hudContainer.append(hud).append(createHelpButton());
+    hudContainer.append(hud);
     
     function showDefaultContent() {
       hud.html(options.defaultContent || l10n("default-html"));

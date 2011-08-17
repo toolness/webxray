@@ -3,20 +3,6 @@
 
   var $ = jQuery;
 
-  // TODO: This is violating DRY.
-  var keyboardHelp = [
-    {key: 'H', cmd: 'help'},
-    {key: 'ESC', cmd: 'quit'},
-    {key: 'R', cmd: 'remix'},
-    {key: 'C', cmd: 'css-quasimode'},
-    {key: 'DELETE', cmd: 'remove'},
-    {key: 'LEFT', cmd: 'undo'},
-    {key: 'RIGHT', cmd: 'redo'},
-    {key: 'UP', cmd: 'dom-ascend'},
-    {key: 'DOWN', cmd: 'dom-descend'},
-    {key: 'T', cmd: 'uproot'}
-  ];
-
   function createLocalizedHelp(keys, locale, platform) {
     locale = locale || jQuery.locale;
     platform = platform || navigator.platform;
@@ -38,7 +24,7 @@
   }
   
   jQuery.extend({
-    createKeyboardHelpReference: function(locale, platform) {
+    createKeyboardHelpReference: function(keyboardHelp, locale, platform) {
       var keys = createLocalizedHelp(keyboardHelp, locale, platform);
       var table = $('<div class="webxray-help-box"></div>');
       keys.forEach(function(info) {

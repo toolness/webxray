@@ -213,7 +213,26 @@
         }
       });
 
-      self.extend({ simpleKeyBindings: jQuery.simpleKeyBindings() });
+      self.extend({
+        simpleKeyBindings: jQuery.simpleKeyBindings(),
+        // TODO: This is violating DRY.
+        keyboardHelp: [
+          {key: 'H', cmd: 'help'},
+          {key: 'ESC', cmd: 'quit'},
+          {key: 'R', cmd: 'remix'},
+          {key: 'C', cmd: 'css-quasimode'},
+          {key: 'DELETE', cmd: 'remove'},
+          {key: 'LEFT', cmd: 'undo'},
+          {key: 'RIGHT', cmd: 'redo'},
+          {key: 'UP', cmd: 'dom-ascend'},
+          {key: 'DOWN', cmd: 'dom-descend'},
+          {key: 'T', cmd: 'uproot'}
+        ],
+        showKeyboardHelp: function() {
+          var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
+          jQuery.transparentMessage(help);
+        }
+      });
       
       self.simpleKeyBindings.set({
         LEFT: function() { mixMaster.undo(); },
@@ -223,6 +242,7 @@
         ESC: function() { if (onQuit) onQuit(); },
         DELETE: function() { mixMaster.deleteFocusedElement(); },
         I: function() { mixMaster.infoForFocusedElement(); },
+        H: function() { self.showKeyboardHelp(); },
         R: function() {
           mixMaster.replaceFocusedElementWithDialog({
             input: self,
@@ -233,9 +253,6 @@
         T: function() {
           persistence.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
-        },
-        H: function() {
-          jQuery.transparentMessage(jQuery.createKeyboardHelpReference());
         }
       });
 

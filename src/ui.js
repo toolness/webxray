@@ -3,6 +3,12 @@
 
   var $ = jQuery;
 
+  function addHelpButton(hud, input) {
+    var help = $('<div class="webxray-base webxray-help">?</div>');
+    help.click(input.showKeyboardHelp);    
+    $(hud.overlayContainer).append(help);
+  }
+
   jQuery.extend({
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
@@ -40,6 +46,7 @@
         persistence: persistence,
         start: function() {
           persistence.loadHistoryFromDOM();
+          addHelpButton(hud, input);
           $(document.body).append(hud.overlayContainer);
           focused.on('change', hud.onFocusChange);
           input.activate();
