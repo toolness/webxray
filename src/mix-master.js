@@ -95,28 +95,41 @@
           html = '<span>' + html + '</span>';
         return $(html);
       },
-      createXpathFromElement: function(elem) {
-        /**
-         * Taken from the XPath function in Aardvark
-         * http://karmatics.com/aardvark/
-         */
-        var path = "";
-        for (; elem && elem.nodeType == 1; elem = elem.parentNode) {
-          var index = 1;
-          for (var sib = elem.previousSibling; sib; sib = sib.previousSibling) {
-            if (sib.nodeType == 1 && sib.tagName == elem.tagName)
-              index++;
-          }
-          var xname = "xhtml:" + elem.tagName.toLowerCase();
-          if (elem.id) {
-            xname += "[@id='" + elem.id + "']";
-          } else {
-            if (index > 1)
-              xname += "[" + index + "]";
-          }
-          path = "/" + xname + path;
+      createXpathFromElement: function xpathFromElement(doc, element) {
+        if (element == doc || !element) {
+          return "/";
         }
-        return path;
+
+        var nodeList;
+        if (element.id) {
+          nodeList = doc.evaluate("//*[@id='" + element.id + "']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+          if (nodeList.snapshotLength == 1) {
+            return "//*[@id='" + element.id + "']";
+          }
+        }
+
+        var parentSelector = "",
+                relativeElement = doc;
+
+        if (element.parentNode != doc) {
+          parentSelector = xpathFromElement(doc, element.parentNode);
+          // TODO: extract our evaluate someplace so changes are easier
+          relativeElement = doc.evaluate(parentSelector, doc, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        }
+
+        nodeList = doc.evaluate(element.nodeName, relativeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        if (nodeList.snapshotLength == 1) {
+          return (parentSelector + "/" + element.nodeName).trim();
+        } else {
+          for (var i = 0; i < nodeList.snapshotLength; ++i) {
+            if (element == nodeList.snapshotItem(i)) {
+              return (parentSelector + "/" + element.nodeName + "[" + (i + 1) + "]").trim();
+            }
+          }
+
+          throw new Error("Node not found by tag name");
+        }
       },
       deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.getPrimaryElement();
@@ -151,7 +164,7 @@
       },
       xpathForFocusedElement: function xpathForFocusedElement() {
         var element = focused.getPrimaryElement();
-        var xpath = self.createXpathFromElement(element);
+        var xpath = self.createXpathFromElement(document, element);
         alert(xpath);
       },
       replaceElement: function(elementToReplace, html) {
