@@ -3,6 +3,7 @@
 
   var $ = jQuery;
 
+  // TODO: This is violating DRY.
   var keyboardHelp = [
     {key: 'H', cmd: 'help'},
     {key: 'ESC', cmd: 'quit'},
