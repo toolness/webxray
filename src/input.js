@@ -147,6 +147,31 @@
       
       return self;
     },
+    simpleKeyBindings: function simpleKeyBindings() {
+      var bindings = {};
+      return {
+        set: function(keycodes) {
+          for (var keycode in keycodes) {
+            if (!(keycode in keys))
+              throw new Error('unknown key: ' + keycode);
+            bindings[keys[keycode]] = keycodes[keycode];
+          }
+        },
+        handlers: {
+          keydown: function(event) {
+            if (event.altKey || event.ctrlKey ||
+                event.altGraphKey || event.metaKey)
+              return false;
+
+            if (typeof(bindings[event.keyCode]) == 'function') {
+              bindings[event.keyCode].call(this, event);
+              return true;
+            }
+            return false;
+          }
+        }
+      };
+    },
     xRayInput: function xRayInput(options) {
       var focused = options.focusedOverlay;
       var mixMaster = options.mixMaster;
@@ -155,72 +180,15 @@
       var onQuit = options.onQuit;
       var persistence = options.persistence;
       var styleInfo = options.styleInfoOverlay;
-
-      var EVENTS = ['keydown', 'keyup', 'click', 'mouseout', 'mouseover'];
-      var self = jQuery.inputHandlerChain(EVENTS, eventSource);
-
-      function handleKeyDown(event) {
-        if (event.altKey || event.ctrlKey ||
-            event.altGraphKey || event.metaKey) {
-          return false;
-        }
-
-        switch (event.keyCode) {
-          case keys.LEFT:
-          mixMaster.undo();
-          return true;
-
-          case keys.RIGHT:
-          mixMaster.redo();
-          return true;        
-
-          case keys.UP:
-          focused.upfocus();
-          return true;
-
-          case keys.DOWN:
-          focused.downfocus();
-          return true;            
-
-          case keys.ESC:
-          if (onQuit)
-            onQuit();
-          return true;
-
-          // TODO: Eventually, remove keys.E.
-          case keys.E:
-          case keys.R:
-          mixMaster.replaceFocusedElementWithDialog({
-            input: self,
-            dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
-            sendFullDocument: true
-          });
-          return true;
-          
-          case keys.T:
-          persistence.saveHistoryToDOM();
-          jQuery.openUprootDialog(self);
-          return true;
-
-          case keys.DELETE:
-          mixMaster.deleteFocusedElement();
-          return true;
-
-          case keys.H:
-          jQuery.transparentMessage(jQuery.createKeyboardHelpReference());
-          return true;
-
-          case keys.I:
-          mixMaster.infoForFocusedElement();
-          return true;
-        }
-        return false;
-      }
+      var self = jQuery.inputHandlerChain([
+        'keydown',
+        'keyup',
+        'click',
+        'mouseout',
+        'mouseover'
+      ], eventSource);
 
       self.add({
-        keydown: function(event) {
-          return handleKeyDown(event);
-        },
         click: function(event) {
           if ($(event.target).closest('a').length) {
             var msg = jQuery.locale.get("input:link-click-blocked");
@@ -242,6 +210,33 @@
         }
       });
 
+      self.extend({ simpleKeyBindings: jQuery.simpleKeyBindings() });
+      
+      self.simpleKeyBindings.set({
+        LEFT: function() { mixMaster.undo(); },
+        RIGHT: function() { mixMaster.redo(); },
+        UP: function() { focused.upfocus(); },
+        DOWN: function() { focused.downfocus(); },
+        ESC: function() { if (onQuit) onQuit(); },
+        DELETE: function() { mixMaster.deleteFocusedElement(); },
+        I: function() { mixMaster.infoForFocusedElement(); },
+        R: function() {
+          mixMaster.replaceFocusedElementWithDialog({
+            input: self,
+            dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
+            sendFullDocument: true
+          });
+        },
+        T: function() {
+          persistence.saveHistoryToDOM();
+          jQuery.openUprootDialog(self);
+        },
+        H: function() {
+          jQuery.transparentMessage(jQuery.createKeyboardHelpReference());
+        }
+      });
+
+      self.add(self.simpleKeyBindings.handlers);
       self.add(styleOverlayInputHandlers(styleInfo));
       
       return self;
