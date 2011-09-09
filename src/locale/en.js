@@ -67,5 +67,5 @@ jQuery.localization.extend("en", "command-descriptions", {
   "redo": "Redo",
   "dom-ascend": "Ascend to parent element",
   "dom-descend": "Descend to child element",
-  "uproot": "Tear-out (export) page"
+  "uproot": "Publish your remix"
 });

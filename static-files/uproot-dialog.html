@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
-<title>Uproot Dialog</title>
+<title>Publish Your Remix</title>
 <style>
 html, body {
   background: white;
@@ -34,32 +34,145 @@ textarea {
   height: 20em;
 }
 
-a {
-  color: inherit;
+div.big-button {
+  display: inline-block;
+  width: 10em;
+  text-align: center;
+  cursor: pointer;
+  background: steelblue;
+  font-weight: bold;
+  color: white;
+  padding: 10px;
 }
 
-a:hover {
-  background: yellow;
+div.big-button:hover {
+  background: navy;
+}
+
+div.publish-option {
+  padding-top: 0.5em;
+  padding-bottom: 0.5em;
+}
+
+div.publish-option p {
+  display: inline;
+  padding: 10px;
+}
+
+.published-url {
+  padding: 10px;
+  text-align: center;
+}
+
+.published-url a {
+  font-size: 24pt;
+  text-decoration: none;
+  color: steelblue;
+  padding: 10px;
+}
+
+.published-url a:hover {
+  background-color: #f0f0f0;
 }
 </style>
 <div id="buttons">
   <div class="button" id="close">Close</div>
 </div>
-<div id="header"><h1>Tear Out This Page</h1></div>
-<p>Copy and paste this HTML into <a href="http://htmlpad.org/" target="htmlpad">HTMLpad</a>, <a href="http://jsbin.com/" target="jsbin">JS Bin</a>, or your favorite HTML editor.</p>
-
-<textarea></textarea>
-
-<p>Alternatively, you can open <a id="dataURI" href="" target="new">this page</a> and save it using your browser's <em>Save Page As... Web Page, HTML only</em> functionality.</p>
-
+<div id="header"><h1>Publish Your Remix</h1></div>
+<div id="choose-publish-method">
+  <p>There are two ways you can publish your remix and share it with others.</p>
+  <div class="publish-option">
+    <div class="big-button to-internet">Publish To Internet</div>
+    <p>Instantly publish your remix to a URL that anyone can view.</p>
+  </div>
+  <div class="publish-option">
+    <div class="big-button view-html">View HTML Source</div>
+    <p>Grab the HTML source of your remix and publish it yourself.</p>
+  </div>
+</div>
+<div id="to-internet" style="display: none;">
+  <p class="loading">Publishing...</p>
+  <div class="failure" style="display: none;">
+    <p>Sorry, an error occurred. Please try again later.</p>
+  </div>
+  <div class="finished" style="display: none;">
+    <p>Here is the URL for your remix that anyone can view.</p>
+    <div class="published-url">
+      <a target="_blank" href="http://foo/bar">http://foo/bar</a>
+    </div>
+  </div>
+</div>
+<div id="view-html" style="display: none;">
+  <p>Here's the HTML source code of your remix.</p>
+  <textarea></textarea>
+</div>
+<div id="sample-html" style="display: none;">
+  <p>I am sample “html”.</p>
+</div>
 <script src="jquery.min.js"></script>
 <script>
-window.addEventListener("message", function(event) {
-  var html = event.data;
-  $("#dataURI").attr("href", "data:text/html;charset=utf-8," + html);
-  $("#close").click(function() {
-    window.parent.postMessage("close", "*");
+function DeferredTimeout(ms) {
+  var deferred = jQuery.Deferred();
+  
+  setTimeout(function() { deferred.resolve(); }, ms);
+  return deferred;
+}
+
+function DeferredPublish(html, originalURL, hackpubURL) {
+  return jQuery.ajax({
+    type: 'POST',
+    url: hackpubURL + "publish",
+    data: {
+      'html': html,
+      'original-url': originalURL
+    },
+    crossDomain: true,
+    dataType: 'json'
   });
-  $("textarea").val(html).focus().select();  
-}, false);
+}
+
+function init(html, originalURL, hackpubURL) {
+  $(".to-internet.big-button").click(function() {
+    $("#choose-publish-method").fadeOut(function() {
+      $("#to-internet").fadeIn(function() {
+        var timeout = DeferredTimeout(1000);
+        var publish = DeferredPublish(html, originalURL, hackpubURL);
+        jQuery.when(publish, timeout).then(function(publishArgs) {
+          // TODO: It doesn't actually seem like we're being called
+          // if the request fails. Need too fix this.
+          $("#to-internet .loading").fadeOut(function() {
+            if (publishArgs[1] == "success") {
+              var data = publishArgs[0];
+              var url = data['published-url'];
+              $(".published-url a").attr("href", url).text(url);
+              $("#to-internet .finished").fadeIn();
+            } else
+              $("#to-internet .failure").fadeIn();
+          });
+        });
+      });
+    });
+  });
+  $(".view-html.big-button").click(function() {
+    $("#choose-publish-method").fadeOut(function() {
+      $("#view-html textarea").val(html).focus().select();
+      $("#view-html").fadeIn();
+    });
+  });
+}
+
+if (top === self) {
+  // We're not in an iframe, so we're being used for development.
+  $(window).ready(function() {
+    var html = $("#sample-html").html();
+    init(html, "http://foo.com/", "http://localhost:8001/");
+  });
+} else
+  window.addEventListener("message", function(event) {
+    $("#close").click(function() {
+      window.parent.postMessage("close", "*");
+    });  
+    var data = JSON.parse(event.data);
+    init(data.html, data.originalURL, data.hackpubURL);
+  }, false);
 </script>

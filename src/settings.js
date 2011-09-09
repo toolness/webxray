@@ -12,6 +12,7 @@
     baseURI: "",
     cssURL: "webxray.css",
     easyRemixDialogURL: "easy-remix-dialog/index.html",
-    uprootDialogURL: "uproot-dialog.html"
+    uprootDialogURL: "uproot-dialog.html",
+    hackpubURL: "http://hackpub.hackasaurus.org/"
   };
 })(jQuery);

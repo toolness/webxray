@@ -20,7 +20,11 @@
         jQuery.simpleModalDialog({
           input: input,
           url: jQuery.webxraySettings.url("uprootDialogURL"),
-          payload: html
+          payload: JSON.stringify({
+            html: html,
+            hackpubURL: jQuery.webxraySettings.url("hackpubURL"),
+            originalURL: window.location.href
+          })
         });
       });
     }
