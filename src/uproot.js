@@ -17,6 +17,8 @@
   jQuery.extend({
     openUprootDialog: function(input) {
       $(document).uprootIgnoringWebxray(function(html) {
+        var injectURL = jQuery.webxraySettings.url("hackpubInjectionURL");
+        html += '<script src="' + injectURL + '"></script>';
         jQuery.simpleModalDialog({
           input: input,
           url: jQuery.webxraySettings.url("uprootDialogURL"),
