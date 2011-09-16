@@ -14,6 +14,6 @@
     easyRemixDialogURL: "easy-remix-dialog/index.html",
     uprootDialogURL: "uproot-dialog.html",
     hackpubURL: "http://hackpub.hackasaurus.org/",
-    hackpubInjectionURL: "inject-into-published-hack.js"
+    hackpubInjectionURL: "published-hack/injector.js"
   };
 })(jQuery);

@@ -18,6 +18,13 @@
     openUprootDialog: function(input) {
       $(document).uprootIgnoringWebxray(function(html) {
         var injectURL = jQuery.webxraySettings.url("hackpubInjectionURL");
+        hackpubInfo = {
+          injectURL: injectURL,
+          originalURL: window.location.href,
+          submissionDate: (new Date()).toString()
+        };
+        html += '<script>hackpubInfo = ' + JSON.stringify(hackpubInfo) +
+                '</script>';
         html += '<script src="' + injectURL + '"></script>';
         jQuery.simpleModalDialog({
           input: input,
@@ -25,7 +32,7 @@
           payload: JSON.stringify({
             html: html,
             hackpubURL: jQuery.webxraySettings.url("hackpubURL"),
-            originalURL: window.location.href
+            originalURL: hackpubInfo.originalURL
           })
         });
       });
