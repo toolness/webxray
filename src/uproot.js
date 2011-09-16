@@ -18,7 +18,7 @@
     openUprootDialog: function(input) {
       $(document).uprootIgnoringWebxray(function(html) {
         var injectURL = jQuery.webxraySettings.url("hackpubInjectionURL");
-        hackpubInfo = {
+        var hackpubInfo = {
           injectURL: injectURL,
           originalURL: window.location.href,
           submissionDate: (new Date()).toString()
