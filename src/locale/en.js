@@ -11,6 +11,7 @@ jQuery.localization.extend("en", "hud-overlay", {
 });
 
 jQuery.localization.extend("en", "input", {
+  "unload-blocked": 'You have made unsaved changes to this page.',
   "link-click-blocked": 'If you would like to follow that link, please deactivate the goggles first by pressing ESC.'
 });
 

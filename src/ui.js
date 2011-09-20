@@ -16,7 +16,7 @@
     function beforeUnload(event) {
       if (commandManager.canUndo()) {
         event.preventDefault();
-        return "You have made unsaved changes to this page.";
+        return jQuery.locale.get("input:unload-blocked");
       }
     }
 
