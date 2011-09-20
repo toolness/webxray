@@ -9,6 +9,24 @@
     $(hud.overlayContainer).append(help);
   }
 
+  // If the user has made changes to the page, we don't want them
+  // to be able to navigate away from it without facing a modal
+  // dialog.
+  function ModalUnloadBlocker(commandManager) {
+    function beforeUnload(event) {
+      if (commandManager.canUndo())
+        event.preventDefault();
+    }
+
+    window.addEventListener("beforeunload", beforeUnload, true);
+
+    return {
+      unload: function() {
+        window.removeEventListener("beforeunload", beforeUnload, true);
+      }
+    };
+  }
+  
   jQuery.extend({
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
@@ -41,7 +59,8 @@
         }
       });
       var indicator = jQuery.blurIndicator(input, window);
-
+      var modalUnloadBlocker = ModalUnloadBlocker(commandManager);
+      
       var self = jQuery.eventEmitter({
         persistence: persistence,
         start: function() {
@@ -66,6 +85,8 @@
             indicator = null;
             mouseMonitor.unload();
             mouseMonitor = null;
+            modalUnloadBlocker.unload();
+            modalUnloadBlocker = null;
           }
         },
 
