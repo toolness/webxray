@@ -14,8 +14,10 @@
   // dialog.
   function ModalUnloadBlocker(commandManager) {
     function beforeUnload(event) {
-      if (commandManager.canUndo())
+      if (commandManager.canUndo()) {
         event.preventDefault();
+        return "You have made unsaved changes to this page.";
+      }
     }
 
     window.addEventListener("beforeunload", beforeUnload, true);
