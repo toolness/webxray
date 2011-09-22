@@ -361,3 +361,70 @@ div#webxray-wait-for-css-to-load {
   text-align: left;
   padding-left: 10px;
 }
+
+/* Visual Tweaks */
+
+.button {
+border-radius: 3px;
+box-shadow: 0 2px 0 rgba(0,0,0,0.6);
+padding: 0.5em 0.8em!important;
+}
+
+#ok {
+background-color: #99E57E;
+}
+
+#nevermind {
+background-color: #E57F7E;
+}
+
+
+/* Responsive Goggles */
+
+div.webxray-dialog-content,
+.webxray-dialog-inner iframe {
+width:100%;
+border-radius: 4px;
+}
+
+div.webxray-dialog-inner {
+width: 94%;
+border-radius: 4px;
+}
+
+#dom-rendering-column {
+width: 49%!important;
+}
+
+#preview-column {
+float: right!important;
+width: 49%!important;
+margin-left: 0!important;
+}
+
+#preview {
+width: 98%!important;
+border: 1px dotted #AAAAAA!important;
+margin-left: 0;
+position: relative!important;
+}
+
+.tabs {
+position: relative!important;
+float: right!important;
+top: 0!important;
+}
+
+#dom-rendering {
+clear: both;
+}
+
+@media screen and (max-width: 800px) {
+#preview-column,
+#dom-rendering-column {
+float: none!important;
+clear: both!important;
+width: 100%!important;
+margin-left: 0!important;
+}
+}
