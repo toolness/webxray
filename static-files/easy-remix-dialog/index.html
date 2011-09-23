@@ -29,29 +29,31 @@ h1, h2 {
 
 #dom-rendering-column {
   position: relative;
-  width: 480px;
+  width: 49%;
   float: left;
 }
 
 #preview-column {
-  width: 480px;
-  float: left;
-  margin-left: 2em;
+  float: right;
+  width: 49%;
+  margin-left: 0;
 }
 
 #preview {
-  position: fixed;
-  border: none;
-  width: 480px;
   height: 400px;
+  width: 98%;
+  border: 1px dotted #AAAAAA;
+  margin-left: 0;
+  position: relative;
 }
 
 .button {
   float: right;
-  padding: 0.5em;
   background: #f0f0f0;
   margin: 0.25em;
   cursor: pointer;
+  border-radius: 3px;
+  box-shadow: 0 2px 0 rgba(0,0,0,0.6);
 }
 
 div.button:hover {
@@ -99,9 +101,10 @@ span.sample {
 }
 
 .tabs {
-  position: absolute;
   right: 0px;
-  top: 1em;
+  position: relative;
+  float: right;
+  top: 0;
 }
 
 .tabs .tab {
@@ -125,6 +128,24 @@ span.sample {
 .tabs div.tab.selected:hover {
   cursor: default;
 }
+
+#dom-rendering {
+	clear: both;
+}
+
+
+@media screen and (max-width: 800px) {
+	
+	#preview-column,
+	#dom-rendering-column {
+		float: none;
+		clear: both;
+		width: 100%;
+		margin-left: 0;
+	}
+	
+}
+
 </style>
 <div id="buttons">
   <div class="button" id="nevermind">Nevermind</div>

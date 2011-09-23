@@ -62,13 +62,11 @@
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 2147483645;
   padding: 0.4em 1em 0.3em;
-  border-radius: 8px 0 0 0;
 }
 
 .webxray-help {
   background-color: #CCCCCC;
   border: medium none;
-  border-radius: 1em 1em 1em 1em;
   color: black;
   cursor: pointer;
   display: inline-block;
@@ -163,7 +161,7 @@ div.webxray-help:hover {
 }
 
 div.webxray-dialog-inner {
-    width: 1024px;
+    width: 94%;
     height: 66%;
     min-height: 480px;
     text-align: left;
@@ -174,7 +172,7 @@ div.webxray-dialog-inner {
 
 div.webxray-dialog-content, .webxray-dialog-inner iframe {
     display: block;
-    width: 1024px;
+    width:100%;
     min-height: 480px;
     height: 100%;
     border: inherit;
@@ -214,7 +212,6 @@ div.webxray-dialog-content, .webxray-dialog-inner iframe {
   padding: 10px 16px;
   text-align: center;
   background: rgba(0, 0, 0, 0.7);
-  border-radius: 3px;
 }
 
 /* Style used any time we want an element to appear above
@@ -371,67 +368,10 @@ div#webxray-wait-for-css-to-load {
 
 /* Visual Tweaks */
 
-.button {
-border-radius: 3px;
-box-shadow: 0 2px 0 rgba(0,0,0,0.6);
-padding: 0.5em 0.8em!important;
-}
-
 #ok {
 background-color: #99E57E;
 }
 
 #nevermind {
 background-color: #E57F7E;
-}
-
-
-/* Responsive Goggles */
-
-div.webxray-dialog-content,
-.webxray-dialog-inner iframe {
-width:100%;
-border-radius: 4px;
-}
-
-div.webxray-dialog-inner {
-width: 94%;
-border-radius: 4px;
-}
-
-#dom-rendering-column {
-width: 49%!important;
-}
-
-#preview-column {
-float: right!important;
-width: 49%!important;
-margin-left: 0!important;
-}
-
-#preview {
-width: 98%!important;
-border: 1px dotted #AAAAAA!important;
-margin-left: 0;
-position: relative!important;
-}
-
-.tabs {
-position: relative!important;
-float: right!important;
-top: 0!important;
-}
-
-#dom-rendering {
-clear: both;
-}
-
-@media screen and (max-width: 800px) {
-#preview-column,
-#dom-rendering-column {
-float: none!important;
-clear: both!important;
-width: 100%!important;
-margin-left: 0!important;
-}
 }
