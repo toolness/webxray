@@ -25,24 +25,31 @@
   // This function attempts to compensate for a browser's lack of support
   // for the 'pointer-events' CSS feature.
   var maybePassThroughEvent = (function() {
+    function topmostNoPointerEvents(element) {
+      var topmost = null;
+      while (getComputedStyle(element).pointerEvents == 'none') {
+        topmost = element;
+        element = element.parentNode;
+      }
+      return topmost;
+    }
+    
     // Annoying that we have to do browser detection here, but unfortunately
     // we can't simply test for support of the 'pointer-events' CSS feature,
     // as Opera supports it but only for SVG.
     if (jQuery.browser.opera)
       return function(event) {
-        var NO_POINTER_EVENTS_SELECTOR = '.webxray-overlay';
-    
-        if ($(event.relatedTarget).closest(NO_POINTER_EVENTS_SELECTOR).length)
+        if (topmostNoPointerEvents(event.relatedTarget))
           return null;
 
-        var target = $(event.target).closest(NO_POINTER_EVENTS_SELECTOR);
+        var target = topmostNoPointerEvents(event.target);
 
-        if (target.length) {
-          target.hide();
+        if (target) {
+          $(target).hide();
           event = {
             target: document.elementFromPoint(event.clientX, event.clientY)
           };
-          target.show();
+          $(target).show();
         }
         return event;
       }
