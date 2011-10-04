@@ -21,6 +21,34 @@
   function isValidFocusTarget(target) {
     return (!$(target).hasClass('webxray-base'));
   }
+
+  // This function attempts to compensate for a browser's lack of support
+  // for the 'pointer-events' CSS feature.
+  var maybePassThroughEvent = (function() {
+    // Annoying that we have to do browser detection here, but unfortunately
+    // we can't simply test for support of the 'pointer-events' CSS feature,
+    // as Opera supports it but only for SVG.
+    if (jQuery.browser.opera)
+      return function(event) {
+        var NO_POINTER_EVENTS_SELECTOR = '.webxray-overlay';
+    
+        if ($(event.relatedTarget).closest(NO_POINTER_EVENTS_SELECTOR).length)
+          return null;
+
+        var target = $(event.target).closest(NO_POINTER_EVENTS_SELECTOR);
+
+        if (target.length) {
+          target.hide();
+          event = {
+            target: document.elementFromPoint(event.clientX, event.clientY)
+          };
+          target.show();
+        }
+        return event;
+      }
+    else
+      return function(event) { return event; };
+  })();
   
   function styleOverlayInputHandlers(options) {
     var styleInfo = options.styleInfoOverlay;
@@ -200,12 +228,18 @@
           }
         },
         mouseout: function(event) {
+          if ((event = maybePassThroughEvent(event)) == null)
+            return false;
+          
           if (isValidFocusTarget(event.target)) {
             focused.unfocus();
             return true;
           }
         },
         mouseover: function(event) {
+          if ((event = maybePassThroughEvent(event)) == null)
+            return false;
+
           if (isValidFocusTarget(event.target)) {
             focused.set(event.target);
             return true;
