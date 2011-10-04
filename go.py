@@ -22,16 +22,6 @@ except ImportError:
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
 
-index_html = """
-<!DOCTYPE html>
-<meta charset="utf-8">
-<title>webxray</title>
-<ul>
-<li><a href="%(staticFilesDir)s/">use goggles</a></li>
-<li><a href="test/">run tests</a></li>
-</ul>
-"""
-
 def build_compiled_file(cfg):
     contents = []
     for filename in cfg['compiledFileParts']:
@@ -45,23 +35,17 @@ def make_app(cfg):
     def app(environ, start_response):
         path = environ['PATH_INFO']
 
-        if path == '/%(staticFilesDir)s%(compiledFile)s' % cfg:
+        if path == cfg['compiledFile']:
             compiled = build_compiled_file(cfg)
             start_response('200 OK',
                            [('Content-Type', 'application/javascript'),
                             ('Content-Length', str(len(compiled)))])
             return [compiled]
-        elif path == '/':
-            index = (index_html % cfg).encode('utf-8')
-            start_response('200 OK',
-                           [('Content-Type', 'text/html'),
-                            ('Content-Length', str(len(index)))])
-            return [index]
         
         if path.endswith('/'):
             path = '%sindex.html' % path
         fileparts = path[1:].split('/')
-        fullpath = os.path.join(ROOT, *fileparts)
+        fullpath = os.path.join(ROOT, cfg['staticFilesDir'], *fileparts)
         fullpath = os.path.normpath(fullpath)
         (mimetype, encoding) = mimetypes.guess_type(fullpath)
         if (fullpath.startswith(ROOT) and
