@@ -1,4 +1,6 @@
-(function() {
+(function(jQuery) {
+  "use strict";
+
   var locale = "fr";
 
   jQuery.localization.extend(locale, "hud-overlay", {
@@ -44,4 +46,4 @@
     "skeleton-header": "Ce que voit le navigateur",
     "rendering-header": "Ce que vous voyez"
   });
-})();
+})(jQuery);

@@ -1,4 +1,6 @@
-(function() {
+(function(jQuery) {
+  "use strict";
+
   var locale = "en";
 
   jQuery.localization.extend(locale, "hud-overlay", {
@@ -73,4 +75,4 @@
     "dom-descend": "Descend to child element",
     "uproot": "Publish your remix"
   });
-})();
+})(jQuery);
