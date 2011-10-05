@@ -156,17 +156,17 @@ span.sample {
 </div>
 <div id="header"><h1></h1></div>
 <div id="dom-rendering-column">
-  <h2 data-l10n="mix-master-dialog:html-header">Source Code</h2>
+  <h2 data-l10n="html-header">Source Code</h2>
   <div class="tabs">
     <div class="tab selected" id="pretty"
-     data-l10n="mix-master-dialog:basic-source-tab">Basic</div>
+     data-l10n="basic-source-tab">Basic</div>
     <div class="tab" id="raw"
-     data-l10n="mix-master-dialog:advanced-source-tab">Advanced</div>
+     data-l10n="advanced-source-tab">Advanced</div>
   </div>
   <div id="dom-rendering"></div>
 </div>
 <div id="preview-column">
-  <h2 data-l10n="mix-master-dialog:rendering-header">Preview</h2>
+  <h2 data-l10n="rendering-header">Preview</h2>
   <iframe id="preview" scrolling="no" src="blank.html"></iframe>
 </div>
 <script>
@@ -375,7 +375,7 @@ $(window).ready(function() {
       path: "../src/locale/",
       languages: data.languages,
       complete: function(locale) {
-        $(document.body).localize(locale);
+        $(document.body).localize(locale, "mix-master-dialog");
         loadDialog(data);
       }
     });
