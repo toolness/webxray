@@ -27,7 +27,7 @@ def build_compiled_file(cfg):
     contents = []
     for path in cfg['compiledFileParts']:
         if '.local.' in path:
-            if not os.path.exists(filename):
+            if not os.path.exists(path):
                 continue
         if '*' in path:
             filenames = glob.glob(path)
