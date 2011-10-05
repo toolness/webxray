@@ -15,6 +15,7 @@
 <script src="../src/tag-colors.js"></script>
 <script src="../src/event-emitter.js"></script>
 <script src="../src/focused-overlay.js"></script>
+<script src="../src/localization.js"></script>
 <style>
 body {
   font-family: Baskerville, Georgia, serif;
@@ -149,12 +150,13 @@ span.sample {
 
 </style>
 <div id="buttons">
-  <div class="button" id="nevermind">Nevermind</div>
-  <div class="button" id="ok">Ok</div>
+  <div class="button" id="nevermind"
+   data-l10n="dialog-common:nevermind">Nevermind</div>
+  <div class="button" id="ok" data-l10n="dialog-common:ok">Ok</div>
 </div>
 <div id="header"><h1></h1></div>
 <div id="dom-rendering-column">
-  <h2>Source Code</h2>
+  <h2 data-l10n="mix-master-dialog:html-header">Source Code</h2>
   <div class="tabs">
     <div class="tab selected" id="pretty">Basic</div>
     <div class="tab" id="raw">Advanced</div>
@@ -162,7 +164,7 @@ span.sample {
   <div id="dom-rendering"></div>
 </div>
 <div id="preview-column">
-  <h2>Preview</h2>
+  <h2 data-l10n="mix-master-dialog:rendering-header">Preview</h2>
   <iframe id="preview" scrolling="no" src="blank.html"></iframe>
 </div>
 <script>
@@ -367,6 +369,17 @@ $(window).ready(function() {
   var isStarted = false;
 
   function onMessage(data) {
+    jQuery.localization.loadLocale({
+      path: "../src/locale/",
+      languages: data.languages,
+      complete: function(locale) {
+        $(document.body).localize(locale);
+        loadDialog(data);
+      }
+    });
+  }
+  
+  function loadDialog(data) {
     if (isStarted)
       return;
     isStarted = true;
@@ -410,7 +423,7 @@ $(window).ready(function() {
       var doc = iframe.contents();
       onMessage({
         title: "Easy Remix Dialog",
-        instructions: "Here are instructions.",
+        languages: ["en", "es"],
         startHTML: {
           selector: "#sample",
           head: doc.find("head").html(),

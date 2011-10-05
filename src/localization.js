@@ -67,6 +67,26 @@
       
       return locale;
     },
+    loadLocale: function(options) {
+      var deferreds = [];
+      var languages = options.languages.map(normalizeLanguage);
+
+      languages.forEach(function(language) {
+        var deferred = jQuery.Deferred();
+        jQuery.ajax({
+          url: options.path + language + ".js",
+          dataType: "script",
+          complete: function(jqXHR, textStatus) {
+            deferred.resolve(language, textStatus);
+          }
+        });
+        deferreds.push(deferred);
+      });
+      jQuery.when.apply(jQuery, deferreds).done(function() {
+        var locale = jQuery.localization.createLocale(languages);
+        options.complete(locale, arguments);
+      });
+    },
     init: function init(languages) {
       jQuery.locale = this.createLocale(languages);
     }

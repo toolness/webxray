@@ -11,6 +11,21 @@ test("jQuery.fn.localize() works", function() {
   equal(div.find("span").text(), "hallo");
 });
 
+test("loadLocale() always triggers completion", function() {
+  jQuery.localization.loadLocale({
+    path: "../src/locale/",
+    languages: ["en", "zz"],
+    complete: function(locale, loadResults) {
+      ok(locale && locale.languages, "locale object is passed through");
+      equal(loadResults.length, 2);
+      deepEqual(loadResults[0], ["en", "success"]);
+      deepEqual(loadResults[1], ["zz", "error"]);
+      start();
+    }
+  });
+  stop();
+});
+
 test("createLocale() inherits from non-region locales", function() {
   jQuery.localization.extend("en", "l10nTests", {
     "hey": "there",
