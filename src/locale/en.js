@@ -45,7 +45,9 @@
   jQuery.localization.extend(locale, "mix-master-dialog", {
     "html-header": "HTML Source Code",
     "skeleton-header": "What Your Browser Sees",
-    "rendering-header": "What You See"
+    "rendering-header": "What You See",
+    "basic-source-tab": "Basic",
+    "advanced-source-tab": "Advanced"
   });
 
   jQuery.localization.extend(locale, "style-info", {
