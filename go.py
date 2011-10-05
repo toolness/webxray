@@ -13,6 +13,7 @@ from wsgiref.util import FileWrapper
 import os
 import sys
 import shutil
+import glob
 import mimetypes
 
 try:
@@ -24,11 +25,16 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 
 def build_compiled_file(cfg):
     contents = []
-    for filename in cfg['compiledFileParts']:
-        if '.local.' in filename:
+    for path in cfg['compiledFileParts']:
+        if '.local.' in path:
             if not os.path.exists(filename):
                 continue
-        contents.append(open(filename, 'r').read())
+        if '*' in path:
+            filenames = glob.glob(path)
+        else:
+            filenames = [path]
+        for filename in filenames:
+            contents.append(open(filename, 'r').read())
     return ''.join(contents)
 
 def make_app(cfg):
