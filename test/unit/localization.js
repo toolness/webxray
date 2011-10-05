@@ -3,12 +3,18 @@
 module("localization");
 
 test("jQuery.fn.localize() works", function() {
-  var div = jQuery('<div><span data-l10n="blargy:fnargy"></span></div>');
+  var div = jQuery('<div><span data-l10n="blargy:fnargy"></span>' +
+                   '<p data-l10n="bar"></p></div>');
   jQuery.localization.extend("en", "blargy", {
     "fnargy": "hallo"
   });
-  div.localize(jQuery.localization.createLocale(["en"]));
+  jQuery.localization.extend("en", "rfanrfnoianfrf", {
+    "bar": "baz"
+  });
+  div.localize(jQuery.localization.createLocale(["en"]), 
+               "rfanrfnoianfrf");
   equal(div.find("span").text(), "hallo");
+  equal(div.find("p").text(), "baz");
 });
 
 test("loadLocale() always triggers completion", function() {

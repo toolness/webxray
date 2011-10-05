@@ -19,11 +19,13 @@
   }
   
   jQuery.fn.extend({
-    localize: function localize(locale) {
+    localize: function localize(locale, defaultScope) {
       locale = locale || jQuery.locale;
 
       this.find("[data-l10n]").each(function() {
         var scopedName = $(this).attr("data-l10n");
+        if (scopedName.indexOf(':') == -1)
+          scopedName = defaultScope + ':' + scopedName;
         $(this).text(locale.get(scopedName));
       });
     }
