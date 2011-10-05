@@ -39,7 +39,8 @@
 
   jQuery.localization.extend(locale, "dialog-common", {
     "ok": "Ok",
-    "nevermind": "Nevermind"
+    "nevermind": "Nevermind",
+    "close": "Close"
   });
 
   jQuery.localization.extend(locale, "mix-master-dialog", {

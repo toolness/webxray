@@ -32,7 +32,8 @@
           payload: JSON.stringify({
             html: html,
             hackpubURL: jQuery.webxraySettings.url("hackpubURL"),
-            originalURL: hackpubInfo.originalURL
+            originalURL: hackpubInfo.originalURL,
+            languages: jQuery.locale.languages
           })
         });
       });

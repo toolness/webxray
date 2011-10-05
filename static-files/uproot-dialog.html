@@ -76,7 +76,8 @@ div.publish-option p {
 }
 </style>
 <div id="buttons">
-  <div class="button" id="close">Close</div>
+  <div class="button" id="close"
+   data-l10n="dialog-common:close">Close</div>
 </div>
 <div id="header"><h1>Publish Your Remix</h1></div>
 <div id="choose-publish-method">
@@ -110,6 +111,7 @@ div.publish-option p {
   <p>I am sample “html”.</p>
 </div>
 <script src="jquery.min.js"></script>
+<script src="src/localization.js"></script>
 <script>
 function DeferredTimeout(ms) {
   var deferred = jQuery.Deferred();
@@ -161,11 +163,24 @@ function init(html, originalURL, hackpubURL) {
   });
 }
 
+function loadLocalization(languages, cb) {
+  jQuery.localization.loadLocale({
+    languages: languages,
+    path: "src/locale/",
+    complete: function(locale) {
+      $(document.body).localize(locale);
+      cb();
+    }
+  });
+}
+
 if (top === self) {
   // We're not in an iframe, so we're being used for development.
   $(window).ready(function() {
     var html = $("#sample-html").html();
-    init(html, "http://foo.com/", "http://localhost:8001/");
+    loadLocalization(["en", "es"], function() {
+      init(html, "http://foo.com/", "http://localhost:8001/");
+    });
   });
 } else
   window.addEventListener("message", function(event) {
@@ -173,6 +188,8 @@ if (top === self) {
       window.parent.postMessage("close", "*");
     });  
     var data = JSON.parse(event.data);
-    init(data.html, data.originalURL, data.hackpubURL);
+    loadLocalization(data.languages, function() {
+      init(data.html, data.originalURL, data.hackpubURL);
+    });
   }, false);
 </script>
