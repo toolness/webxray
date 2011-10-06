@@ -41,6 +41,7 @@
   , "src/command-manager-persistence.js"
   , "src/modal-dialog.js"
   , "src/input.js"
+  , "src/touch-input.js"
   , "src/blur-indicator.js"
   , "src/ui.js"
   , "src/main.js"

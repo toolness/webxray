@@ -366,6 +366,38 @@ div#webxray-wait-for-css-to-load {
   padding-left: 10px;
 }
 
+.webxray-toolbar {
+  position: fixed;
+  z-index: 2147483644;
+  bottom: 0px;
+  left: 0px;
+  background-color: rgba(0, 0, 0, 0.7);
+  color: white;
+}
+
+.webxray-toolbar-button {
+  width: 32px;
+  height: 32px;
+  text-align: center;
+  padding: 10px;
+}
+
+.webxray-toolbar-button-glyph {
+  font-size: 20px;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+div.webxray-toolbar-button-glyph-tiny {
+  font-size: 15px;
+}
+
+.webxray-toolbar-button-text {
+  font-size: 10px;
+  text-align: center;
+  text-transform: lowercase;
+}
+
 /* Visual Tweaks */
 
 #ok {

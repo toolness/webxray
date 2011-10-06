@@ -2,7 +2,8 @@
   var $ = jQuery;
 
   function browserSupportsAce() {
-    return !jQuery.browser.opera;
+    return (!jQuery.browser.opera &&
+            navigator.userAgent.indexOf('Mobile') == -1);
   }
   
   jQuery.HtmlEditor = function (idToEdit, textContent, onChange) {

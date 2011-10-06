@@ -49,7 +49,7 @@
         commandManager: commandManager,
         mouseMonitor: mouseMonitor
       });
-      var input = jQuery.xRayInput({
+      var input = jQuery.touchInput(jQuery.xRayInput({
         focusedOverlay: focused,
         styleInfoOverlay: styleInfo,
         mixMaster: mixMaster,
@@ -59,7 +59,7 @@
         onQuit: function() {
           self.emit('quit');
         }
-      });
+      }));
       var indicator = jQuery.blurIndicator(input, window);
       var modalUnloadBlocker = ModalUnloadBlocker(commandManager);
       

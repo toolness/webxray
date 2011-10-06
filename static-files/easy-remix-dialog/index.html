@@ -371,12 +371,12 @@ function createDialog(data) {
 }
 
 $(window).ready(function() {
-  $(document.body).hide();
+  //$(document.body).hide();
 
   var isInIframe = !(top === self);
   var responseSent = false;
   var isStarted = false;
-
+  
   function onMessage(data) {
     jQuery.localization.loadLocale({
       path: "../src/locale/",
@@ -393,7 +393,7 @@ $(window).ready(function() {
       return;
     isStarted = true;
     
-    $(document.body).show();
+    //$(document.body).show();
 
     var dialog = createDialog(data);
 
@@ -411,7 +411,7 @@ $(window).ready(function() {
     jQuery.loadStylesheets(mods.stylesheets || []);
     jQuery.loadScripts(mods.scripts || []);
 
-    $(document.body).hide().fadeIn();    
+    //$(document.body).hide().fadeIn();    
   }
   
   if (isInIframe) {

@@ -67,6 +67,9 @@ $(window).ready(function() {
     $("#msie-fail").show();
   } else {
     $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL());
+    setTimeout(function() {
+      window.location = Webxray.getBookmarkletURL();
+    }, 500);
   }
 });
 </script>
