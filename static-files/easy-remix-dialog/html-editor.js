@@ -3,7 +3,8 @@
 
   function browserSupportsAce() {
     return (!jQuery.browser.opera &&
-            navigator.userAgent.indexOf('Mobile') == -1);
+            navigator.userAgent.indexOf('Mobile') == -1 &&
+            navigator.userAgent.indexOf('Fennec') == -1);
   }
   
   jQuery.HtmlEditor = function (idToEdit, textContent, onChange) {
