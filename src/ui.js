@@ -29,7 +29,7 @@
     };
   }
   
-  function isTouchSupported() {
+  function canBeTouched() {
     return ('ontouchstart' in window);
   }
   
@@ -64,7 +64,7 @@
           self.emit('quit');
         }
       });
-      var touchInput = isTouchSupported() ? jQuery.touchInput(input) : null;
+      var touchToolbar = canBeTouched() ? jQuery.touchToolbar(input) : null;
       var indicator = jQuery.blurIndicator(input, window);
       var modalUnloadBlocker = ModalUnloadBlocker(commandManager);
       
@@ -85,9 +85,9 @@
             focused = null;
             input.deactivate();
             input = null;
-            if (touchInput) {
-              touchInput.unload();
-              touchInput = null;
+            if (touchToolbar) {
+              touchToolbar.unload();
+              touchToolbar = null;
             }
             hud.destroy();
             hud = null;

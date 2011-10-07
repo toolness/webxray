@@ -35,7 +35,7 @@
   }
   
   jQuery.extend({
-    touchInput: function(input) {
+    touchToolbar: function(input) {
       function makeKeydown(key) {
         return function() {
           input.handleEvent(makeFakeEvent({
