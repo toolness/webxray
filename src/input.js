@@ -245,9 +245,9 @@
 
         if (!isValidFocusTarget(element))
           return false;
-          
-        if (isValidFocusTarget(event.target))
-          focused.set(event.target);
+        
+        if (isValidFocusTarget(element))
+          focused.set(element);
       }
       
       self.add({
