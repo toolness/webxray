@@ -27,7 +27,8 @@
   var maybePassThroughEvent = (function() {
     function topmostNoPointerEvents(element) {
       var topmost = null;
-      while (getComputedStyle(element).pointerEvents == 'none') {
+      while (element &&
+             getComputedStyle(element).pointerEvents == 'none') {
         topmost = element;
         element = element.parentNode;
       }
