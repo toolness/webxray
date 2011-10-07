@@ -366,6 +366,8 @@ div#webxray-wait-for-css-to-load {
   padding-left: 10px;
 }
 
+/* The touch-based toolbar for mobile devices, etc. */
+
 .webxray-toolbar {
   position: fixed;
   z-index: 2147483644;
@@ -376,8 +378,8 @@ div#webxray-wait-for-css-to-load {
 }
 
 .webxray-toolbar-button {
-  width: 32px;
-  height: 32px;
+  width: 48px;
+  height: 48px;
   text-align: center;
   padding: 10px;
 }
@@ -396,6 +398,11 @@ div.webxray-toolbar-button-glyph-tiny {
   font-size: 10px;
   text-align: center;
   text-transform: lowercase;
+}
+
+.webxray-toolbar-button-toggled {
+  background-color: yellow;
+  color: black;
 }
 
 /* Visual Tweaks */

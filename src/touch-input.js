@@ -22,28 +22,53 @@
     return button;
   }
   
+  function makeFakeEvent(props) {
+    var fakeEvent = {
+      altKey: false,
+      ctrlKey: false,
+      altGraphKey: false,
+      metaKey: false,
+      preventDefault: function() {},
+      stopPropagation: function() {}      
+    };
+    jQuery.extend(fakeEvent, props);
+    return fakeEvent;
+  }
+  
   jQuery.extend({
     touchInput: function(input) {
       function makeKeydown(key) {
         return function() {
-          var fakeEvent = {
+          input.handleEvent(makeFakeEvent({
             type: "keydown",
-            keyCode: jQuery.keys[key],
-            altKey: false,
-            ctrlKey: false,
-            altGraphKey: false,
-            metaKey: false,
-            preventDefault: function() {},
-            stopPropagation: function() {}
-          };
-          input.handleEvent(fakeEvent);
+            keyCode: jQuery.keys[key],            
+          }));
+        }
+      }
+
+      function makeKeyToggle(key) {
+        var isPressed = false;
+        
+        return function() {
+          isPressed = !isPressed;
+          $(this).toggleClass('webxray-toolbar-button-toggled');
+          input.handleEvent(makeFakeEvent({
+            type: isPressed ? "keydown" : "keyup",
+            keyCode: jQuery.keys[key],            
+          }));
         }
       }
 
       var toolbar = $('<div class="webxray-base webxray-toolbar"></div>');
-      makeButton('esc', 'quit', makeKeydown('ESC')).appendTo(toolbar);
       makeButton('r', 'remix', makeKeydown('R')).appendTo(toolbar);
+      makeButton('del', 'remove', makeKeydown('DELETE')).appendTo(toolbar);
+      makeButton('c', 'CSS', makeKeyToggle('C')).appendTo(toolbar);
+      makeButton('↑', 'ascend', makeKeydown('UP')).appendTo(toolbar);
+      makeButton('↓', 'descend', makeKeydown('DOWN')).appendTo(toolbar);
+      makeButton('←', 'undo', makeKeydown('LEFT')).appendTo(toolbar);      
+      makeButton('→', 'redo', makeKeydown('RIGHT')).appendTo(toolbar);      
       makeButton('t', 'publish', makeKeydown('T')).appendTo(toolbar);      
+      makeButton('esc', 'quit', makeKeydown('ESC')).appendTo(toolbar);
       toolbar.appendTo(document.body);
       
       var lastTouch = null;
@@ -53,16 +78,14 @@
         var touch = touches[0];
         var element = document.elementFromPoint(touch.clientX,
                                                 touch.clientY);
-        if (!isValidFocusTarget(element)) {
-          if ($(element).closest(".webxray-toolbar-button")) {
-            $(element).click();
-          }
-          return;
-        }
         
         if (element == lastTouch)
           return;
         lastTouch = element;
+
+        if (!isValidFocusTarget(element))
+          return;
+
         var fakeEvent = {
           type: "mouseover",
           target: element,
