@@ -15,7 +15,7 @@
 
   function onUserActivity(cb, bindTarget) {
     setTimeout(function() {
-      var events = ['keydown', 'mousemove'];
+      var events = ['keydown', 'mousemove', 'touchstart'];
       function onEvent() {
         events.forEach(function(e) { $(bindTarget).unbind(e, onEvent); });
         cb();
