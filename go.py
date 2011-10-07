@@ -3,9 +3,10 @@
     
     commands:
     
-      serve   - run web server on port %(port)s
-      compile - generate %(compiledFilename)s
-      clean   - delete all generated files
+      serve       - run web server on 127.0.0.1 port %(port)s
+      globalserve - run web server on all IP interfaces port %(port)s
+      compile     - generate %(compiledFilename)s
+      clean       - delete all generated files
 """
 
 from wsgiref.simple_server import make_server
@@ -68,6 +69,14 @@ def make_app(cfg):
 
     return app
 
+def serve(cfg, ip=''):
+    ipstr = ip
+    if not ipstr:
+        ipstr = 'all IP interfaces'
+    server = make_server(ip, cfg['port'], make_app(cfg))
+    print "serving on %s port %d" % (ipstr, cfg['port'])
+    server.serve_forever()
+
 if __name__ == "__main__":
     cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
@@ -79,9 +88,9 @@ if __name__ == "__main__":
     cmd = sys.argv[1]
     
     if cmd == 'serve':
-        server = make_server('127.0.0.1', cfg['port'], make_app(cfg))
-        print "serving on port %d" % cfg['port']
-        server.serve_forever()
+        serve(cfg, '127.0.0.1')
+    elif cmd == 'globalserve':
+        serve(cfg)
     elif cmd == 'compile':
         f = open(cfg['compiledFilename'], 'w')
         f.write(build_compiled_file(cfg))
