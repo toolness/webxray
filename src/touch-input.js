@@ -19,7 +19,10 @@
       glyphDiv.addClass('webxray-toolbar-button-glyph-tiny');
     $('.webxray-toolbar-button-text', button).text(text);
     button.find('*').andSelf().addClass('webxray-base');
-    button.data('tap', cb);
+    button.bind('touchstart touchmove', function(event) {
+      event.preventDefault();
+      cb.call(this);
+    });
     return button;
   }
   
@@ -90,14 +93,8 @@
           return;
         lastTouch = element;
 
-        if (!isValidFocusTarget(element)) {
-          var button = $(element).closest('.webxray-toolbar-button');
-          if (button.length) {
-            event.preventDefault();
-            button.data('tap').call(button[0]);
-          }
+        if (!isValidFocusTarget(element))
           return;
-        }
         
         var fakeEvent = {
           type: "mouseover",
