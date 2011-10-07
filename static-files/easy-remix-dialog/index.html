@@ -183,7 +183,7 @@ textarea.fallback {
 // TODO: add infinite undo/redo.
 // TODO: make it possible to create/delete attributes.
 
-function startContinuousDynamicScale(selected, parentIframe) {
+function startContinuousDynamicScale(selected, parentIframe, maxWidthElem) {
   function setZoom(zoom) {
     parentIframe.contents().find("html").css({
       '-webkit-transform': 'scale(' + zoom + ')',
@@ -196,6 +196,12 @@ function startContinuousDynamicScale(selected, parentIframe) {
   function scaleAndPan(isInstant) {
     var contentWidth = selected.outerWidth(true);
     var frameWidth = parentIframe.width();
+    var maxWidth = maxWidthElem.width();
+    if (frameWidth > maxWidth) {
+      // This is a fix for the iPad.
+      parentIframe.width(maxWidth);
+      frameWidth = maxWidth;
+    }
     var zoom = 1.0;
     if (contentWidth > frameWidth) {
       zoom = frameWidth / contentWidth;
@@ -335,7 +341,8 @@ function createDialog(data) {
   function startScaling() {
     if (intervalID !== null)
       clearTimeout(intervalID);    
-    intervalID = startContinuousDynamicScale(selected, $("#preview"));
+    intervalID = startContinuousDynamicScale(selected, $("#preview"),
+                                             $("#dom-rendering-column"));
   }
   
   previewDoc.bind('selection-changed', function(event) {
