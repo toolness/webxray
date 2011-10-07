@@ -1,6 +1,7 @@
 (function(jQuery) {
   "use strict";
   
+  // TODO: This function is copied and pasted from input.js.
   function isValidFocusTarget(target) {
     return (!$(target).hasClass('webxray-base'));
   }
@@ -60,6 +61,8 @@
       }
 
       var toolbar = $('<div class="webxray-base webxray-toolbar"></div>');
+
+      // TODO: This is a DRY violation.
       makeButton('r', 'remix', makeKeydown('R')).appendTo(toolbar);
       makeButton('del', 'remove', makeKeydown('DELETE')).appendTo(toolbar);
       makeButton('c', 'CSS', makeKeyToggle('C')).appendTo(toolbar);
