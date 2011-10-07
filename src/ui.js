@@ -29,6 +29,10 @@
     };
   }
   
+  function isTouchSupported() {
+    return ('ontouchstart' in window);
+  }
+  
   jQuery.extend({
     xRayUI: function xRayUI(options) {
       var isUnloaded = false;
@@ -49,7 +53,7 @@
         commandManager: commandManager,
         mouseMonitor: mouseMonitor
       });
-      var input = jQuery.touchInput(jQuery.xRayInput({
+      var input = jQuery.xRayInput({
         focusedOverlay: focused,
         styleInfoOverlay: styleInfo,
         mixMaster: mixMaster,
@@ -59,7 +63,8 @@
         onQuit: function() {
           self.emit('quit');
         }
-      }));
+      });
+      var touchInput = isTouchSupported() ? jQuery.touchInput(input) : null;
       var indicator = jQuery.blurIndicator(input, window);
       var modalUnloadBlocker = ModalUnloadBlocker(commandManager);
       
@@ -80,6 +85,10 @@
             focused = null;
             input.deactivate();
             input = null;
+            if (touchInput) {
+              touchInput.unload();
+              touchInput = null;
+            }
             hud.destroy();
             hud = null;
             styleInfo.destroy();

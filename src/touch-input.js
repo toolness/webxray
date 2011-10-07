@@ -107,7 +107,12 @@
         });
       });
 
-      return input;
+      return {
+        unload: function() {
+          toolbar.remove();
+          toolbar = null;
+        }
+      };
     }
   });
 })(jQuery);
