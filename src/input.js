@@ -219,14 +219,37 @@
       var onQuit = options.onQuit;
       var persistence = options.persistence;
       var styleInfo = options.styleInfoOverlay;
+      var lastTouch = null;
+      var touchesReceived = false;
       var self = jQuery.inputHandlerChain([
         'keydown',
         'keyup',
         'click',
         'mouseout',
-        'mouseover'
+        'mouseover',
+        'touchstart',
+        'touchmove',
+        'touchend'
       ], eventSource);
 
+      function onTouchMove(event) {
+        var touches = event.changedTouches;
+        var touch = touches[0];
+        var element = document.elementFromPoint(touch.clientX,
+                                                touch.clientY);
+        
+        touchesReceived = true;
+        if (element == lastTouch)
+          return false;
+        lastTouch = element;
+
+        if (!isValidFocusTarget(element))
+          return false;
+          
+        if (isValidFocusTarget(event.target))
+          focused.set(event.target);
+      }
+      
       self.add({
         click: function(event) {
           if ($(event.target).closest('a').length) {
@@ -235,7 +258,16 @@
             return true;
           }
         },
+        touchstart: onTouchMove,
+        touchmove: onTouchMove,
+        touchend: function(event) {
+          lastTouch = null;
+        },
         mouseout: function(event) {
+          if (touchesReceived)
+            // We're likely on a tablet, so this is probably a simulated
+            // mouse event that we want to ignore.
+            return false;
           if ((event = maybePassThroughEvent(event)) == null)
             return false;
           
@@ -245,6 +277,10 @@
           }
         },
         mouseover: function(event) {
+          if (touchesReceived)
+          // We're likely on a tablet, so this is probably a simulated
+          // mouse event that we want to ignore.
+            return false;
           if ((event = maybePassThroughEvent(event)) == null)
             return false;
 

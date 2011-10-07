@@ -1,11 +1,6 @@
 (function(jQuery) {
   "use strict";
   
-  // TODO: This function is copied and pasted from input.js.
-  function isValidFocusTarget(target) {
-    return (!$(target).hasClass('webxray-base'));
-  }
-  
   function makeButton(glyph, text, cb) {
     var button = $(
       '<div class="webxray-toolbar-button">' +
@@ -77,48 +72,6 @@
       makeButton('esc', 'quit', makeKeydown('ESC')).appendTo(toolbar);
       toolbar.appendTo(document.body);
       
-      var lastTouch = null;
-
-      function onEnd(event) {
-        lastTouch = null;
-      }
-      
-      function onMove(event) {
-        var touches = event.changedTouches;
-        var touch = touches[0];
-        var element = document.elementFromPoint(touch.clientX,
-                                                touch.clientY);
-        
-        if (element == lastTouch)
-          return;
-        lastTouch = element;
-
-        if (!isValidFocusTarget(element))
-          return;
-        
-        var fakeEvent = {
-          type: "mouseover",
-          target: element,
-          preventDefault: function() {},
-          stopPropagation: function() {}
-        };
-        input.handleEvent(fakeEvent);
-      }
-      
-      input.on('activate', function() {
-        ["touchstart", "touchmove"].forEach(function(name) {
-           document.addEventListener(name, onMove, true);
-        });
-        document.addEventListener('touchend', onEnd, true);
-      });
-      
-      input.on('deactivate', function() {
-        ["touchstart", "touchmove"].forEach(function(name) {
-           document.removeEventListener(name, onMove, true);
-        });
-        document.removeEventListener('touchend', onEnd, true);
-      });
-
       return {
         unload: function() {
           toolbar.remove();
