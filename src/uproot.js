@@ -46,7 +46,7 @@
         success: cb,
         ignore: $(".webxray-hud, .webxray-overlay, " +
                   ".webxray-dialog-overlay, link.webxray, " +
-                  "#webxray-is-active")
+                  "#webxray-is-active", ".webxray-toolbar")
       });
     },
     uproot: function(cb) {
