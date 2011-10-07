@@ -19,7 +19,7 @@
       glyphDiv.addClass('webxray-toolbar-button-glyph-tiny');
     $('.webxray-toolbar-button-text', button).text(text);
     button.find('*').andSelf().addClass('webxray-base');
-    button.bind('click', cb);
+    button.data('tap', cb);
     return button;
   }
   
@@ -75,6 +75,10 @@
       toolbar.appendTo(document.body);
       
       var lastTouch = null;
+
+      function onEnd(event) {
+        lastTouch = null;
+      }
       
       function onMove(event) {
         var touches = event.changedTouches;
@@ -86,14 +90,20 @@
           return;
         lastTouch = element;
 
-        if (!isValidFocusTarget(element))
+        if (!isValidFocusTarget(element)) {
+          var button = $(element).closest('.webxray-toolbar-button');
+          if (button.length) {
+            event.preventDefault();
+            button.data('tap').call(button[0]);
+          }
           return;
-
+        }
+        
         var fakeEvent = {
           type: "mouseover",
           target: element,
-          preventDefault: function() { event.preventDefault(); },
-          stopPropagation: function() { event.stopPropagation(); }
+          preventDefault: function() {},
+          stopPropagation: function() {}
         };
         input.handleEvent(fakeEvent);
       }
@@ -102,12 +112,14 @@
         ["touchstart", "touchmove"].forEach(function(name) {
            document.addEventListener(name, onMove, true);
         });
+        document.addEventListener('touchend', onEnd, true);
       });
       
       input.on('deactivate', function() {
         ["touchstart", "touchmove"].forEach(function(name) {
            document.removeEventListener(name, onMove, true);
         });
+        document.removeEventListener('touchend', onEnd, true);
       });
 
       return {
