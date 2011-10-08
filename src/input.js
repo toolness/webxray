@@ -219,8 +219,7 @@
       var onQuit = options.onQuit;
       var persistence = options.persistence;
       var styleInfo = options.styleInfoOverlay;
-      var lastTouchElement = null;
-      var numTouches = 0;
+      var lastTouch = null;
       var touchesReceived = false;
       var self = jQuery.inputHandlerChain([
         'keydown',
@@ -235,30 +234,20 @@
 
       function onTouchMove(event) {
         var touches = event.changedTouches;
-
-        if (event.type == "touchstart")
-          numTouches += touches.length;
-        
-        if (numTouches > 1) {
-          lastTouchElement = null;
-          return false;
-        }
-        
         var touch = touches[0];
         var element = document.elementFromPoint(touch.clientX,
                                                 touch.clientY);
         
         touchesReceived = true;
-        if (element == lastTouchElement)
-          return (event.type == 'touchmove');
-        lastTouchElement = element;
+        if (element == lastTouch)
+          return false;
+        lastTouch = element;
 
         if (!isValidFocusTarget(element))
-          return (event.type == 'touchmove');
+          return false;
         
         if (isValidFocusTarget(element))
           focused.set(element);
-        return (event.type == 'touchmove');
       }
       
       self.add({
@@ -277,8 +266,7 @@
         touchstart: onTouchMove,
         touchmove: onTouchMove,
         touchend: function(event) {
-          numTouches--;
-          lastTouchElement = null;
+          lastTouch = null;
         },
         mouseout: function(event) {
           if (touchesReceived)
