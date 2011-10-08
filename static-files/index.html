@@ -22,6 +22,11 @@ a {
 a:hover {
   background: yellow;
 }
+
+#bookmarklet-url {
+  border: 1px dotted black;
+  width: 100%;
+}
 </style>
 <a href="https://github.com/toolness/webxray/tree/style-info-experiment"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
 <div id="try-goggles">
@@ -29,6 +34,8 @@ a:hover {
 <p>If you've never used the goggles before, you should start out with the <a href="http://toolness.github.com/hackasaurus-parable/">Parable of The Hackasaurus</a>.</p>
 <h2>Reference</h2>
 <p>Here's the bookmarklet: <a href="" id="bookmarklet-link">Web X-Ray Goggles</a>.</p>
+<p>Note that if you're on a mobile browser, you may need to manually create a bookmark to the following URL:</p>
+<input type="text" id="bookmarklet-url">
 <p>Once the goggles are activated, you can press <kbd>H</kbd> for help.</p>
 <h2>Troubleshooting</h2>
 <p>If the goggles don't seem to be working, try running the <a href="test/">test suite</a>. Then <a href="http://hackasaurus.lighthouseapp.com/projects/81472-goggles/overview">report a bug</a> and be sure to mention whether the test suite failed.</p>
@@ -67,6 +74,7 @@ $(window).ready(function() {
     $("#msie-fail").show();
   } else {
     $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL());
+    $("#bookmarklet-url").val(Webxray.getBookmarkletURL());
   }
 });
 </script>
