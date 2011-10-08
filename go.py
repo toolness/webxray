@@ -23,6 +23,7 @@ except ImportError:
     import simplejson as json
 
 ROOT = os.path.abspath(os.path.dirname(__file__))
+JS_TYPE = 'application/javascript; charset=utf-8'
 
 def build_compiled_file(cfg):
     contents = []
@@ -45,7 +46,7 @@ def make_app(cfg):
         if path == cfg['compiledFile']:
             compiled = build_compiled_file(cfg)
             start_response('200 OK',
-                           [('Content-Type', 'application/javascript'),
+                           [('Content-Type', JS_TYPE),
                             ('Content-Length', str(len(compiled)))])
             return [compiled]
         
