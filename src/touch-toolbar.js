@@ -1,6 +1,8 @@
 (function(jQuery) {
   "use strict";
   
+  var $ = jQuery;
+  
   function makeButton(glyph, text, cb) {
     var button = $(
       '<div class="webxray-toolbar-button">' +
