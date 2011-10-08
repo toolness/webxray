@@ -253,8 +253,13 @@
       self.add({
         click: function(event) {
           if ($(event.target).closest('a').length) {
-            var msg = jQuery.locale.get("input:link-click-blocked");
-            jQuery.transparentMessage($('<div></div>').text(msg));
+            if (!touchesReceived) {
+              // This is just the result of a tap, which we can assume
+              // was intended to set the focus, not to click on a link,
+              // so don't bother with the transparent message.
+              var msg = jQuery.locale.get("input:link-click-blocked");
+              jQuery.transparentMessage($('<div></div>').text(msg));
+            }
             return true;
           }
         },
