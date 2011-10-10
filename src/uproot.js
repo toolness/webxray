@@ -44,9 +44,10 @@
     uprootIgnoringWebxray: function(cb) {
       $(document).uproot({
         success: cb,
-        ignore: $(".webxray-hud, .webxray-overlay, " +
+        ignore: $(".webxray-hud-box, .webxray-overlay, " +
                   ".webxray-dialog-overlay, link.webxray, " +
-                  "#webxray-is-active", ".webxray-toolbar")
+                  "#webxray-is-active, .webxray-toolbar, " +
+                  ".webxray-style-info, .webxray-tmsg-overlay")
       });
     },
     uproot: function(cb) {

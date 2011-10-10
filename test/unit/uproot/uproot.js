@@ -11,6 +11,26 @@ module("uproot", {
   }
 });
 
+asyncTest("uprootIgnoringWebxray() works", function() {
+  var iframe = jQuery("<iframe></iframe>");
+  iframe.attr("src", "unit/uproot/source-pages/basic-page/");
+  iframe.load(function() {
+    var window = iframe[0].contentWindow;
+    Webxray.whenLoaded(function(ui) {
+      ok(ui.jQuery(".webxray-base").length,
+         ".webxray-base in goggles-injected document");
+      ui.jQuery(window.document).uprootIgnoringWebxray(function(html) {
+        console.log(html);
+        ok(html.indexOf('webxray-base') == -1,
+           ".webxray-base not in goggles-injected uproot");
+        start();
+      });
+    }, window);
+    window.location = Webxray.getBookmarkletURL("../../../../../");
+  });
+  jQuery("#iframes").append(iframe).show();
+});
+
 [
   'basic-page'
 , 'basic-dynamic-page'
