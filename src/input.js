@@ -99,6 +99,35 @@
     };
   }
 
+  function touchInputHandlers(focused) {
+    var lastTouch = null;
+    
+    function onTouchMove(event) {
+      var touches = event.changedTouches;
+      var touch = touches[0];
+      var element = document.elementFromPoint(touch.clientX,
+                                              touch.clientY);
+      
+      if (element == lastTouch)
+        return false;
+      lastTouch = element;
+
+      if (!isValidFocusTarget(element))
+        return false;
+      
+      if (isValidFocusTarget(element))
+        focused.set(element);
+    }
+    
+    return {
+      touchstart: onTouchMove,
+      touchmove: onTouchMove,
+      touchend: function(event) {
+        lastTouch = null;
+      }
+    };
+  }
+  
   jQuery.extend({
     keys: keys,
     mouseMonitor: function mouseMonitor() {
@@ -219,7 +248,6 @@
       var onQuit = options.onQuit;
       var persistence = options.persistence;
       var styleInfo = options.styleInfoOverlay;
-      var lastTouch = null;
       var touchesReceived = false;
       var self = jQuery.inputHandlerChain([
         'keydown',
@@ -231,24 +259,6 @@
         'touchmove',
         'touchend'
       ], eventSource);
-
-      function onTouchMove(event) {
-        var touches = event.changedTouches;
-        var touch = touches[0];
-        var element = document.elementFromPoint(touch.clientX,
-                                                touch.clientY);
-        
-        touchesReceived = true;
-        if (element == lastTouch)
-          return false;
-        lastTouch = element;
-
-        if (!isValidFocusTarget(element))
-          return false;
-        
-        if (isValidFocusTarget(element))
-          focused.set(element);
-      }
       
       self.add({
         click: function(event) {
@@ -263,10 +273,9 @@
             return true;
           }
         },
-        touchstart: onTouchMove,
-        touchmove: onTouchMove,
-        touchend: function(event) {
-          lastTouch = null;
+        touchmove: function(event) {
+          touchesReceived = true;
+          return false;
         },
         mouseout: function(event) {
           if (touchesReceived)
@@ -340,6 +349,7 @@
       });
 
       self.add(self.simpleKeyBindings.handlers);
+      self.add(touchInputHandlers(focused));
       self.add(styleOverlayInputHandlers({
         styleInfoOverlay: styleInfo,
         lockForEditingKey: 'SPACE',
