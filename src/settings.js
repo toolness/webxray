@@ -11,6 +11,7 @@
     language: navigator.language,
     baseURI: "",
     cssURL: "webxray.css",
+    preferencesURL: "preferences.html",
     easyRemixDialogURL: "easy-remix-dialog/index.html",
     uprootDialogURL: "uproot-dialog.html",
     hackpubURL: "http://hackpub.hackasaurus.org/",

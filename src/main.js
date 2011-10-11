@@ -14,15 +14,14 @@
     return;
   }
 
-  jQuery.localization.init(["en", jQuery.webxraySettings.language]);
-
-  function waitForCSSToLoad(cb) {
+  function waitForCSSToLoad() {
     // Sadly, link elements don't fire load events on most/all browsers,
     // so we'll define a special style in our stylesheet and keep
     // polling an element with that style until it has what we've
     // defined in the stylesheet.
     var div = $('<div id="webxray-wait-for-css-to-load"></div>');
-
+    var deferred = jQuery.Deferred();
+    
     div.hide();
     $(document.body).append(div);
 
@@ -37,14 +36,40 @@
           (bgColor && bgColor.match(/rgb\(0,\s*1,\s*2\)/))) {
         div.remove();
         clearInterval(intervalID);
-        cb();
+        deferred.resolve();
       }
     }
 
     var intervalID = setInterval(checkIfLoaded, 10);
     checkIfLoaded();
+    return deferred;
   }
 
+  function waitForPreferencesToLoad() {
+    var deferred = jQuery.Deferred();
+    
+    var iframe = document.createElement('iframe');
+    iframe.src = jQuery.webxraySettings.url('preferencesURL');
+    $(document.body).append(iframe);
+    $(iframe).hide();
+    window.addEventListener('message', function onMessage(event) {
+      if (event.source == iframe.contentWindow) {
+        window.removeEventListener('message', onMessage, false);
+        $(iframe).remove();
+        try {
+          var prefs = JSON.parse(event.data);
+          jQuery.webxraySettings.extend(prefs);
+        } catch (e) {
+          jQuery.warn("loading preferences failed");
+          jQuery.warn("preference data is", event.data);
+          jQuery.warn("exception thrown is", e);
+        }
+        deferred.resolve();
+      }
+    }, false);
+    return deferred;
+  }
+  
   function loadPrerequisites(cb) {
     var script = getMyScript();
     
@@ -69,11 +94,17 @@
     }
 
     removeOnUnload = removeOnUnload.add([cssLink.get(0), active.get(0)]);
-    waitForCSSToLoad(cb);
+
+    var cssLoaded = waitForCSSToLoad();
+    var prefsLoaded = waitForPreferencesToLoad();
+    
+    jQuery.when(prefsLoaded, cssLoaded).done(cb);
   }
 
   $(window).ready(function() {
     loadPrerequisites(function() {
+      jQuery.localization.init(["en", jQuery.webxraySettings.language]);
+
       var ui = jQuery.xRayUI({eventSource: document});
 
       var welcomeMsg = $("<div></div>");
