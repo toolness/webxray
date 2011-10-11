@@ -186,7 +186,7 @@
           jQuery.morphElementIntoDialog({
             input: input,
             body: options.body,
-            url: dialogURL + "#dialog",
+            url: dialogURL,
             element: focusedElement,
             onLoad: function(dialog) {
               dialog.iframe.postMessage(JSON.stringify({
