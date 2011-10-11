@@ -101,7 +101,15 @@
     jQuery.when(prefsLoaded, cssLoaded).done(cb);
   }
 
+  jQuery.extend({webxrayBuildMetadata: buildMetadata});
+
   $(window).ready(function() {
+    if (typeof(console) != 'undefined') {
+      console.log("Initializing Web X-Ray Goggles built on " +
+                  buildMetadata.date + " (commit " +
+                  buildMetadata.commit + ").");
+    }
+    
     loadPrerequisites(function() {
       jQuery.localization.init(["en", jQuery.webxraySettings.language]);
 

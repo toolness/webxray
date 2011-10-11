@@ -17,10 +17,14 @@ asyncTest("uprootIgnoringWebxray() works", function() {
   iframe.load(function() {
     var window = iframe[0].contentWindow;
     Webxray.whenLoaded(function(ui) {
+      ok(ui.jQuery.webxrayBuildMetadata.date,
+         "build date is " + ui.jQuery.webxrayBuildMetadata.date);
+      ok(ui.jQuery.webxrayBuildMetadata.commit &&
+         ui.jQuery.webxrayBuildMetadata.commit != "unknown",
+         "build commit is " + ui.jQuery.webxrayBuildMetadata.commit);
       ok(ui.jQuery(".webxray-base").length,
          ".webxray-base in goggles-injected document");
       ui.jQuery(window.document).uprootIgnoringWebxray(function(html) {
-        console.log(html);
         ok(html.indexOf('webxray-base') == -1,
            ".webxray-base not in goggles-injected uproot");
         start();
