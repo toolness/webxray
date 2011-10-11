@@ -15,6 +15,7 @@ import os
 import sys
 import shutil
 import glob
+import time
 import mimetypes
 
 try:
@@ -25,7 +26,21 @@ except ImportError:
 ROOT = os.path.abspath(os.path.dirname(__file__))
 JS_TYPE = 'application/javascript; charset=utf-8'
 
+path = lambda *x: os.path.join(ROOT, *x)
+
+def get_git_commit():
+    try:
+        head = open(path('.git', 'HEAD'), 'r').read()
+        if head.startswith('ref: '):
+            ref = open(path('.git', head.split()[1].strip()), 'r').read()
+            return ref.strip()
+        return head.strip()
+    except Exception:
+        return "unknown"
+
 def build_compiled_file(cfg):
+    metadata = json.dumps(dict(commit=get_git_commit(),
+                               date=time.ctime()))
     contents = []
     for path in cfg['compiledFileParts']:
         if '.local.' in path:
@@ -36,7 +51,9 @@ def build_compiled_file(cfg):
         else:
             filenames = [path]
         for filename in filenames:
-            contents.append(open(filename, 'r').read())
+            data = open(filename, 'r').read()
+            data = data.replace('__BUILD_METADATA__', metadata)
+            contents.append(data)
     return ''.join(contents)
 
 def make_app(cfg):
