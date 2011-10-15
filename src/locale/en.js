@@ -29,7 +29,7 @@
   });
 
   jQuery.localization.extend(locale, "mix-master", {
-    "too-big-to-change": "Changing that would be a bad idea.",
+    "too-big-to-change": "That element is too big for me to remix. Try selecting a smaller one!",
     "too-big-to-remix-html": "<div>That <code>&lt;${tagName}&gt;</code> element is too big for me to remix. Try selecting a smaller one!</div>",
     "deletion": "deletion",
     "replacement": "replacement",
