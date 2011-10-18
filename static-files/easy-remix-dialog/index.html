@@ -14,7 +14,6 @@
 <script src="../src/utils.js"></script>
 <script src="../src/tag-colors.js"></script>
 <script src="../src/event-emitter.js"></script>
-<script src="../src/focused-overlay.js"></script>
 <script src="../src/localization.js"></script>
 <style>
 body {
@@ -266,30 +265,12 @@ jQuery.fn.extend({
 
 function makeEditableDom(selected, parent) {
   var rendered = selected.renderDom();
-  var focused = jQuery.focusedOverlay();
 
   rendered = rendered.wrap('<div></div>').parent();
   parent.append(rendered);
 
-  rendered.mouseover(function(event) {
-    var target = $(event.target);
-
-    if (!target.is('div.element'))
-      target = target.closest('div.element');
-    var linkedNode = target.data("linked-node");
-    if (linkedNode)
-      focused.set(linkedNode);
-  });
-
-  rendered.mouseout(function(event) {
-    focused.unfocus();
-  });
   var editables = rendered.find(".text, .attributes .value");
   editables.makeTextEditable();
-  rendered.click(function(event) {
-    if ($(event.target).is(".text, .attributes .value"))
-      focused.unfocus();
-  });
 }
 
 function makeHtmlEditor(container, selected) {
