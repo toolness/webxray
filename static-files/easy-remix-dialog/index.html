@@ -155,6 +155,23 @@ textarea.fallback {
   background: transparent;
   border: none;
 }
+
+#dom-rendering input {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#dom-rendering textarea {
+  resize: none;
+}
+
+#dom-rendering textarea, #dom-rendering input {
+  color: inherit;
+  font-family: inherit;
+  font-size: inherit;
+  background: transparent;
+  border: inherit;
+}
 </style>
 <div id="buttons">
   <div class="button" id="nevermind"
@@ -243,11 +260,12 @@ jQuery.fn.extend({
   }
 });
 
-function makeEditableDom(selected) {
+function makeEditableDom(selected, parent) {
   var rendered = selected.renderDom();
   var focused = jQuery.focusedOverlay();
 
   rendered = rendered.wrap('<div></div>').parent();
+  parent.append(rendered);
 
   rendered.mouseover(function(event) {
     var target = $(event.target);
@@ -268,7 +286,6 @@ function makeEditableDom(selected) {
     if ($(event.target).is(".text, .attributes .value"))
       focused.unfocus();
   });
-  return rendered;
 }
 
 function makeHtmlEditor(container, selected) {
@@ -359,7 +376,7 @@ function createDialog(data) {
     $(this).addClass("selected");
     switch (view) {
       case "pretty":
-      $("#dom-rendering").empty().append(makeEditableDom(selected));
+      makeEditableDom(selected, $("#dom-rendering").empty());
       break;
       
       case "raw":

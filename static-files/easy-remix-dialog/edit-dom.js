@@ -5,69 +5,61 @@
 
   jQuery.fn.extend({
     makeTextEditable: function makeTextEditable() {
-      this.click(function(event) {
-        var target = $(event.target);
-        
-        if (target.isContentEditable)
-          return;
-        
-        var originalValue = target.text();
+      this.each(function() {
+        var target = $(this);
+        var isBlock = (target.css('display') == 'block');
         var linkedNode = target.data("linked-node");
+        var widget;
+        if (isBlock) {
+          widget = $('<textarea></textarea>');
+          widget.css({
+            width: target.width(),
+            height: target.height()
+          });
+        } else
+          widget = $('<input type="text"></input>');
+
+        var originalValue = target.text();
+        var pxPerChar;
+
+        widget.val(originalValue);
+
+        function resizeInline() {
+          var newValueLen = widget.val().length;
+          if (newValueLen == 0)
+            newValueLen = 1;
+          console.log("width of", widget.val(), "is", pxPerChar * newValueLen);
+          widget.width(pxPerChar * newValueLen);
+        }
+
+        if (!isBlock) {
+          target.text('m');
+          // TODO: Where does this 13 come from? What's going on?
+          pxPerChar = target.width() - 13;
+          console.log("pxPerChar is", pxPerChar);
+          resizeInline();
+        }
         
-        $(event.target).attr("contentEditable", "true");
-
-        target.bind('DOMNodeInserted.editableText', function(event) {
-          var self = this;
-          var node = event.target;
-          var parent = event.originalEvent.relatedNode;
-
-          // "flatten" the DOM content to be plain text.
-          if (node.nodeType == node.ELEMENT_NODE) {
-            var text = node.textContent;
-            var replacement = document.createTextNode(text);
-            try {
-              // TODO: Why does this sometimes fail?
-              parent.replaceChild(replacement, node);
-            } catch (e) {}
-
-            // Safari and Chrome sometimes end up with no selection, so
-            // let's make sure the cursor lands somewhere.
-            var sel = window.getSelection();
-            if (sel.rangeCount == 0) {
-              if (!self.firstChild) {
-                var newNode = document.createTextNode('');
-                self.appendChild(newNode);
-              }
-              var range = document.createRange();
-              range.setStart(self.firstChild, 0);
-              range.setEnd(self.firstChild, 0);
-              sel.addRange(range);
-            }
+        widget.keyup(function() {
+          if (isBlock) {
+            var placeholdingText = $('<div></div>');
+            widget.parent().append(placeholdingText);
+            placeholdingText.text(widget.val());
+            widget.css({
+              width: placeholdingText.width(),
+              height: placeholdingText.height()
+            });
+            placeholdingText.remove();
+          } else {
+            resizeInline();
           }
-        });
-        target.bind('keyup.editableText', function(event) {
           if (linkedNode)
-            linkedNode.nodeValue = target.text();
+            linkedNode.nodeValue = widget.val();
         });
-        target.bind('keydown.editableText', function(event) {
-          switch (event.keyCode) {
-            case 27:
-            target.text(originalValue);
-            target.blur();
-            return false;
 
-            case 13:
-            target.blur();
-            return false;
-          }
-          return true;
-        });
-        target.bind('blur.editableText', function() {
-          target.unbind('.editableText');
-          target.attr("contentEditable", "inherit");
-        });
-        target.focus();
+        target.empty().append(widget);
       });
+
       return this;
     }
   });
