@@ -19,10 +19,10 @@ html, body {
   color: #41415b;
   height: 100%;
   background-attachment: fixed;
-  background-image: -webkit-gradient(linear, left top, left 400px, from(#ffef8d), to(white));
-  background-image: -webkit-linear-gradient(top, #ffef8d, white 400px);
-  background-image: -moz-linear-gradient(top, #ffef8d, white 100px);  
-  background-image: -o-linear-gradient(top, #ffef8d, white 400px);  
+  background-image: -webkit-gradient(linear, left top, left 100px, from(#ffebb2), to(white));
+  background-image: -webkit-linear-gradient(top, #ffebb2, white 100px);
+  background-image: -moz-linear-gradient(top, #ffebb2, white 100px);  
+  background-image: -o-linear-gradient(top, #ffebb2, white 100px);  
   /* If the browser doesn't support gradients, just use a white background. */
   background-color: white;
 }
