@@ -32,9 +32,7 @@
     "too-big-to-change": "That element is too big for me to remix. Try selecting a smaller one!",
     "too-big-to-remix-html": "<div>That <code>&lt;${tagName}&gt;</code> element is too big for me to remix. Try selecting a smaller one!</div>",
     "deletion": "deletion",
-    "replacement": "replacement",
-    "compose-a-replacement": "Compose A Replacement",
-    "replacement-instructions-html": "<span>When you're done composing your replacement HTML, press the <strong>Ok</strong> button.</span>"
+    "replacement": "replacement"
   });
 
   jQuery.localization.extend(locale, "dialog-common", {

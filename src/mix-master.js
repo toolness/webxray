@@ -190,8 +190,6 @@
             element: focusedElement,
             onLoad: function(dialog) {
               dialog.iframe.postMessage(JSON.stringify({
-                title: l10n("compose-a-replacement"),
-                instructions: l10n("replacement-instructions-html"),
                 languages: jQuery.locale.languages,
                 startHTML: startHTML,
                 mods: dialogPageMods,

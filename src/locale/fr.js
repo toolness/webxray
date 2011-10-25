@@ -31,9 +31,7 @@
     "too-big-to-change": "Ce n'est pas une bonne idée.",
     "too-big-to-remix-html": "<div>Je ne peux pas remixer cette balise <code>&lt;${tagName}&gt;</code>, il y a trop de contenu. Essayez d'en sélectionner une plus petite.</div>",
     "deletion": "suppression",
-    "replacement": "remplacement",
-    "compose-a-replacement": "Créez un remplacement",
-    "replacement-instructions-html": "<span>Lorsque vous aurez créé votre nouveau code HTML, appuyez sur le bouton <strong>Ok</strong>.</span>"
+    "replacement": "remplacement"
   });
 
   jQuery.localization.extend(locale, "dialog-common", {
