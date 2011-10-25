@@ -59,9 +59,14 @@ a:active {
   text-decoration: underline;
 }
 
-div.close-button {
+div.close-button, div.ok-button {
   display: inline-block;
   position: fixed;
+  z-index: 100;
+  cursor: pointer;
+}
+
+div.close-button {
   top: 10px;
   right: 10px;
   overflow: hidden;
@@ -69,18 +74,14 @@ div.close-button {
   width: 46px;
   height: 43px;
   background-image: url(../images/close-button.png);
-  cursor: pointer;
 }
 
 div.ok-button {
-  display: inline-block;
   margin: 0.25em;
-  cursor: pointer;
   padding: 10px;
   border-radius: 3px;
   background-color: #8ab300;
   color: white;
-  position: fixed;
   bottom: 10px;
   right: 10px;
   font-style: italic;
