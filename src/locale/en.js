@@ -38,9 +38,10 @@
   });
 
   jQuery.localization.extend(locale, "dialog-common", {
-    "ok": "Ok",
+    "ok": "Commit changes",
     "nevermind": "Nevermind",
-    "close": "Close"
+    "close": "Close",
+    "product-name": "X-Ray Goggles"
   });
 
   jQuery.localization.extend(locale, "mix-master-dialog", {
@@ -48,7 +49,8 @@
     "skeleton-header": "What Your Browser Sees",
     "rendering-header": "What You See",
     "basic-source-tab": "Basic",
-    "advanced-source-tab": "Advanced"
+    "advanced-source-tab": "Advanced",
+    "title": "Remixer"
   });
   
   jQuery.localization.extend(locale, "uproot-dialog", {

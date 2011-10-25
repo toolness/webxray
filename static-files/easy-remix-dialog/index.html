@@ -2,7 +2,8 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="hierarchic-source-code.css">
 <link rel="stylesheet" id="webxray" href="../webxray.css">
-<title>Easy Remix Dialog</title>
+<link rel="stylesheet" href="../dialog-common/stylesheets/base.css">
+<title>Remix Dialog</title>
 <script src="../jquery.min.js"></script>
 <script src="../jquery.scrollTo-min.js"></script>
 <script src="ace/ace.js"></script>
@@ -16,12 +17,7 @@
 <script src="../src/event-emitter.js"></script>
 <script src="../src/localization.js"></script>
 <style>
-body {
-  font-family: Baskerville, Georgia, serif;
-  background: white;
-}
-
-h1, h2 {
+h2 {
   font-weight: normal;
   margin-top: 0.5em;
   margin-bottom: 0.1em;
@@ -45,21 +41,6 @@ h1, h2 {
   border: 1px dotted #AAAAAA;
   margin-left: 0;
   position: relative;
-}
-
-.button {
-  float: right;
-  background: #f0f0f0;
-  margin: 0.25em;
-  cursor: pointer;
-  padding: 6px;
-  border-radius: 3px;
-  box-shadow: 0 2px 0 rgba(0,0,0,0.6);
-}
-
-div.button:hover {
-  background: black;
-  color: white;
 }
 
 span.sample {
@@ -176,12 +157,13 @@ textarea.fallback {
   border: inherit;
 }
 </style>
+<div class="container">
 <div id="buttons">
-  <div class="button" id="nevermind"
+  <div class="close-button" id="nevermind"
    data-l10n="dialog-common:nevermind">Nevermind</div>
-  <div class="button" id="ok" data-l10n="dialog-common:ok">Ok</div>
+  <div class="ok-button" id="ok" data-l10n="dialog-common:ok">Ok</div>
 </div>
-<div id="header"><h1></h1></div>
+<div id="header"><h1 class="title"><span data-l10n="dialog-common:product-name">X-Ray Goggles</span> <span class="subtitle" data-l10n="title">Remixer</span></h1></div>
 <div id="dom-rendering-column">
   <h2 data-l10n="html-header">Source Code</h2>
   <div class="tabs">
@@ -195,6 +177,7 @@ textarea.fallback {
 <div id="preview-column">
   <h2 data-l10n="rendering-header">Preview</h2>
   <iframe id="preview" scrolling="no" src="blank.html"></iframe>
+</div>
 </div>
 <script>
 "use strict";
@@ -321,8 +304,6 @@ jQuery.extend({
 });
 
 function createDialog(data) {
-  $("#header h1").text(data.title);
-  
   var previewDoc = $("#preview").contents();
   var stylesheet = $('<link rel="stylesheet"></link>');
 
@@ -406,7 +387,7 @@ $(window).ready(function() {
 
     var dialog = createDialog(data);
 
-    $("#ok.button").click(function() {
+    $("#ok").click(function() {
       if (!responseSent) {
         sendMessage({
           msg: 'ok',
@@ -440,7 +421,6 @@ $(window).ready(function() {
     iframe.load(function() {
       var doc = iframe.contents();
       onMessage({
-        title: "Easy Remix Dialog",
         languages: ["en", "es"],
         startHTML: {
           selector: "#sample",
@@ -456,7 +436,7 @@ $(window).ready(function() {
     }
   }
     
-  $("#nevermind.button").click(function() {
+  $(".close-button").click(function() {
     if (!responseSent) {
       sendMessage({msg: 'nevermind'});
       responseSent = true;
