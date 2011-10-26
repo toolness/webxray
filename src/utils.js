@@ -44,6 +44,20 @@
   });
   
   jQuery.fn.extend({
+    // Turns all URLs in src and href attributes into absolute URLs
+    // if they're not already.
+    absolutifyURLs: function() {
+      var URL_PROPS = ['href', 'src'];
+      this.find('*').andSelf().each(function() {
+        var self = this;
+        URL_PROPS.forEach(function(name) {
+          if (name in self && self[name]) {
+            $(self).attr(name, self[name]);
+          }
+        });
+      });
+      return this;
+    },
     // returns whether at least one of the matched elements is a
     // void element (i.e., has no closing tag).
     isVoidElement: function() {
