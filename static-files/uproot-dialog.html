@@ -1,32 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Publish Your Remix</title>
+<link rel="stylesheet" href="dialog-common/stylesheets/base.css">
 <style>
-html, body {
-  background: white;
-  margin: 1em;
-  font-family: Baskerville, Georgia, serif;
-}
-
-h1, h2 {
-  font-weight: normal;
-  margin-top: 0.5em;
-  margin-bottom: 0.1em;
-}
-
-.button {
-  float: right;
-  padding: 0.5em;
-  background: #f0f0f0;
-  margin: 0.25em;
-  cursor: pointer;
-}
-
-div.button:hover {
-  background: black;
-  color: white;
-}
-
 textarea {
   font-family: Monaco, "Lucida Console", monospace;
   font-size: 9pt;
@@ -36,17 +12,23 @@ textarea {
 
 div.big-button {
   display: inline-block;
-  width: 10em;
+  width: 200px;
   text-align: center;
   cursor: pointer;
-  background: steelblue;
+  background-color: #f8a339;
   font-weight: bold;
+  font-style: italic;
   color: white;
   padding: 10px;
+  border-radius: 10px;
+}
+
+div.big-button:after {
+  content: ' »';
 }
 
 div.big-button:hover {
-  background: navy;
+  background-color: #ffc833;
 }
 
 div.publish-option {
@@ -75,11 +57,12 @@ div.publish-option p {
   background-color: #f0f0f0;
 }
 </style>
+<div class="container">
 <div id="buttons">
-  <div class="button" id="close"
+  <div class="close-button" id="close"
    data-l10n="dialog-common:close">Close</div>
 </div>
-<div id="header"><h1 data-l10n="header">Publish Your Remix</h1></div>
+<div id="header"><h1 class="title"><span data-l10n="dialog-common:product-name">X-Ray Goggles</span> <span class="subtitle" data-l10n="header">Publish Your Remix</span></h1></div>
 <div id="choose-publish-method">
   <p data-l10n="intro">There are two ways you can publish your remix and share it with others.</p>
   <div class="publish-option">
@@ -109,6 +92,7 @@ div.publish-option p {
 </div>
 <div id="sample-html" style="display: none;">
   <p>I am sample “html”.</p>
+</div>
 </div>
 <script src="jquery.min.js"></script>
 <script src="src/localization.js"></script>
