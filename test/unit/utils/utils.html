@@ -1,5 +1,5 @@
 <div id="utils">
-  <div class="test-case" data-expect="div:nth-of-type(1)">
+  <div class="test-case" data-expect=" > div:nth-of-type(1)">
     <div data-target="true"></div>
   </div>
   <div class="test-case" data-expect="div:nth-of-type(1) > span:nth-of-type(1)">
@@ -26,5 +26,9 @@
       <p></p>
       <span></span>
     </div>
+  </div>
+  <div class="test-case" data-expect=" > span:nth-of-type(1)">
+    <a><span></span></a>
+    <span data-target="true"></span>
   </div>
 </div>
