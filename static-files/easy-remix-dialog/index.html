@@ -315,6 +315,7 @@ function createDialog(data) {
   // work for html and body elements in iframes.
   var selected = previewDoc.find("body").find(data.startHTML.selector);
   previewDoc.hideEverythingExcept(selected);
+  selected.absolutifyURLs();
   var intervalID = null;
 
   function startScaling() {
