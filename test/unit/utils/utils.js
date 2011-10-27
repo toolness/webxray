@@ -102,6 +102,8 @@ test("absolutifyURLs()", function() {
   if (a.attr("href") == a[0].href)
     throw new Error("Expected href attribute to != href property!");
   a.absolutifyURLs();
+  if (!a[0].href.match(/.+\/blah$/))
+    throw new Error("Expected href property to be absolute!");
   equal(a[0].href, a.attr("href"), "URLs in hrefs are absolutified");
 
   a = $('<img src="/blah">test</img>');
@@ -110,6 +112,8 @@ test("absolutifyURLs()", function() {
   if (a.attr("src") == a[0].src)
     throw new Error("Expected src attribute to != src property!");
   a.absolutifyURLs();
+  if (!a[0].src.match(/.+\/blah$/))
+    throw new Error("Expected src property to be absolute!");
   equal(a[0].src, a.attr("src"), "URLs in srcs are absolutified");
 
   a = $('<div><img src="/blah">test</img></div>');
