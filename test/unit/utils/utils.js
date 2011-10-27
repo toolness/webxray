@@ -62,7 +62,9 @@ test("pathTo()", function() {
     equals(actual, expect, "actual CSS path is same as expected");
 
     var matches = $(root).find(expect);
-    if (matches.length != 1 || matches.get(0) !== target)
+    if (matches.length != 1)
+      throw new Error("expected path does not uniquely identify the element!");
+    if (matches.get(0) !== target)
       throw new Error("expected path is not actually valid!");
   });
 });
