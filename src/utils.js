@@ -89,10 +89,7 @@
       }
       
       parts.reverse();
-      if( parts.length == 1 ) {
-        return ' > ' + parts[0];
-      }
-      return parts.join(' > ');
+      return ' > ' + parts.join(' > ');
     },
 
     // Temporarily remove the set of matched elements,
