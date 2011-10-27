@@ -67,8 +67,9 @@
                      "input, keygen, link, meta, param, source, " +
                      "track, wbr");
     },
-    // works like jQuery's html() with no arguments, but
+    // works much like jQuery's html() with no arguments, but
     // includes HTML code for the matched elements themselves.
+    // unlike jQuery, this will include all matched elements.
     outerHtml: function outerHtml() {
       var clonedElement = this.clone();
       var trivialParent = $('<div></div>').append(clonedElement);
