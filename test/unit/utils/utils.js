@@ -123,3 +123,13 @@ test("absolutifyURLs()", function() {
   a = a.find('img');
   equal(a[0].src, a.attr("src"), "URLs in child srcs are absolutified");
 });
+
+test("reallyRemoveClass()", function() {
+  var $ = jQuery;
+
+  var a = $('<div class="foo"></div>');
+  var b = a.clone();
+
+  equal('<div class=""></div>', a.removeClass('foo').outerHtml());
+  equal('<div></div>', b.reallyRemoveClass('foo').outerHtml());
+});
