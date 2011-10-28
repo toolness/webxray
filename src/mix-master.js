@@ -212,12 +212,12 @@
                       input: input,
                       element: newContent,
                       onDone: function() {
-                        newContent.removeClass('webxray-hidden');
+                        newContent.reallyRemoveClass('webxray-hidden');
                       }
                     });
                   } else {
                     // TODO: Re-focus previously focused elements?
-                    $(focusedElement).removeClass('webxray-hidden');
+                    $(focusedElement).reallyRemoveClass('webxray-hidden');
                     dialog.close();
                   }
                 }
