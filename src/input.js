@@ -318,7 +318,7 @@
           {key: 'RIGHT', cmd: 'redo'},
           {key: 'UP', cmd: 'dom-ascend'},
           {key: 'DOWN', cmd: 'dom-descend'},
-          {key: 'T', cmd: 'uproot'}
+          {key: 'P', cmd: 'uproot'}
         ],
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
@@ -342,7 +342,7 @@
             sendFullDocument: true
           });
         },
-        T: function() {
+        P: function() {
           persistence.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
         }
