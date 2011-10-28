@@ -180,6 +180,12 @@
       this.resizeTo(target, function() {
         $(this).fadeOut(function() { $(this).remove(); });
       });
+    },
+    // Removes the class and, if the class attribute is now empty, 
+    // removes the attribute as well (jQuery remove class does not)..
+    reallyRemoveClass: function reallyRemoveClass(classname) {
+      this.removeClass(classname).filter('[class=""]').removeAttr('class');
+      return this;
     }
   });
 })(jQuery);
