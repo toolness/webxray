@@ -70,7 +70,7 @@
       makeButton('↓', 'descend', makeKeydown('DOWN')).appendTo(toolbar);
       makeButton('←', 'undo', makeKeydown('LEFT')).appendTo(toolbar);      
       makeButton('→', 'redo', makeKeydown('RIGHT')).appendTo(toolbar);      
-      makeButton('t', 'publish', makeKeydown('T')).appendTo(toolbar);      
+      makeButton('p', 'publish', makeKeydown('P')).appendTo(toolbar);      
       makeButton('esc', 'quit', makeKeydown('ESC')).appendTo(toolbar);
       toolbar.appendTo(document.body);
       
