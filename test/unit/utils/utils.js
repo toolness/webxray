@@ -133,3 +133,31 @@ test("reallyRemoveClass()", function() {
   equal('<div class=""></div>', a.removeClass('foo').outerHtml());
   equal('<div></div>', b.reallyRemoveClass('foo').outerHtml());
 });
+
+test("safeJSONStringify()", function() {
+
+  function testSafeJSONStringify(value, expectedJSON) {
+    var restore = Array.prototype.toJSON;
+    delete Array.prototype.toJSON;
+
+    var json = JSON.stringify(value);
+    equal(json, expectedJSON, "stringified as expected");
+
+    // Prototype.js defines this, changing array JSON stringification
+    var f = function(){ 
+      return "oops";
+    };
+    Array.prototype.toJSON = f;
+
+    notEqual(JSON.stringify(value), expectedJSON, 
+          "no longer stringifies as expected");
+    equal(jQuery.safeJSONStringify(value), expectedJSON, 
+          "safeJSONStringify still produces expected JSON string");
+    equal(Array.prototype.toJSON, f, "toJSON left intact");
+
+    Array.prototype.toJSON = restore;
+  };
+
+  testSafeJSONStringify(['a', 'b'], '["a","b"]');
+  testSafeJSONStringify({foo:['a', 'b']}, '{"foo":["a","b"]}');
+});

@@ -189,7 +189,7 @@
             url: dialogURL,
             element: focusedElement,
             onLoad: function(dialog) {
-              dialog.iframe.postMessage(JSON.stringify({
+              dialog.iframe.postMessage(jQuery.safeJSONStringify({
                 languages: jQuery.locale.languages,
                 startHTML: startHTML,
                 mods: dialogPageMods,
