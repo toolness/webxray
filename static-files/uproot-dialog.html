@@ -122,19 +122,19 @@ function init(html, originalURL, hackpubURL) {
       $("#to-internet").fadeIn(function() {
         var timeout = DeferredTimeout(1000);
         var publish = DeferredPublish(html, originalURL, hackpubURL);
-        jQuery.when(publish, timeout).then(function(publishArgs) {
-          // TODO: It doesn't actually seem like we're being called
-          // if the request fails. Need too fix this.
-          $("#to-internet .loading").fadeOut(function() {
-            if (publishArgs[1] == "success") {
+        jQuery.when(publish, timeout).then(
+          function onSuccess(publishArgs) {
+            $("#to-internet .loading").fadeOut(function() {
               var data = publishArgs[0];
               var url = data['published-url'];
               $(".published-url a").attr("href", url).text(url);
               $("#to-internet .finished").fadeIn();
-            } else
-              $("#to-internet .failure").fadeIn();
-          });
-        });
+            });
+          }, 
+          function onFailure() {
+            $("#to-internet .failure").fadeIn();
+          }
+        );
       });
     });
   });
