@@ -90,10 +90,10 @@
         var selector = node.nodeName.toLowerCase();
 
         // Class and id parts are based on jQuery-GetPath code.
-        if (typeof(className) != "undefined" && className.length)
-          selector += "." + jQuery.trim(className).split(/[\s\n]+/).join('.');
         if (typeof(id) != "undefined" && id.length)
           selector += "#" + id;
+        if (typeof(className) != "undefined" && className.length)
+          selector += "." + jQuery.trim(className).split(/[\s\n]+/).join('.');
 
         selector += ':nth-of-type(' + n + ')';
         parts.push(selector);
