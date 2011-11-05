@@ -8,6 +8,7 @@
   color: white;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   font-size: 9pt;
+  z-index: 2147483645;
 }
 
 .hackpub-top-bar a {
