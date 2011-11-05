@@ -85,8 +85,18 @@
 
       for (var node = target; node && node != root; node = node.parentNode) {
         var n = $(node).prevAll(node.nodeName.toLowerCase()).length + 1;
-        parts.push(node.nodeName.toLowerCase() +
-                   ':nth-of-type(' + n + ')');
+        var id = $(node).attr("id");
+        var className = $(node).attr("class");
+        var selector = node.nodeName.toLowerCase();
+
+        // Class and id parts are based on jQuery-GetPath code.
+        if (typeof(className) != "undefined" && className.length)
+          selector += "." + jQuery.trim(className).split(/[\s\n]+/).join('.');
+        if (typeof(id) != "undefined" && id.length)
+          selector += "#" + id;
+
+        selector += ':nth-of-type(' + n + ')';
+        parts.push(selector);
       }
       
       parts.reverse();
