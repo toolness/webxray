@@ -108,7 +108,8 @@
         mixMaster: mixMaster,
         styleInfoOverlay: styleInfo,
         commandManager: commandManager,
-        input: input
+        input: input,
+        modalUnloadBlocker: modalUnloadBlocker
       });
 
       return self;
