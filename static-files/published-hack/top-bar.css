@@ -13,6 +13,7 @@
 
 .hackpub-top-bar a {
   color: white;
+  text-decoration: underline;
 }
 
 .hackpub-top-bar div.close-button:before {
