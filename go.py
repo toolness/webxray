@@ -38,6 +38,17 @@ def get_git_commit():
     except Exception:
         return "unknown"
 
+def process_locale_json(data):
+    lines = []
+    for locale in data:
+        for scope in data[locale]:
+            lines.append("jQuery.localization.extend(%s, %s, %s);" % (
+                json.dumps(locale),
+                json.dumps(scope),
+                json.dumps(data[locale][scope])
+            ))
+    return '\n'.join(lines)
+
 def build_compiled_file(cfg):
     metadata = json.dumps(dict(commit=get_git_commit(),
                                date=time.ctime()))
@@ -52,7 +63,10 @@ def build_compiled_file(cfg):
             filenames = [path]
         for filename in filenames:
             data = open(filename, 'r').read()
-            data = data.replace('__BUILD_METADATA__', metadata)
+            if filename.endswith('.json'):
+                data = process_locale_json(json.loads(data))
+            else:
+                data = data.replace('__BUILD_METADATA__', metadata)
             contents.append(data)
     return ''.join(contents)
 
