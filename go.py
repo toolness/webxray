@@ -27,6 +27,12 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 JS_TYPE = 'application/javascript; charset=utf-8'
 
 path = lambda *x: os.path.join(ROOT, *x)
+locale_dir = path('locale')
+locale_domain = 'webxray'
+
+sys.path.append(path('vendor'))
+
+import localization
 
 def get_git_commit():
     try:
@@ -123,6 +129,19 @@ if __name__ == "__main__":
         serve(cfg, '127.0.0.1')
     elif cmd == 'globalserve':
         serve(cfg)
+    elif cmd == 'compilemessages':
+        localization.compilemessages(json_dir=path('src', 'locale'),
+                                     locale_dir=locale_dir,
+                                     locale_domain=locale_domain)
+    elif cmd == 'makemessages':
+        locale = None
+        if len(sys.argv) > 2:
+            locale = sys.argv[2]
+        localization.makemessages(babel_ini_file=path('babel.ini'),
+                                  json_dir=path('src', 'locale'),
+                                  locale_dir=locale_dir,
+                                  locale_domain=locale_domain,
+                                  locale=locale)
     elif cmd == 'compile':
         f = open(cfg['compiledFilename'], 'w')
         f.write(build_compiled_file(cfg))
