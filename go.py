@@ -118,6 +118,7 @@ if __name__ == "__main__":
     elif cmd == 'compilemessages':
         localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
                                      js_locale_dir=path('src', 'locale'),
+                                     default_locale='en',
                                      locale_dir=locale_dir,
                                      locale_domain=locale_domain)
     elif cmd == 'makemessages':

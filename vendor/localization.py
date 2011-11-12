@@ -40,17 +40,18 @@ def locale_exists(locale, dirname, domain):
                           '%s.po' % domain)
     return os.path.exists(pofile)
 
-def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain):
+def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
+                    default_locale):
     "convert message files into binary and JS formats"
 
     data = json.load(open(os.path.join(json_dir, 'strings.json')))
     babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
            locale_domain])
-    locales = find_locales(locale_dir, locale_domain) + ['en']
+    locales = find_locales(locale_dir, locale_domain) + [default_locale]
     for locale in locales:
         nice_locale = locale.replace('_', '-')
         print "processing localization '%s'" % nice_locale
-        if locale == 'en':
+        if locale == default_locale:
             trans = gettext.NullTranslations()
         else:
             trans = gettext.translation(locale_domain,
@@ -63,7 +64,7 @@ def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain):
             for key in data[scope]:
                 original = data[scope][key]
                 translation = trans.ugettext(original)
-                if translation != original or locale == 'en':
+                if translation != original or locale == default_locale:
                     scopedict[key] = translation
             if scopedict:
                 newtrans[locale][scope] = scopedict
