@@ -27,6 +27,12 @@ ROOT = os.path.abspath(os.path.dirname(__file__))
 JS_TYPE = 'application/javascript; charset=utf-8'
 
 path = lambda *x: os.path.join(ROOT, *x)
+locale_dir = path('locale')
+locale_domain = 'webxray'
+
+sys.path.append(path('vendor'))
+
+import localization
 
 def get_git_commit():
     try:
@@ -37,6 +43,17 @@ def get_git_commit():
         return head.strip()
     except Exception:
         return "unknown"
+
+def process_locale_json(data):
+    lines = []
+    for locale in data:
+        for scope in data[locale]:
+            lines.append("jQuery.localization.extend(%s, %s, %s);" % (
+                json.dumps(locale),
+                json.dumps(scope),
+                json.dumps(data[locale][scope])
+            ))
+    return '\n'.join(lines)
 
 def build_compiled_file(cfg):
     metadata = json.dumps(dict(commit=get_git_commit(),
@@ -52,7 +69,10 @@ def build_compiled_file(cfg):
             filenames = [path]
         for filename in filenames:
             data = open(filename, 'r').read()
-            data = data.replace('__BUILD_METADATA__', metadata)
+            if filename.endswith('.json'):
+                data = process_locale_json(json.loads(data))
+            else:
+                data = data.replace('__BUILD_METADATA__', metadata)
             contents.append(data)
     return ''.join(contents)
 
@@ -109,6 +129,19 @@ if __name__ == "__main__":
         serve(cfg, '127.0.0.1')
     elif cmd == 'globalserve':
         serve(cfg)
+    elif cmd == 'compilemessages':
+        localization.compilemessages(json_dir=path('src', 'locale'),
+                                     locale_dir=locale_dir,
+                                     locale_domain=locale_domain)
+    elif cmd == 'makemessages':
+        locale = None
+        if len(sys.argv) > 2:
+            locale = sys.argv[2]
+        localization.makemessages(babel_ini_file=path('babel.ini'),
+                                  json_dir=path('src', 'locale'),
+                                  locale_dir=locale_dir,
+                                  locale_domain=locale_domain,
+                                  locale=locale)
     elif cmd == 'compile':
         f = open(cfg['compiledFilename'], 'w')
         f.write(build_compiled_file(cfg))
