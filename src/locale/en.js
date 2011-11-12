@@ -89,6 +89,7 @@
     "redo": "Redo",
     "dom-ascend": "Ascend to parent element",
     "dom-descend": "Descend to child element",
-    "uproot": "Publish your remix"
+    "uproot": "Publish your remix",
+    "xpath": "Get the element's XPath"
   });
 })(jQuery);

@@ -8,6 +8,7 @@ var Webxray = (function() {
       baseURI = baseURI || document.baseURI;
 
       var baseCode = "(function(){var script=document.createElement('script');script.src='http://localhost:8000/webxray.js';script.className='webxray';document.head.appendChild(script);})();";
+      var baseCode = '(function(){var doc=document.getElementsByTagName("iframe")[0],doc=doc?doc.contentDocument:document,script=doc.createElement("script");script.src="http://localhost:8000/webxray.js";script.className="webxray";doc.head.appendChild(script)})();';
       var code = baseCode.replace('http://localhost:8000/', baseURI);
       
       return 'javascript:' + code;

@@ -95,6 +95,42 @@
           html = '<span>' + html + '</span>';
         return $(html);
       },
+      createXpathFromElement: function xpathFromElement(doc, element) {
+        if (element == doc || !element) {
+          return "/";
+        }
+
+        var nodeList;
+        if (element.id) {
+          nodeList = doc.evaluate("//*[@id='" + element.id + "']", doc, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+          if (nodeList.snapshotLength == 1) {
+            return "//*[@id='" + element.id + "']";
+          }
+        }
+
+        var parentSelector = "",
+                relativeElement = doc;
+
+        if (element.parentNode != doc) {
+          parentSelector = xpathFromElement(doc, element.parentNode);
+          // TODO: extract our evaluate someplace so changes are easier
+          relativeElement = doc.evaluate(parentSelector, doc, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue;
+        }
+
+        nodeList = doc.evaluate(element.nodeName, relativeElement, null, XPathResult.ORDERED_NODE_SNAPSHOT_TYPE, null);
+
+        if (nodeList.snapshotLength == 1) {
+          return (parentSelector + "/" + element.nodeName).trim();
+        } else {
+          for (var i = 0; i < nodeList.snapshotLength; ++i) {
+            if (element == nodeList.snapshotItem(i)) {
+              return (parentSelector + "/" + element.nodeName + "[" + (i + 1) + "]").trim();
+            }
+          }
+
+          throw new Error("Node not found by tag name");
+        }
+      },
       deleteFocusedElement: function deleteFocusedElement() {
         var elementToDelete = focused.getPrimaryElement();
         if (elementToDelete) {
@@ -125,6 +161,18 @@
                     element.nodeName.toLowerCase();
           open(url, 'info');
         }
+      },
+      xpathForFocusedElement: function xpathForFocusedElement(options) {
+        var element = focused.getPrimaryElement();
+        var xpath = self.createXpathFromElement(document, element);
+        //alert(xpath);
+        jQuery.simpleModalDialog({
+          input: options.input,
+          url: 'xpath-dialog.html',
+          payload: JSON.stringify({
+            xpath: xpath
+          })
+        });
       },
       replaceElement: function(elementToReplace, html) {
         var newContent = self.htmlToJQuery(html);

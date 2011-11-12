@@ -318,7 +318,8 @@
           {key: 'RIGHT', cmd: 'redo'},
           {key: 'UP', cmd: 'dom-ascend'},
           {key: 'DOWN', cmd: 'dom-descend'},
-          {key: 'P', cmd: 'uproot'}
+          {key: 'P', cmd: 'uproot'},
+          {key: 'X', cmd: 'xpath'}
         ],
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
@@ -345,6 +346,11 @@
         P: function() {
           persistence.saveHistoryToDOM();
           jQuery.openUprootDialog(self);
+        },
+        X: function() {
+          mixMaster.xpathForFocusedElement({
+            input: self
+          });
         }
       });
 
