@@ -103,6 +103,13 @@ def serve(cfg, ip=''):
     print "serving on %s port %d" % (ipstr, cfg['port'])
     server.serve_forever()
 
+def compilemessages(cfg):
+    localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
+                                 js_locale_dir=path('src', 'locale'),
+                                 default_locale='en',
+                                 locale_dir=locale_dir,
+                                 locale_domain=locale_domain)
+
 if __name__ == "__main__":
     cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
@@ -114,15 +121,13 @@ if __name__ == "__main__":
     cmd = sys.argv[1]
     
     if cmd == 'serve':
+        compilemessages(cfg)
         serve(cfg, '127.0.0.1')
     elif cmd == 'globalserve':
+        compilemessages(cfg)
         serve(cfg)
     elif cmd == 'compilemessages':
-        localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
-                                     js_locale_dir=path('src', 'locale'),
-                                     default_locale='en',
-                                     locale_dir=locale_dir,
-                                     locale_domain=locale_domain)
+        compilemessages(cfg)
     elif cmd == 'makemessages':
         locale = None
         if len(sys.argv) > 2:
@@ -133,13 +138,18 @@ if __name__ == "__main__":
                                   locale_domain=locale_domain,
                                   locale=locale)
     elif cmd == 'compile':
+        compilemessages(cfg)
         f = open(cfg['compiledFilename'], 'w')
         f.write(build_compiled_file(cfg))
         f.close()
         print "wrote %s" % cfg['compiledFilename']
     elif cmd == 'clean':
         if os.path.exists(cfg['compiledFilename']):
+            print "removing %s" % cfg['compiledFilename']
             os.remove(cfg['compiledFilename'])
+        for filename in glob.glob(path('src', 'locale', '*.js')):
+            print "removing %s" % filename
+            os.remove(filename)
         print "removed generated files."
     else:
         print "unknown command: %s" % cmd

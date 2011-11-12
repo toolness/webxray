@@ -32,6 +32,8 @@ def webxray_extract(fileobj, keywords, comment_tags, options):
             yield (lineno, funcname, message, comments)
 
 def find_locales(dirname, domain):
+    if not os.path.exists(dirname):
+        return []
     return [name for name in os.listdir(dirname)
             if locale_exists(name, dirname, domain)]
 
@@ -45,9 +47,11 @@ def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
     "convert message files into binary and JS formats"
 
     data = json.load(open(os.path.join(json_dir, 'strings.json')))
-    babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
-           locale_domain])
-    locales = find_locales(locale_dir, locale_domain) + [default_locale]
+    found_locales = find_locales(locale_dir, locale_domain)
+    if found_locales:
+        babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
+               locale_domain])
+    locales = found_locales + [default_locale]
     for locale in locales:
         nice_locale = locale.replace('_', '-')
         print "processing localization '%s'" % nice_locale
@@ -93,6 +97,9 @@ def makemessages(babel_ini_file, json_dir, locale_dir,
 
     babel(['extract', '-F', babel_ini_file, '-o', potfile,
            json_dir])
+    
+    if not locale and not find_locales(locale_dir, locale_domain):
+        return
     
     babel([cmd, '-i', potfile, '-d', locale_dir, '-D', locale_domain] +
           localeargs)
