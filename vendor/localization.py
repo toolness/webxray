@@ -10,6 +10,17 @@ try:
 except ImportError:
     import simplejson as json
 
+def process_locale_json(data):
+    lines = []
+    for locale in data:
+        for scope in data[locale]:
+            lines.append("jQuery.localization.extend(%s, %s, %s);" % (
+                json.dumps(locale),
+                json.dumps(scope),
+                json.dumps(data[locale][scope])
+            ))
+    return '\n'.join(lines)
+
 def webxray_extract(fileobj, keywords, comment_tags, options):
     data = json.load(fileobj)
     for locale in data:
@@ -30,19 +41,22 @@ def locale_exists(locale, dirname, domain):
                           '%s.po' % domain)
     return os.path.exists(pofile)
 
-def compilemessages(json_dir, locale_dir, locale_domain):
-    "convert message files into binary and JSON formats"
+def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain):
+    "convert message files into binary and JS formats"
 
-    data = json.load(open(os.path.join(json_dir, 'en.json')))['en']
+    data = json.load(open(os.path.join(json_dir, 'strings.json')))['en']
     babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
            locale_domain])
-    locales = find_locales(locale_dir, locale_domain)
+    locales = find_locales(locale_dir, locale_domain) + ['en']
     for locale in locales:
         nice_locale = locale.replace('_', '-')
         print "processing localization '%s'" % nice_locale
-        trans = gettext.translation(locale_domain,
-                                    locale_dir,
-                                    [locale])
+        if locale == 'en':
+            trans = gettext.NullTranslations()
+        else:
+            trans = gettext.translation(locale_domain,
+                                        locale_dir,
+                                        [locale])
         newtrans = {}
         newtrans[locale] = {}
         for scope in data:
@@ -50,15 +64,15 @@ def compilemessages(json_dir, locale_dir, locale_domain):
             for key in data[scope]:
                 original = data[scope][key]
                 translation = trans.ugettext(original)
-                if translation != original:
+                if translation != original or locale == 'en':
                     scopedict[key] = translation
             if scopedict:
                 newtrans[locale][scope] = scopedict
         if newtrans[locale]:
-            basename = "%s.json" % nice_locale
+            basename = "%s.js" % nice_locale
             print "  writing %s" % basename
-            out = open(os.path.join(json_dir, basename), 'w')
-            out.write(json.dumps(newtrans))
+            out = open(os.path.join(js_locale_dir, basename), 'w')
+            out.write(process_locale_json(newtrans))
             out.close()
 
 def makemessages(babel_ini_file, json_dir, locale_dir,
