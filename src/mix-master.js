@@ -165,10 +165,9 @@
       xpathForFocusedElement: function xpathForFocusedElement(options) {
         var element = focused.getPrimaryElement();
         var xpath = self.createXpathFromElement(document, element);
-        //alert(xpath);
         jQuery.simpleModalDialog({
           input: options.input,
-          url: 'xpath-dialog.html',
+          url: jQuery.webxraySettings.baseURI + 'xpath-dialog.html',
           payload: JSON.stringify({
             xpath: xpath
           })
