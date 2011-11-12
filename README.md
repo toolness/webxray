@@ -37,20 +37,14 @@ If you have any bugs to report, please file them in [Lighthouse][].
 
 ## Creating a Localization
 
-It's possible to localize the goggles, although it's not currently as
-easy as it ought to be. The following steps assume that the localization
-is for `es` (Spanish); just replace this country code with whatever language
-you're creating a localization for.
+Localizing the goggles is easy! Just translate [webxray.pot][] on
+localize.mozilla.org.
 
-1. Copy `src/locale/en.js` to `src/locale/es.js` and edit it.
-2. Replace the line `var locale = "en"` with `var locale = "es"`.
-3. Translate all strings that appear to be English.
-4. Save the file and make sure it's encoded as UTF-8.
-
-Localizations are activated automatically at runtime by examining
+Note that localizations are activated automatically at runtime by examining
 `navigator.language`. This can be manipulated in Firefox by changing
 the [Languages][] preference.
 
+  [webxray.pot]: https://localize.mozilla.org/templates/hackasaurus/LC_MESSAGES/webxray.pot/translate/
   [Languages]: http://support.mozilla.com/en-US/kb/Options%20window%20-%20Content%20panel?s=language&r=1&as=s#w_languages
 
 ## Updating JQuery
