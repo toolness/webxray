@@ -23,14 +23,13 @@ def process_locale_json(data):
 
 def webxray_extract(fileobj, keywords, comment_tags, options):
     data = json.load(fileobj)
-    for locale in data:
-        for scope in data[locale]:
-            for key in data[locale][scope]:
-                lineno = 0
-                funcname = ''
-                message = data[locale][scope][key]
-                comments = ['%s:%s' % (scope, key)]
-                yield (lineno, funcname, message, comments)
+    for scope in data:
+        for key in data[scope]:
+            lineno = 0
+            funcname = ''
+            message = data[scope][key]
+            comments = ['%s:%s' % (scope, key)]
+            yield (lineno, funcname, message, comments)
 
 def find_locales(dirname, domain):
     return [name for name in os.listdir(dirname)
@@ -44,7 +43,7 @@ def locale_exists(locale, dirname, domain):
 def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain):
     "convert message files into binary and JS formats"
 
-    data = json.load(open(os.path.join(json_dir, 'strings.json')))['en']
+    data = json.load(open(os.path.join(json_dir, 'strings.json')))
     babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
            locale_domain])
     locales = find_locales(locale_dir, locale_domain) + ['en']
