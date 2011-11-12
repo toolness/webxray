@@ -3,10 +3,12 @@
     
     commands:
     
-      serve       - run web server on 127.0.0.1 port %(port)s
-      globalserve - run web server on all IP interfaces port %(port)s
-      compile     - generate %(compiledFilename)s
-      clean       - delete all generated files
+      serve           - run web server on 127.0.0.1 port %(port)s
+      globalserve     - run web server on all IP interfaces port %(port)s
+      makemessages    - create/update message file(s) for localization
+      compilemessages - convert message files into binary and JS formats
+      compile         - generate %(compiledFilename)s
+      clean           - delete all generated files
 """
 
 from wsgiref.simple_server import make_server
