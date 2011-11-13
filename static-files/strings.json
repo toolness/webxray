@@ -15,15 +15,15 @@
     "link-click-blocked": "If you would like to follow that link, please deactivate the goggles first by pressing ESC."
   },
   "command-manager": {
-    "executed": "Busted",
-    "undid": "Unbusted",
-    "redid": "Rebusted",
+    "executed": "Executed",
+    "undid": "Undid",
+    "redid": "Redid",
     "cannot-undo-html": "<span>Nothing left to undo!</span>",
     "cannot-redo-html": "<span>Nothing left to redo!</span>"
   },
   "mix-master": {
-    "too-big-to-change": "That element is too big for me to remix. Try selecting a smaller one!",
-    "too-big-to-remix-html": "<div>That <code>&lt;${tagName}&gt;</code> element is too big for me to remix. Try selecting a smaller one!</div>",
+    "too-big-to-change": "That element is too big to remix. Try selecting a smaller one!",
+    "too-big-to-remix-html": "<div>That <code>&lt;${tagName}&gt;</code> element is too big to remix. Try selecting a smaller one!</div>",
     "deletion": "deletion",
     "replacement": "replacement"
   },
