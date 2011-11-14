@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Get Element XPath</title>
+<link rel="stylesheet" href="dialog-common/stylesheets/base.css">
+<div class="container">
+  <div id="buttons">
+    <div class="close-button" id="close"
+         data-l10n="dialog-common:close">Close
+    </div>
+  </div>
+  <div id="header"><h1 class="title"><span data-l10n="dialog-common:product-name">X-Ray Goggles</span> <span
+          class="subtitle" data-l10n="header">Copy XPath from the text field below</span></h1></div>
+  <div id="content">
+    <input autocomplete="off" type="text" value="" style="width: 100%; max-width: 100%; font-size: x-large;" id="xpath-text">
+  </div>
+</div>
+<script src="jquery.min.js"></script>
+<script>
+  window.addEventListener("message", function(event) {
+    $("#close").click(function() {
+      window.parent.postMessage("close", "*");
+    });
+    var data = JSON.parse(event.data);
+    $("#xpath-text").val(data.xpath);
+    $("#xpath-text").focus();
+    $("#xpath-text").select();
+  }, false);
+</script>
