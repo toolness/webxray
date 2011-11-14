@@ -10,18 +10,30 @@ try:
 except ImportError:
     import simplejson as json
 
-def webxray_extract(fileobj, keywords, comment_tags, options):
-    data = json.load(fileobj)
+def process_locale_json(data):
+    lines = []
     for locale in data:
         for scope in data[locale]:
-            for key in data[locale][scope]:
-                lineno = 0
-                funcname = ''
-                message = data[locale][scope][key]
-                comments = ['%s:%s' % (scope, key)]
-                yield (lineno, funcname, message, comments)
+            lines.append("jQuery.localization.extend(%s, %s, %s);" % (
+                json.dumps(locale),
+                json.dumps(scope),
+                json.dumps(data[locale][scope])
+            ))
+    return '\n'.join(lines)
+
+def webxray_extract(fileobj, keywords, comment_tags, options):
+    data = json.load(fileobj)
+    for scope in data:
+        for key in data[scope]:
+            lineno = 0
+            funcname = ''
+            message = data[scope][key]
+            comments = ['%s:%s' % (scope, key)]
+            yield (lineno, funcname, message, comments)
 
 def find_locales(dirname, domain):
+    if not os.path.exists(dirname):
+        return []
     return [name for name in os.listdir(dirname)
             if locale_exists(name, dirname, domain)]
 
@@ -30,19 +42,25 @@ def locale_exists(locale, dirname, domain):
                           '%s.po' % domain)
     return os.path.exists(pofile)
 
-def compilemessages(json_dir, locale_dir, locale_domain):
-    "convert message files into binary and JSON formats"
+def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
+                    default_locale):
+    "convert message files into binary and JS formats"
 
-    data = json.load(open(os.path.join(json_dir, 'en.json')))['en']
-    babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
-           locale_domain])
-    locales = find_locales(locale_dir, locale_domain)
+    data = json.load(open(os.path.join(json_dir, 'strings.json')))
+    found_locales = find_locales(locale_dir, locale_domain)
+    if found_locales:
+        babel(['compile', '--use-fuzzy', '-d', locale_dir, '-D',
+               locale_domain])
+    locales = found_locales + [default_locale]
     for locale in locales:
         nice_locale = locale.replace('_', '-')
         print "processing localization '%s'" % nice_locale
-        trans = gettext.translation(locale_domain,
-                                    locale_dir,
-                                    [locale])
+        if locale == default_locale:
+            trans = gettext.NullTranslations()
+        else:
+            trans = gettext.translation(locale_domain,
+                                        locale_dir,
+                                        [locale])
         newtrans = {}
         newtrans[locale] = {}
         for scope in data:
@@ -50,15 +68,15 @@ def compilemessages(json_dir, locale_dir, locale_domain):
             for key in data[scope]:
                 original = data[scope][key]
                 translation = trans.ugettext(original)
-                if translation != original:
+                if translation != original or locale == default_locale:
                     scopedict[key] = translation
             if scopedict:
                 newtrans[locale][scope] = scopedict
         if newtrans[locale]:
-            basename = "%s.json" % nice_locale
+            basename = "%s.js" % nice_locale
             print "  writing %s" % basename
-            out = open(os.path.join(json_dir, basename), 'w')
-            out.write(json.dumps(newtrans))
+            out = open(os.path.join(js_locale_dir, basename), 'w')
+            out.write(process_locale_json(newtrans))
             out.close()
 
 def makemessages(babel_ini_file, json_dir, locale_dir,
@@ -79,6 +97,9 @@ def makemessages(babel_ini_file, json_dir, locale_dir,
 
     babel(['extract', '-F', babel_ini_file, '-o', potfile,
            json_dir])
+    
+    if not locale and not find_locales(locale_dir, locale_domain):
+        return
     
     babel([cmd, '-i', potfile, '-d', locale_dir, '-D', locale_domain] +
           localeargs)

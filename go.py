@@ -3,10 +3,12 @@
     
     commands:
     
-      serve       - run web server on 127.0.0.1 port %(port)s
-      globalserve - run web server on all IP interfaces port %(port)s
-      compile     - generate %(compiledFilename)s
-      clean       - delete all generated files
+      serve           - run web server on 127.0.0.1 port %(port)s
+      globalserve     - run web server on all IP interfaces port %(port)s
+      makemessages    - create/update message file(s) for localization
+      compilemessages - convert message files into binary and JS formats
+      compile         - generate %(compiledFilename)s
+      clean           - delete all generated files
 """
 
 from wsgiref.simple_server import make_server
@@ -44,17 +46,6 @@ def get_git_commit():
     except Exception:
         return "unknown"
 
-def process_locale_json(data):
-    lines = []
-    for locale in data:
-        for scope in data[locale]:
-            lines.append("jQuery.localization.extend(%s, %s, %s);" % (
-                json.dumps(locale),
-                json.dumps(scope),
-                json.dumps(data[locale][scope])
-            ))
-    return '\n'.join(lines)
-
 def build_compiled_file(cfg):
     metadata = json.dumps(dict(commit=get_git_commit(),
                                date=time.ctime()))
@@ -69,10 +60,7 @@ def build_compiled_file(cfg):
             filenames = [path]
         for filename in filenames:
             data = open(filename, 'r').read()
-            if filename.endswith('.json'):
-                data = process_locale_json(json.loads(data))
-            else:
-                data = data.replace('__BUILD_METADATA__', metadata)
+            data = data.replace('__BUILD_METADATA__', metadata)
             contents.append(data)
     return ''.join(contents)
 
@@ -115,6 +103,13 @@ def serve(cfg, ip=''):
     print "serving on %s port %d" % (ipstr, cfg['port'])
     server.serve_forever()
 
+def compilemessages(cfg):
+    localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
+                                 js_locale_dir=path('src', 'locale'),
+                                 default_locale='en',
+                                 locale_dir=locale_dir,
+                                 locale_domain=locale_domain)
+
 if __name__ == "__main__":
     cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
@@ -126,30 +121,35 @@ if __name__ == "__main__":
     cmd = sys.argv[1]
     
     if cmd == 'serve':
+        compilemessages(cfg)
         serve(cfg, '127.0.0.1')
     elif cmd == 'globalserve':
+        compilemessages(cfg)
         serve(cfg)
     elif cmd == 'compilemessages':
-        localization.compilemessages(json_dir=path('src', 'locale'),
-                                     locale_dir=locale_dir,
-                                     locale_domain=locale_domain)
+        compilemessages(cfg)
     elif cmd == 'makemessages':
         locale = None
         if len(sys.argv) > 2:
             locale = sys.argv[2]
         localization.makemessages(babel_ini_file=path('babel.ini'),
-                                  json_dir=path('src', 'locale'),
+                                  json_dir=path(cfg['staticFilesDir']),
                                   locale_dir=locale_dir,
                                   locale_domain=locale_domain,
                                   locale=locale)
     elif cmd == 'compile':
+        compilemessages(cfg)
         f = open(cfg['compiledFilename'], 'w')
         f.write(build_compiled_file(cfg))
         f.close()
         print "wrote %s" % cfg['compiledFilename']
     elif cmd == 'clean':
         if os.path.exists(cfg['compiledFilename']):
+            print "removing %s" % cfg['compiledFilename']
             os.remove(cfg['compiledFilename'])
+        for filename in glob.glob(path('src', 'locale', '*.js')):
+            print "removing %s" % filename
+            os.remove(filename)
         print "removed generated files."
     else:
         print "unknown command: %s" % cmd

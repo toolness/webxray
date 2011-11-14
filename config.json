@@ -24,7 +24,7 @@
   , "jquery/src/dimensions.js"
   , "src/get-bookmarklet-url.js"
   , "src/localization.js"
-  , "src/locale/*.json"
+  , "src/locale/*.js"
   , "src/settings.js"
   , "src/help.js"
   , "src/settings.local.js"
