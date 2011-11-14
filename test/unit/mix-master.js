@@ -161,12 +161,12 @@ test("jQuery.mixMaster()", function() {
 
     mixMaster.replaceElement(focused.getPrimaryElement(), '<em>hello</em>');
     equal(element.html(), '<em>hello</em>', "Simulating replacement works");
-    equal($(hud.overlay).text(), 'Busted replacement.');
+    equal($(hud.overlay).text(), 'Executed replacement.');
 
     mixMaster.undo();
     equal(element.find("#mixmastertest").length, 1,
           "Simulating undo works");
-    equal($(hud.overlay).text(), 'Unbusted replacement.');
+    equal($(hud.overlay).text(), 'Undid replacement.');
 
     ok(element.find("#mixmastertest").get(0) === domNode,
        "Undo restores original DOM node, not just HTML.");
@@ -175,7 +175,7 @@ test("jQuery.mixMaster()", function() {
 
     equal(element.find("#mixmastertest").length, 0,
           "Simulating redo works");
-    equal($(hud.overlay).text(), 'Rebusted replacement.');
+    equal($(hud.overlay).text(), 'Redid replacement.');
   });
 
   mixTest(function(mixMaster) {
@@ -189,6 +189,6 @@ test("jQuery.mixMaster()", function() {
     mixMaster.deleteFocusedElement();
     equal(element.html(), '<span class="webxray-deleted"></span>',
           "Simulating deletion works");
-    equal($(hud.overlay).text(), 'Busted deletion.');
+    equal($(hud.overlay).text(), 'Executed deletion.');
   });
 });
