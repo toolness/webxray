@@ -77,5 +77,17 @@
     "dom-ascend": "Ascend to parent element",
     "dom-descend": "Descend to child element",
     "uproot": "Publish your remix"
+  },
+  "short-command-descriptions": {
+    "help": "help",
+    "quit": "quit",
+    "remix": "remix",
+    "css-quasimode": "css",
+    "remove": "remove",
+    "undo": "undo",
+    "redo": "redo",
+    "dom-ascend": "ascend",
+    "dom-descend": "descend",
+    "uproot": "publish"
   }
 }

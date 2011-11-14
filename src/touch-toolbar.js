@@ -37,7 +37,10 @@
   }
   
   jQuery.extend({
-    touchToolbar: function(input) {
+    touchToolbar: function(input, locale, platform) {
+      locale = locale || jQuery.locale;
+      platform = platform || navigator.platform;
+
       function makeKeydown(key) {
         return function() {
           input.handleEvent(makeFakeEvent({
@@ -61,17 +64,17 @@
       }
 
       var toolbar = $('<div class="webxray-base webxray-toolbar"></div>');
+      var keyNames = locale.scope('key-names');
+      var shortDescriptions = locale.scope('short-command-descriptions');
 
-      // TODO: This is a DRY violation.
-      makeButton('r', 'remix', makeKeydown('R')).appendTo(toolbar);
-      makeButton('del', 'remove', makeKeydown('DELETE')).appendTo(toolbar);
-      makeButton('c', 'CSS', makeKeyToggle('C')).appendTo(toolbar);
-      makeButton('↑', 'ascend', makeKeydown('UP')).appendTo(toolbar);
-      makeButton('↓', 'descend', makeKeydown('DOWN')).appendTo(toolbar);
-      makeButton('←', 'undo', makeKeydown('LEFT')).appendTo(toolbar);      
-      makeButton('→', 'redo', makeKeydown('RIGHT')).appendTo(toolbar);      
-      makeButton('p', 'publish', makeKeydown('P')).appendTo(toolbar);      
-      makeButton('esc', 'quit', makeKeydown('ESC')).appendTo(toolbar);
+      input.keyboardHelp.forEach(function(binding) {
+        if (binding.cmd == 'help')
+          return;
+        makeButton(jQuery.nameForKey(binding.key, locale, platform),
+                   shortDescriptions(binding.cmd),
+                   makeKeydown(binding.key)).appendTo(toolbar);
+      });
+      
       toolbar.appendTo(document.body);
       
       return {

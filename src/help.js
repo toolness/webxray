@@ -11,12 +11,7 @@
     var localizedKeys = [];
     keys.forEach(function(info) {
       var localizedInfo = {key: null, desc: null};
-      var normalKey = "key-names:" + info.key;
-      var osKey = normalKey + "-" + platform;
-      
-      localizedInfo.key = locale[osKey] ||
-                          locale[normalKey] ||
-                          info.key;
+      localizedInfo.key = jQuery.nameForKey(info.key, locale, platform);
       localizedInfo.desc = descriptions(info.cmd);
       localizedKeys.push(localizedInfo);
     });
@@ -24,6 +19,17 @@
   }
   
   jQuery.extend({
+    nameForKey: function(key, locale, platform) {
+      locale = locale || jQuery.locale;
+      platform = platform || navigator.platform;
+
+      var normalKey = "key-names:" + key;
+      var osKey = normalKey + "-" + platform;
+      
+      return locale[osKey] ||
+             locale[normalKey] ||
+             key;
+    },
     createKeyboardHelpReference: function(keyboardHelp, locale, platform) {
       var keys = createLocalizedHelp(keyboardHelp, locale, platform);
       var table = $('<div class="webxray-help-box"></div>');
