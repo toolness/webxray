@@ -307,46 +307,101 @@
 
       self.extend({
         simpleKeyBindings: jQuery.simpleKeyBindings(),
-        // TODO: This is violating DRY.
-        keyboardHelp: [
-          {key: 'H', cmd: 'help'},
-          {key: 'ESC', cmd: 'quit'},
-          {key: 'R', cmd: 'remix'},
-          {key: 'C', cmd: 'css-quasimode'},
-          {key: 'DELETE', cmd: 'remove'},
-          {key: 'LEFT', cmd: 'undo'},
-          {key: 'RIGHT', cmd: 'redo'},
-          {key: 'UP', cmd: 'dom-ascend'},
-          {key: 'DOWN', cmd: 'dom-descend'},
-          {key: 'P', cmd: 'uproot'}
-        ],
+        keyboardHelp: [],
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
           jQuery.transparentMessage(help);
+        },
+        addSimpleKeyBindings: function(bindings) {
+          bindings.forEach(function(binding) {
+            if (binding.cmd)
+              self.keyboardHelp.push({
+                key: binding.key,
+                cmd: binding.cmd
+              });
+            if (binding.execute) {
+              var simpleBinding = {};
+              simpleBinding[binding.key] = binding.execute;
+              self.simpleKeyBindings.set(simpleBinding);
+            }
+          });
         }
       });
       
-      self.simpleKeyBindings.set({
-        LEFT: function() { mixMaster.undo(); },
-        RIGHT: function() { mixMaster.redo(); },
-        UP: function() { focused.upfocus(); },
-        DOWN: function() { focused.downfocus(); },
-        ESC: function() { if (onQuit) onQuit(); },
-        DELETE: function() { mixMaster.deleteFocusedElement(); },
-        I: function() { mixMaster.infoForFocusedElement(); },
-        H: function() { self.showKeyboardHelp(); },
-        R: function() {
-          mixMaster.replaceFocusedElementWithDialog({
-            input: self,
-            dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
-            sendFullDocument: true
-          });
+      self.addSimpleKeyBindings([
+        {
+          key: 'H',
+          cmd: 'help',
+          execute: function() {
+            self.showKeyboardHelp();
+          }
         },
-        P: function() {
-          persistence.saveHistoryToDOM();
-          jQuery.openUprootDialog(self);
+        {
+          key: 'ESC',
+          cmd: 'quit',
+          execute: function() {
+            if (onQuit) onQuit();
+          }
+        },
+        {
+          key: 'R',
+          cmd: 'remix',
+          execute: function() {
+            mixMaster.replaceFocusedElementWithDialog({
+              input: self,
+              dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
+              sendFullDocument: true
+            });
+          }
+        },
+        {
+          key: 'C',
+          cmd: 'css-quasimode'
+        },
+        {
+          key: 'DELETE',
+          cmd: 'remove',
+          execute: function() {
+            mixMaster.deleteFocusedElement();
+          }
+        },
+        {
+          key: 'LEFT',
+          cmd: 'undo',
+          execute: function() { mixMaster.undo(); }
+        },
+        {
+          key: 'RIGHT',
+          cmd: 'redo',
+          execute: function() { mixMaster.redo(); }
+        },
+        {
+          key: 'UP',
+          cmd: 'dom-ascend',
+          execute: function() { focused.upfocus(); }
+        },
+        {
+          key: 'DOWN',
+          cmd: 'dom-descend',
+          execute: function() {
+            focused.downfocus();
+          }
+        },
+        {
+          key: 'P',
+          cmd: 'uproot',
+          execute: function() {
+            persistence.saveHistoryToDOM();
+            jQuery.openUprootDialog(self);
+          }
+        },
+        {
+          key: 'I',
+          execute: function() {
+            mixMaster.infoForFocusedElement();
+          }
         }
-      });
+      ]);
 
       self.add(self.simpleKeyBindings.handlers);
       self.add(touchInputHandlers(focused));
