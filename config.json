@@ -5,6 +5,7 @@
   "compiledFile": "/webxray.js",
   "compiledFileParts": [
     "src/intro.js"
+  , "src/json.js"
   , "jquery/src/core.js"
   , "jquery/src/support.js"
   , "jquery/src/data.js"
