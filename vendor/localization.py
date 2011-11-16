@@ -46,6 +46,9 @@ def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
                     default_locale):
     "convert message files into binary and JS formats"
 
+    if not os.path.exists(js_locale_dir):
+        os.mkdir(js_locale_dir)
+
     data = json.load(open(os.path.join(json_dir, 'strings.json')))
     found_locales = find_locales(locale_dir, locale_domain)
     if found_locales:
