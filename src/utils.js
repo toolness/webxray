@@ -54,6 +54,16 @@
     warn: function warn() {
       if (window.console && window.console.warn)
         window.console.warn.apply(window.console, arguments);
+    },
+    // Call JSON.stringify() on a value without Prototype.js 
+    // Array.prototype.toJSON getting in the way.
+    // http://stackoverflow.com/questions/710586/json-stringify-bizarreness
+    safeJSONStringify: function safeJSONStringify(value) {
+      var restore = Array.prototype.toJSON;
+      delete Array.prototype.toJSON;
+      var stringified = JSON.stringify(value);
+      Array.prototype.toJSON = restore;
+      return stringified;
     }
   });
   
