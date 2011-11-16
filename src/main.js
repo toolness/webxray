@@ -105,15 +105,7 @@
     var pluginsToLoad = [];
 
     jQuery.webxraySettings.url("pluginURLs").forEach(function(plugin) {
-      var script = document.createElement('script');
-      var deferred = jQuery.Deferred();
-      script.setAttribute('src', plugin);
-      script.addEventListener("load", function() {
-        document.head.removeChild(script);
-        deferred.resolve();
-      }, false);
-      document.head.appendChild(script);
-      pluginsToLoad.push(deferred);
+      pluginsToLoad.push(jQuery.loadScript(plugin));
     });
     jQuery.when.apply(jQuery.when, pluginsToLoad).done(cb);
   }

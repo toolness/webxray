@@ -69,6 +69,18 @@ test("pathTo()", function() {
   });
 });
 
+test("jQuery.loadScript()", function() {
+  var js = "jQueryLoadScriptSuccessful=true;";
+
+  delete window.jQueryLoadScriptSuccessful;
+  jQuery.loadScript("data:application/javascript," + js).done(function() {
+    equal(window.jQueryLoadScriptSuccessful, true);
+    delete window.jQueryLoadScriptSuccessful;
+    start();
+  });
+  stop();
+});
+
 test("jQuery.shortenText()", function() {
   equals(jQuery.shortenText('hello', 3), 'hel\u2026');
   equals(jQuery.shortenText('hello', 5), 'hello');

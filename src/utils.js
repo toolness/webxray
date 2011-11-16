@@ -6,6 +6,20 @@
   var RGB_REGEXP = /rgb\((\d+),\s*(\d+),\s*(\d+)\)/;
 
   jQuery.extend({
+    // Load the given script. Returns a jQuery deferred that resolves
+    // when the script is loaded. Nothing happens if the
+    // script fails to load.
+    loadScript: function loadScript(url) {
+      var script = document.createElement('script');
+      var deferred = jQuery.Deferred();
+      script.setAttribute('src', url);
+      script.addEventListener("load", function() {
+        document.head.removeChild(script);
+        deferred.resolve();
+      }, false);
+      document.head.appendChild(script);
+      return deferred;
+    },
     // Return a string that is shortened to be the given maximum
     // length, with a trailing ellipsis at the end. If the string
     // isn't longer than the maximum length, the string is returned
