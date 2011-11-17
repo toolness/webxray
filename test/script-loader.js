@@ -41,6 +41,18 @@
             return;
           }
 
+          if (!window.addEventListener) {
+            jQuery.getScript(src, function() {
+              log.push({
+                success: true,
+                msg: "loaded",
+                src: src
+              });
+              loadNextScript();
+            });
+            return;
+          }
+          
           var script = document.createElement('script');
           script.setAttribute('src', src);
           script.addEventListener("load", function () {

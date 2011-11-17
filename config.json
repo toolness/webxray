@@ -5,6 +5,7 @@
   "compiledFile": "/webxray.js",
   "compiledFileParts": [
     "src/intro.js"
+  , "src/monkeypatch-msie.js"
   , "src/json.js"
   , "jquery/src/core.js"
   , "jquery/src/callbacks.js"
