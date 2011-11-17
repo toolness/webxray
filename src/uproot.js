@@ -7,9 +7,9 @@
     if (!doctype)
       return '';
     var tag = '<!DOCTYPE ' + doctype.name;
-    if (doctype.publicId.length)
+    if (doctype.publicId && doctype.publicId.length)
       tag += ' PUBLIC "' + doctype.publicId + '"';
-    if (doctype.systemId.length)
+    if (doctype.systemId && doctype.systemId.length)
       tag += ' "' + doctype.systemId + '"';
     return tag += '>';
   }
