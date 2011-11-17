@@ -24,9 +24,13 @@
         }
 
         if (scripts.length) {
-          var src = prefix + scripts.pop();
+          var src = scripts.pop();
 
-          if (src.match(/\.local\./) || src.match(/\*/)) {
+          if (src == "src/locale/*.js")
+            src = "src/locale/en.js";
+          
+          src = prefix + src;
+          if (src.match(/\.local\./)) {
             // TODO: Do an XHR to see if the file exists and
             // load it if so, instead of skipping it entirely.
             // We're skipping it for now b/c opera doesn't
@@ -34,7 +38,7 @@
             // found, so it just hangs if we don't do this.
             log.push({
               success: true,
-              msg: "skipping optional script or glob",
+              msg: "skipping optional script",
               src: src
             });
             loadNextScript();
