@@ -69,12 +69,7 @@ a:hover {
 "use strict";
 
 $(window).ready(function() {
-  if (window.navigator.userAgent.match(/MSIE/)) {
-    $("#try-goggles").hide();
-    $("#msie-fail").show();
-  } else {
-    $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL());
-    $("#bookmarklet-url").val(Webxray.getBookmarkletURL());
-  }
+  $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL());
+  $("#bookmarklet-url").val(Webxray.getBookmarkletURL());
 });
 </script>
