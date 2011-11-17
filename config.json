@@ -7,6 +7,8 @@
     "src/intro.js"
   , "src/json.js"
   , "jquery/src/core.js"
+  , "jquery/src/callbacks.js"
+  , "jquery/src/deferred.js"
   , "jquery/src/support.js"
   , "jquery/src/data.js"
   , "jquery/src/queue.js"

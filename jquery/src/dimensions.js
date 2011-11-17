@@ -1,21 +1,27 @@
 (function( jQuery ) {
 
-// Create innerHeight, innerWidth, outerHeight and outerWidth methods
+// Create width, height, innerHeight, innerWidth, outerHeight and outerWidth methods
 jQuery.each([ "Height", "Width" ], function( i, name ) {
 
 	var type = name.toLowerCase();
 
 	// innerHeight and innerWidth
-	jQuery.fn["inner" + name] = function() {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, "padding" ) ) :
+	jQuery.fn[ "inner" + name ] = function() {
+		var elem = this[0];
+		return elem ?
+			elem.style ?
+			parseFloat( jQuery.css( elem, type, "padding" ) ) :
+			this[ type ]() :
 			null;
 	};
 
 	// outerHeight and outerWidth
-	jQuery.fn["outer" + name] = function( margin ) {
-		return this[0] ?
-			parseFloat( jQuery.css( this[0], type, margin ? "margin" : "border" ) ) :
+	jQuery.fn[ "outer" + name ] = function( margin ) {
+		var elem = this[0];
+		return elem ?
+			elem.style ?
+			parseFloat( jQuery.css( elem, type, margin ? "margin" : "border" ) ) :
+			this[ type ]() :
 			null;
 	};
 
@@ -36,9 +42,10 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 		if ( jQuery.isWindow( elem ) ) {
 			// Everyone else use document.documentElement or document.body depending on Quirks vs Standards mode
 			// 3rd condition allows Nokia support, as it supports the docElem prop but not CSS1Compat
-			var docElemProp = elem.document.documentElement[ "client" + name ];
+			var docElemProp = elem.document.documentElement[ "client" + name ],
+				body = elem.document.body;
 			return elem.document.compatMode === "CSS1Compat" && docElemProp ||
-				elem.document.body[ "client" + name ] || docElemProp;
+				body && body[ "client" + name ] || docElemProp;
 
 		// Get document width or height
 		} else if ( elem.nodeType === 9 ) {
@@ -54,7 +61,7 @@ jQuery.each([ "Height", "Width" ], function( i, name ) {
 			var orig = jQuery.css( elem, type ),
 				ret = parseFloat( orig );
 
-			return jQuery.isNaN( ret ) ? orig : ret;
+			return jQuery.isNumeric( ret ) ? ret : orig;
 
 		// Set the width or height on the element (default to pixels if value is unitless)
 		} else {
