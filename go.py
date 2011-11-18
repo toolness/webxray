@@ -83,17 +83,10 @@ def make_app(cfg):
 
     return app
 
-def compilemessages(cfg):
-    localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
-                                 js_locale_dir=path('src', 'locale'),
-                                 default_locale='en',
-                                 locale_dir=locale_dir,
-                                 locale_domain=locale_domain)
-
 def cmd_serve(args, cfg):
     "run development web server"
     
-    compilemessages(cfg)
+    cmd_compilemessages(args, cfg)
     ipstr = args.ip
     if not ipstr:
         ipstr = 'all IP interfaces'
@@ -109,8 +102,12 @@ def cmd_serve_args(parser):
 
 def cmd_compilemessages(args, cfg):
     "convert message files into binary and JS formats"
-    
-    compilemessages(cfg)
+
+    localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
+                                 js_locale_dir=path('src', 'locale'),
+                                 default_locale='en',
+                                 locale_dir=locale_dir,
+                                 locale_domain=locale_domain)
 
 def cmd_makemessages(args, cfg):
     "create/update message file(s) for localization"
@@ -127,7 +124,7 @@ def cmd_makemessages_args(parser):
 def cmd_compile(args, cfg):
     "generate compiled files"
     
-    compilemessages(cfg)
+    cmd_compilemessages(args, cfg)
     f = open(cfg['compiledFilename'], 'w')
     f.write(build_compiled_file(cfg))
     f.close()
