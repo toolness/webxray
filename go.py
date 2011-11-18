@@ -83,14 +83,6 @@ def make_app(cfg):
 
     return app
 
-def serve(cfg, ip=''):
-    ipstr = ip
-    if not ipstr:
-        ipstr = 'all IP interfaces'
-    server = make_server(ip, cfg['port'], make_app(cfg))
-    print "serving on %s port %d" % (ipstr, cfg['port'])
-    server.serve_forever()
-
 def compilemessages(cfg):
     localization.compilemessages(json_dir=path(cfg['staticFilesDir']),
                                  js_locale_dir=path('src', 'locale'),
@@ -99,16 +91,21 @@ def compilemessages(cfg):
                                  locale_domain=locale_domain)
 
 def cmd_serve(args, cfg):
-    "run web server on 127.0.0.1"
+    "run development web server"
     
     compilemessages(cfg)
-    serve(cfg, '127.0.0.1')
+    ipstr = args.ip
+    if not ipstr:
+        ipstr = 'all IP interfaces'
+    server = make_server(args.ip, args.port, make_app(cfg))
+    print "serving on %s port %d" % (ipstr, args.port)
+    server.serve_forever()
 
-def cmd_globalserve(args, cfg):
-    "run web server on all IP interfaces"
-    
-    compilemessages(cfg)
-    serve(cfg)
+def cmd_serve_args(parser):
+    parser.add_argument('--port', help='port to serve on',
+                        type=int, default=8000)
+    parser.add_argument('--ip', help='IP to bind to',
+                        default='')
 
 def cmd_compilemessages(args, cfg):
     "convert message files into binary and JS formats"
