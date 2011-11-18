@@ -1,16 +1,3 @@
-"""
-    usage: go.py <command>
-    
-    commands:
-    
-      serve           - run web server on 127.0.0.1 port %(port)s
-      globalserve     - run web server on all IP interfaces port %(port)s
-      makemessages    - create/update message file(s) for localization
-      compilemessages - convert message files into binary and JS formats
-      compile         - generate %(compiledFilename)s
-      clean           - delete all generated files
-"""
-
 from wsgiref.simple_server import make_server
 from wsgiref.util import FileWrapper
 import os
@@ -34,6 +21,7 @@ locale_domain = 'webxray'
 
 sys.path.append(path('vendor'))
 
+import argparse
 import localization
 
 def get_git_commit():
@@ -110,47 +98,74 @@ def compilemessages(cfg):
                                  locale_dir=locale_dir,
                                  locale_domain=locale_domain)
 
-if __name__ == "__main__":
+def cmd_serve(args, cfg):
+    "run web server on 127.0.0.1"
+    
+    compilemessages(cfg)
+    serve(cfg, '127.0.0.1')
+
+def cmd_globalserve(args, cfg):
+    "run web server on all IP interfaces"
+    
+    compilemessages(cfg)
+    serve(cfg)
+
+def cmd_compilemessages(args, cfg):
+    "convert message files into binary and JS formats"
+    
+    compilemessages(cfg)
+
+def cmd_makemessages(args, cfg):
+    "create/update message file(s) for localization"
+    
+    localization.makemessages(babel_ini_file=path('babel.ini'),
+                              json_dir=path(cfg['staticFilesDir']),
+                              locale_dir=locale_dir,
+                              locale_domain=locale_domain,
+                              locale=args.locale)
+
+def cmd_makemessages_args(parser):
+    parser.add_argument('-l', '--locale', help='locale')
+
+def cmd_compile(args, cfg):
+    "generate compiled files"
+    
+    compilemessages(cfg)
+    f = open(cfg['compiledFilename'], 'w')
+    f.write(build_compiled_file(cfg))
+    f.close()
+    print "wrote %s" % cfg['compiledFilename']
+
+def cmd_clean(args, cfg):
+    "delete all generated files"
+
+    if os.path.exists(cfg['compiledFilename']):
+        print "removing %s" % cfg['compiledFilename']
+        os.remove(cfg['compiledFilename'])
+    for filename in glob.glob(path('src', 'locale', '*.js')):
+        print "removing %s" % filename
+        os.remove(filename)
+    print "removed generated files."
+
+def main():
     cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
 
-    if len(sys.argv) < 2:
-        print __doc__ % cfg
-        sys.exit(1)
+    parser = argparse.ArgumentParser()
+    subparsers = parser.add_subparsers()
 
-    cmd = sys.argv[1]
-    
-    if cmd == 'serve':
-        compilemessages(cfg)
-        serve(cfg, '127.0.0.1')
-    elif cmd == 'globalserve':
-        compilemessages(cfg)
-        serve(cfg)
-    elif cmd == 'compilemessages':
-        compilemessages(cfg)
-    elif cmd == 'makemessages':
-        locale = None
-        if len(sys.argv) > 2:
-            locale = sys.argv[2]
-        localization.makemessages(babel_ini_file=path('babel.ini'),
-                                  json_dir=path(cfg['staticFilesDir']),
-                                  locale_dir=locale_dir,
-                                  locale_domain=locale_domain,
-                                  locale=locale)
-    elif cmd == 'compile':
-        compilemessages(cfg)
-        f = open(cfg['compiledFilename'], 'w')
-        f.write(build_compiled_file(cfg))
-        f.close()
-        print "wrote %s" % cfg['compiledFilename']
-    elif cmd == 'clean':
-        if os.path.exists(cfg['compiledFilename']):
-            print "removing %s" % cfg['compiledFilename']
-            os.remove(cfg['compiledFilename'])
-        for filename in glob.glob(path('src', 'locale', '*.js')):
-            print "removing %s" % filename
-            os.remove(filename)
-        print "removed generated files."
-    else:
-        print "unknown command: %s" % cmd
-        sys.exit(1)
+    globs = globals()
+    for name in globs:
+        if name.startswith('cmd_') and not name.endswith('_args'):
+            cmdfunc = globs[name]
+            subparser = subparsers.add_parser(name[4:], help=cmdfunc.__doc__)
+            subparser.set_defaults(func=cmdfunc)
+            add_args = globs.get('%s_args' % name)
+            if add_args:
+                add_args(subparser)
+
+    args = parser.parse_args()
+    args.func(args, cfg)
+
+if __name__ == "__main__":
+    main()
