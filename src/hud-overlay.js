@@ -34,25 +34,39 @@
           return $("<code></code>").text(string);
         }
 
+        function elementInfo(element) {
+          var info = {
+            tagName: "<" + element.nodeName.toLowerCase() + ">",
+            id: element.id,
+            className: element.className,
+            url: element.href || element.src || element.action ||
+                 element.currentSrc
+          };
+          
+          if (info.url && info.url.length)
+            info.url = $.shortenText(info.url, MAX_URL_LENGTH);
+          else
+            info.url = null;
+            
+          return info;
+        }
+        
         function elementDesc(element) {
           var span = $("<span></span>");
-          var tagName = "<" + element.nodeName.toLowerCase() + ">";
+          var info = elementInfo(element);
       
-          span.emit(code(tagName), " ", l10n("element"));
-          if (element.id)
+          span.emit(code(info.tagName), " ", l10n("element"));
+          if (info.id)
             span.emit(" ", l10n("with"), " ", l10n("id"), " ",
-                      code(element.id));
-          if (element.className)
-            span.emit(" " + (element.id ? l10n("and") : l10n("with")),
+                      code(info.id));
+          if (info.className)
+            span.emit(" " + (info.id ? l10n("and") : l10n("with")),
                       " ", l10n("class"), " ",
-                      code(element.className));
-          var url = element.href || element.src || element.action ||
-                    element.currentSrc;
-          if (url && url.length) {
-            url = $.shortenText(url, MAX_URL_LENGTH);
-            span.emit((element.id || element.className) ? "," : "",
+                      code(info.className));
+          if (info.url) {
+            span.emit((info.id || info.className) ? "," : "",
                       " ", l10n("pointing-at"), " ",
-                      $('<span class="webxray-url"></span>').text(url));
+                      $('<span class="webxray-url"></span>').text(info.url));
           }
           return span;
         }
