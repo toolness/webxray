@@ -17,17 +17,30 @@ var runtil = /Until$/,
 
 jQuery.fn.extend({
 	find: function( selector ) {
-		var ret = this.pushStack( "", "find", selector ),
-			length = 0;
+		var self = this,
+			i, l;
 
-		for ( var i = 0, l = this.length; i < l; i++ ) {
+		if ( typeof selector !== "string" ) {
+			return jQuery( selector ).filter(function() {
+				for ( i = 0, l = self.length; i < l; i++ ) {
+					if ( jQuery.contains( self[ i ], this ) ) {
+						return true;
+					}
+				}
+			});
+		}
+
+		var ret = this.pushStack( "", "find", selector ),
+			length, n, r;
+
+		for ( i = 0, l = this.length; i < l; i++ ) {
 			length = ret.length;
 			jQuery.find( selector, this[i], ret );
 
 			if ( i > 0 ) {
 				// Make sure that the results are unique
-				for ( var n = length; n < ret.length; n++ ) {
-					for ( var r = 0; r < length; r++ ) {
+				for ( n = length; n < ret.length; n++ ) {
+					for ( r = 0; r < length; r++ ) {
 						if ( ret[r] === ret[n] ) {
 							ret.splice(n--, 1);
 							break;
@@ -60,47 +73,42 @@ jQuery.fn.extend({
 	},
 
 	is: function( selector ) {
-		return !!selector && jQuery.filter( selector, this ).length > 0;
+		return !!selector && ( 
+			typeof selector === "string" ?
+				// If this is a positional selector, check membership in the returned set
+				// so $("p:first").is("p:last") won't return true for a doc with two "p".
+				POS.test( selector ) ? 
+					jQuery( selector, this.context ).index( this[0] ) >= 0 :
+					jQuery.filter( selector, this ).length > 0 :
+				this.filter( selector ).length > 0 );
 	},
 
 	closest: function( selectors, context ) {
 		var ret = [], i, l, cur = this[0];
-
+		
+		// Array (deprecated as of jQuery 1.7)
 		if ( jQuery.isArray( selectors ) ) {
-			var match, selector,
-				matches = {},
-				level = 1;
+			var level = 1;
 
-			if ( cur && selectors.length ) {
-				for ( i = 0, l = selectors.length; i < l; i++ ) {
-					selector = selectors[i];
+			while ( cur && cur.ownerDocument && cur !== context ) {
+				for ( i = 0; i < selectors.length; i++ ) {
 
-					if ( !matches[selector] ) {
-						matches[selector] = jQuery.expr.match.POS.test( selector ) ?
-							jQuery( selector, context || this.context ) :
-							selector;
+					if ( jQuery( cur ).is( selectors[ i ] ) ) {
+						ret.push({ selector: selectors[ i ], elem: cur, level: level });
 					}
 				}
 
-				while ( cur && cur.ownerDocument && cur !== context ) {
-					for ( selector in matches ) {
-						match = matches[selector];
-
-						if ( match.jquery ? match.index(cur) > -1 : jQuery(cur).is(match) ) {
-							ret.push({ selector: selector, elem: cur, level: level });
-						}
-					}
-
-					cur = cur.parentNode;
-					level++;
-				}
+				cur = cur.parentNode;
+				level++;
 			}
 
 			return ret;
 		}
 
-		var pos = POS.test( selectors ) ?
-			jQuery( selectors, context || this.context ) : null;
+		// String
+		var pos = POS.test( selectors ) || typeof selectors !== "string" ?
+				jQuery( selectors, context || this.context ) :
+				0;
 
 		for ( i = 0, l = this.length; i < l; i++ ) {
 			cur = this[i];
@@ -112,14 +120,14 @@ jQuery.fn.extend({
 
 				} else {
 					cur = cur.parentNode;
-					if ( !cur || !cur.ownerDocument || cur === context ) {
+					if ( !cur || !cur.ownerDocument || cur === context || cur.nodeType === 11 ) {
 						break;
 					}
 				}
 			}
 		}
 
-		ret = ret.length > 1 ? jQuery.unique(ret) : ret;
+		ret = ret.length > 1 ? jQuery.unique( ret ) : ret;
 
 		return this.pushStack( ret, "closest", selectors );
 	},
@@ -127,12 +135,17 @@ jQuery.fn.extend({
 	// Determine the position of an element within
 	// the matched set of elements
 	index: function( elem ) {
-		if ( !elem || typeof elem === "string" ) {
-			return jQuery.inArray( this[0],
-				// If it receives a string, the selector is used
-				// If it receives nothing, the siblings are used
-				elem ? jQuery( elem ) : this.parent().children() );
+
+		// No argument, return index in parent
+		if ( !elem ) {
+			return ( this[0] && this[0].parentNode ) ? this.prevAll().length : -1;
 		}
+
+		// index in selector
+		if ( typeof elem === "string" ) {
+			return jQuery.inArray( this[0], jQuery( elem ) );
+		}
+
 		// Locate the position of the desired element
 		return jQuery.inArray(
 			// If it receives a jQuery object, the first element is used
@@ -142,7 +155,7 @@ jQuery.fn.extend({
 	add: function( selector, context ) {
 		var set = typeof selector === "string" ?
 				jQuery( selector, context ) :
-				jQuery.makeArray( selector ),
+				jQuery.makeArray( selector && selector.nodeType ? [ selector ] : selector ),
 			all = jQuery.merge( this.get(), set );
 
 		return this.pushStack( isDisconnected( set[0] ) || isDisconnected( all[0] ) ?
@@ -204,11 +217,11 @@ jQuery.each({
 }, function( name, fn ) {
 	jQuery.fn[ name ] = function( until, selector ) {
 		var ret = jQuery.map( this, fn, until ),
-                // The variable 'args' was introduced in
-                // https://github.com/jquery/jquery/commit/52a0238
-                // to work around a bug in Chrome 10 (Dev) and should be removed when the bug is fixed.
-                // http://code.google.com/p/v8/issues/detail?id=1050
-                    args = slice.call(arguments);
+			// The variable 'args' was introduced in
+			// https://github.com/jquery/jquery/commit/52a0238
+			// to work around a bug in Chrome 10 (Dev) and should be removed when the bug is fixed.
+			// http://code.google.com/p/v8/issues/detail?id=1050
+			args = slice.call(arguments);
 
 		if ( !runtil.test( name ) ) {
 			selector = until;
@@ -280,6 +293,11 @@ jQuery.extend({
 
 // Implement the identical functionality for filter and not
 function winnow( elements, qualifier, keep ) {
+
+	// Can't pass null or undefined to indexOf in Firefox 4
+	// Set to 0 to skip string check
+	qualifier = qualifier || 0;
+
 	if ( jQuery.isFunction( qualifier ) ) {
 		return jQuery.grep(elements, function( elem, i ) {
 			var retVal = !!qualifier.call( elem, i, elem );
@@ -288,7 +306,7 @@ function winnow( elements, qualifier, keep ) {
 
 	} else if ( qualifier.nodeType ) {
 		return jQuery.grep(elements, function( elem, i ) {
-			return (elem === qualifier) === keep;
+			return ( elem === qualifier ) === keep;
 		});
 
 	} else if ( typeof qualifier === "string" ) {
@@ -304,7 +322,7 @@ function winnow( elements, qualifier, keep ) {
 	}
 
 	return jQuery.grep(elements, function( elem, i ) {
-		return (jQuery.inArray( elem, qualifier ) >= 0) === keep;
+		return ( jQuery.inArray( elem, qualifier ) >= 0 ) === keep;
 	});
 }
 

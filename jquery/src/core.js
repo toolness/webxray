@@ -16,8 +16,8 @@ var jQuery = function( selector, context ) {
 	rootjQuery,
 
 	// A simple way to check for HTML strings or ID strings
-	// (both of which we optimize for)
-	quickExpr = /^(?:[^<]*(<[\w\W]+>)[^>]*$|#([\w\-]+)$)/,
+	// Prioritize #id over <tag> to avoid XSS via location.hash (#9521)
+	quickExpr = /^(?:[^#<]*(<[\w\W]+>)[^>]*$|#([\w\-]*)$)/,
 
 	// Check if a string has a non-whitespace character in it
 	rnotwhite = /\S/,
@@ -44,20 +44,23 @@ var jQuery = function( selector, context ) {
 	rmsie = /(msie) ([\w.]+)/,
 	rmozilla = /(mozilla)(?:.*? rv:([\w.]+))?/,
 
+	// Matches dashed string for camelizing
+	rdashAlpha = /-([a-z]|[0-9])/ig,
+	rmsPrefix = /^-ms-/,
+
+	// Used by jQuery.camelCase as callback to replace()
+	fcamelCase = function( all, letter ) {
+		return ( letter + "" ).toUpperCase();
+	},
+
 	// Keep a UserAgent string for use with jQuery.browser
 	userAgent = navigator.userAgent,
 
 	// For matching the engine and version of the browser
 	browserMatch,
 
-	// Has the ready events already been bound?
-	readyBound = false,
-
 	// The deferred used on DOM ready
 	readyList,
-
-	// Promise methods
-	promiseMethods = "then done fail isResolved isRejected promise".split( " " ),
 
 	// The ready event handler
 	DOMContentLoaded,
@@ -94,7 +97,7 @@ jQuery.fn = jQuery.prototype = {
 		if ( selector === "body" && !context && document.body ) {
 			this.context = document;
 			this[0] = document.body;
-			this.selector = "body";
+			this.selector = selector;
 			this.length = 1;
 			return this;
 		}
@@ -102,7 +105,13 @@ jQuery.fn = jQuery.prototype = {
 		// Handle HTML strings
 		if ( typeof selector === "string" ) {
 			// Are we dealing with HTML string or an ID?
-			match = quickExpr.exec( selector );
+			if ( selector.charAt(0) === "<" && selector.charAt( selector.length - 1 ) === ">" && selector.length >= 3 ) {
+				// Assume that strings that start and end with <> are HTML and skip the regex check
+				match = [ null, selector, null ];
+
+			} else {
+				match = quickExpr.exec( selector );
+			}
 
 			// Verify a match, and that no context was specified for #id
 			if ( match && (match[1] || !context) ) {
@@ -110,7 +119,7 @@ jQuery.fn = jQuery.prototype = {
 				// HANDLE: $(html) -> $(array)
 				if ( match[1] ) {
 					context = context instanceof jQuery ? context[0] : context;
-					doc = (context ? context.ownerDocument || context : document);
+					doc = ( context ? context.ownerDocument || context : document );
 
 					// If a single string is passed in and it's a single tag
 					// just do a createElement and skip the rest
@@ -127,7 +136,7 @@ jQuery.fn = jQuery.prototype = {
 
 					} else {
 						ret = jQuery.buildFragment( [ match[1] ], [ doc ] );
-						selector = (ret.cacheable ? jQuery.clone(ret.fragment) : ret.fragment).childNodes;
+						selector = ( ret.cacheable ? jQuery.clone(ret.fragment) : ret.fragment ).childNodes;
 					}
 
 					return jQuery.merge( this, selector );
@@ -157,7 +166,7 @@ jQuery.fn = jQuery.prototype = {
 
 			// HANDLE: $(expr, $(...))
 			} else if ( !context || context.jquery ) {
-				return (context || rootjQuery).find( selector );
+				return ( context || rootjQuery ).find( selector );
 
 			// HANDLE: $(expr, context)
 			// (which is just equivalent to: $(context).find(expr)
@@ -171,7 +180,7 @@ jQuery.fn = jQuery.prototype = {
 			return rootjQuery.ready( selector );
 		}
 
-		if (selector.selector !== undefined) {
+		if ( selector.selector !== undefined ) {
 			this.selector = selector.selector;
 			this.context = selector.context;
 		}
@@ -228,7 +237,7 @@ jQuery.fn = jQuery.prototype = {
 		ret.context = this.context;
 
 		if ( name === "find" ) {
-			ret.selector = this.selector + (this.selector ? " " : "") + selector;
+			ret.selector = this.selector + ( this.selector ? " " : "" ) + selector;
 		} else if ( name ) {
 			ret.selector = this.selector + "." + name + "(" + selector + ")";
 		}
@@ -249,7 +258,7 @@ jQuery.fn = jQuery.prototype = {
 		jQuery.bindReady();
 
 		// Add the callback
-		readyList.done( fn );
+		readyList.add( fn );
 
 		return this;
 	},
@@ -294,7 +303,7 @@ jQuery.fn = jQuery.prototype = {
 jQuery.fn.init.prototype = jQuery.fn;
 
 jQuery.extend = jQuery.fn.extend = function() {
-	 var options, name, src, copy, copyIsArray, clone,
+	var options, name, src, copy, copyIsArray, clone,
 		target = arguments[0] || {},
 		i = 1,
 		length = arguments.length,
@@ -359,9 +368,11 @@ jQuery.extend = jQuery.fn.extend = function() {
 
 jQuery.extend({
 	noConflict: function( deep ) {
-		window.$ = _$;
+		if ( window.$ === jQuery ) {
+			window.$ = _$;
+		}
 
-		if ( deep ) {
+		if ( deep && window.jQuery === jQuery ) {
 			window.jQuery = _jQuery;
 		}
 
@@ -375,15 +386,19 @@ jQuery.extend({
 	// the ready event fires. See #6781
 	readyWait: 1,
 
+	// Hold (or release) the ready event
+	holdReady: function( hold ) {
+		if ( hold ) {
+			jQuery.readyWait++;
+		} else {
+			jQuery.ready( true );
+		}
+	},
+
 	// Handle when the DOM is ready
 	ready: function( wait ) {
-		// A third-party is pushing the ready event forwards
-		if ( wait === true ) {
-			jQuery.readyWait--;
-		}
-
-		// Make sure that the DOM is not already loaded
-		if ( !jQuery.readyWait || (wait !== true && !jQuery.isReady) ) {
+		// Either a released hold or an DOMready/load event and not yet ready
+		if ( (wait === true && !--jQuery.readyWait) || (wait !== true && !jQuery.isReady) ) {
 			// Make sure body exists, at least, in case IE gets a little overzealous (ticket #5443).
 			if ( !document.body ) {
 				return setTimeout( jQuery.ready, 1 );
@@ -398,7 +413,7 @@ jQuery.extend({
 			}
 
 			// If there are functions bound, to execute
-			readyList.resolveWith( document, [ jQuery ] );
+			readyList.fireWith( document, [ jQuery ] );
 
 			// Trigger any bound ready events
 			if ( jQuery.fn.trigger ) {
@@ -408,11 +423,11 @@ jQuery.extend({
 	},
 
 	bindReady: function() {
-		if ( readyBound ) {
+		if ( readyList ) {
 			return;
 		}
 
-		readyBound = true;
+		readyList = jQuery.Callbacks( "once memory" );
 
 		// Catch cases where $(document).ready() is called after the
 		// browser event has already occurred.
@@ -433,7 +448,7 @@ jQuery.extend({
 		} else if ( document.attachEvent ) {
 			// ensure firing before onload,
 			// maybe late but safe also for iframes
-			document.attachEvent("onreadystatechange", DOMContentLoaded);
+			document.attachEvent( "onreadystatechange", DOMContentLoaded );
 
 			// A fallback to window.onload, that will always work
 			window.attachEvent( "onload", jQuery.ready );
@@ -468,8 +483,8 @@ jQuery.extend({
 		return obj && typeof obj === "object" && "setInterval" in obj;
 	},
 
-	isNaN: function( obj ) {
-		return obj == null || !rdigit.test( obj ) || isNaN( obj );
+	isNumeric: function( obj ) {
+		return obj != null && rdigit.test( obj ) && !isNaN( obj );
 	},
 
 	type: function( obj ) {
@@ -486,10 +501,15 @@ jQuery.extend({
 			return false;
 		}
 
-		// Not own constructor property must be Object
-		if ( obj.constructor &&
-			!hasOwn.call(obj, "constructor") &&
-			!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+		try {
+			// Not own constructor property must be Object
+			if ( obj.constructor &&
+				!hasOwn.call(obj, "constructor") &&
+				!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
+				return false;
+			}
+		} catch ( e ) {
+			// IE8,9 Will throw exceptions on certain host objects #9897
 			return false;
 		}
 
@@ -521,67 +541,64 @@ jQuery.extend({
 		// Make sure leading/trailing whitespace is removed (IE can't handle it)
 		data = jQuery.trim( data );
 
+		// Attempt to parse using the native JSON parser first
+		if ( window.JSON && window.JSON.parse ) {
+			return window.JSON.parse( data );
+		}
+
 		// Make sure the incoming data is actual JSON
 		// Logic borrowed from http://json.org/json2.js
-		if ( rvalidchars.test(data.replace(rvalidescape, "@")
-			.replace(rvalidtokens, "]")
-			.replace(rvalidbraces, "")) ) {
+		if ( rvalidchars.test( data.replace( rvalidescape, "@" )
+			.replace( rvalidtokens, "]" )
+			.replace( rvalidbraces, "")) ) {
 
-			// Try to use the native JSON parser first
-			return window.JSON && window.JSON.parse ?
-				window.JSON.parse( data ) :
-				(new Function("return " + data))();
+			return ( new Function( "return " + data ) )();
 
-		} else {
-			jQuery.error( "Invalid JSON: " + data );
 		}
+		jQuery.error( "Invalid JSON: " + data );
 	},
 
 	// Cross-browser xml parsing
-	// (xml & tmp used internally)
-	parseXML: function( data , xml , tmp ) {
-
-		if ( window.DOMParser ) { // Standard
-			tmp = new DOMParser();
-			xml = tmp.parseFromString( data , "text/xml" );
-		} else { // IE
-			xml = new ActiveXObject( "Microsoft.XMLDOM" );
-			xml.async = "false";
-			xml.loadXML( data );
+	parseXML: function( data ) {
+		var xml, tmp;
+		try {
+			if ( window.DOMParser ) { // Standard
+				tmp = new DOMParser();
+				xml = tmp.parseFromString( data , "text/xml" );
+			} else { // IE
+				xml = new ActiveXObject( "Microsoft.XMLDOM" );
+				xml.async = "false";
+				xml.loadXML( data );
+			}
+		} catch( e ) {
+			xml = undefined;
 		}
-
-		tmp = xml.documentElement;
-
-		if ( ! tmp || ! tmp.nodeName || tmp.nodeName === "parsererror" ) {
+		if ( !xml || !xml.documentElement || xml.getElementsByTagName( "parsererror" ).length ) {
 			jQuery.error( "Invalid XML: " + data );
 		}
-
 		return xml;
 	},
 
 	noop: function() {},
 
-	// Evalulates a script in a global context
+	// Evaluates a script in a global context
+	// Workarounds based on findings by Jim Driscoll
+	// http://weblogs.java.net/blog/driscoll/archive/2009/09/08/eval-javascript-global-context
 	globalEval: function( data ) {
-		if ( data && rnotwhite.test(data) ) {
-			// Inspired by code by Andrea Giammarchi
-			// http://webreflection.blogspot.com/2007/08/global-scope-evaluation-and-dom.html
-			var head = document.getElementsByTagName("head")[0] || document.documentElement,
-				script = document.createElement("script");
-
-			script.type = "text/javascript";
-
-			if ( jQuery.support.scriptEval() ) {
-				script.appendChild( document.createTextNode( data ) );
-			} else {
-				script.text = data;
-			}
-
-			// Use insertBefore instead of appendChild to circumvent an IE6 bug.
-			// This arises when a base node is used (#2709).
-			head.insertBefore( script, head.firstChild );
-			head.removeChild( script );
+		if ( data && rnotwhite.test( data ) ) {
+			// We use execScript on Internet Explorer
+			// We use an anonymous function so that context is window
+			// rather than jQuery in Firefox
+			( window.execScript || function( data ) {
+				window[ "eval" ].call( window, data );
+			} )( data );
 		}
+	},
+
+	// Convert dashed to camelCase; used by the css and data modules
+	// Microsoft forgot to hump their vendor prefix (#9572)
+	camelCase: function( string ) {
+		return string.replace( rmsPrefix, "ms-" ).replace( rdashAlpha, fcamelCase );
 	},
 
 	nodeName: function( elem, name ) {
@@ -592,7 +609,7 @@ jQuery.extend({
 	each: function( object, callback, args ) {
 		var name, i = 0,
 			length = object.length,
-			isObj = length === undefined || jQuery.isFunction(object);
+			isObj = length === undefined || jQuery.isFunction( object );
 
 		if ( args ) {
 			if ( isObj ) {
@@ -618,8 +635,11 @@ jQuery.extend({
 					}
 				}
 			} else {
-				for ( var value = object[0];
-					i < length && callback.call( value, i, value ) !== false; value = object[++i] ) {}
+				for ( ; i < length; ) {
+					if ( callback.call( object[ i ], i, object[ i++ ] ) === false ) {
+						break;
+					}
+				}
 			}
 		}
 
@@ -650,7 +670,7 @@ jQuery.extend({
 			// The extra typeof function check is to prevent crashes
 			// in Safari 2 (See: #3039)
 			// Tweaked logic slightly to handle Blackberry 4.7 RegExp issues #6930
-			var type = jQuery.type(array);
+			var type = jQuery.type( array );
 
 			if ( array.length == null || type === "string" || type === "function" || type === "regexp" || jQuery.isWindow( array ) ) {
 				push.call( ret, array );
@@ -662,14 +682,22 @@ jQuery.extend({
 		return ret;
 	},
 
-	inArray: function( elem, array ) {
-		if ( array.indexOf ) {
-			return array.indexOf( elem );
-		}
+	inArray: function( elem, array, i ) {
+		var len;
 
-		for ( var i = 0, length = array.length; i < length; i++ ) {
-			if ( array[ i ] === elem ) {
-				return i;
+		if ( array ) {
+			if ( indexOf ) {
+				return indexOf.call( array, elem, i );
+			}
+
+			len = array.length;
+			i = i ? i < 0 ? Math.max( 0, len + i ) : i : 0;
+
+			for ( ; i < len; i++ ) {
+				// Skip accessing in sparse arrays
+				if ( i in array && array[ i ] === elem ) {
+					return i;
+				}
 			}
 		}
 
@@ -714,15 +742,30 @@ jQuery.extend({
 
 	// arg is for internal usage only
 	map: function( elems, callback, arg ) {
-		var ret = [], value;
+		var value, key, ret = [],
+			i = 0,
+			length = elems.length,
+			// jquery objects are treated as arrays
+			isArray = elems instanceof jQuery || length !== undefined && typeof length === "number" && ( ( length > 0 && elems[ 0 ] && elems[ length -1 ] ) || length === 0 || jQuery.isArray( elems ) ) ;
 
 		// Go through the array, translating each of the items to their
-		// new value (or values).
-		for ( var i = 0, length = elems.length; i < length; i++ ) {
-			value = callback( elems[ i ], i, arg );
+		if ( isArray ) {
+			for ( ; i < length; i++ ) {
+				value = callback( elems[ i ], i, arg );
 
-			if ( value != null ) {
-				ret[ ret.length ] = value;
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
+			}
+
+		// Go through every key on the object,
+		} else {
+			for ( key in elems ) {
+				value = callback( elems[ key ], key, arg );
+
+				if ( value != null ) {
+					ret[ ret.length ] = value;
+				}
 			}
 		}
 
@@ -733,36 +776,35 @@ jQuery.extend({
 	// A global GUID counter for objects
 	guid: 1,
 
-	proxy: function( fn, proxy, thisObject ) {
-		if ( arguments.length === 2 ) {
-			if ( typeof proxy === "string" ) {
-				thisObject = fn;
-				fn = thisObject[ proxy ];
-				proxy = undefined;
-
-			} else if ( proxy && !jQuery.isFunction( proxy ) ) {
-				thisObject = proxy;
-				proxy = undefined;
-			}
+	// Bind a function to a context, optionally partially applying any
+	// arguments.
+	proxy: function( fn, context ) {
+		if ( typeof context === "string" ) {
+			var tmp = fn[ context ];
+			context = fn;
+			fn = tmp;
 		}
 
-		if ( !proxy && fn ) {
+		// Quick check to determine if target is callable, in the spec
+		// this throws a TypeError, but we will just return undefined.
+		if ( !jQuery.isFunction( fn ) ) {
+			return undefined;
+		}
+
+		// Simulated bind
+		var args = slice.call( arguments, 2 ),
 			proxy = function() {
-				return fn.apply( thisObject || this, arguments );
+				return fn.apply( context, args.concat( slice.call( arguments ) ) );
 			};
-		}
 
 		// Set the guid of unique handler to the same of original handler, so it can be removed
-		if ( fn ) {
-			proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
-		}
+		proxy.guid = fn.guid = fn.guid || proxy.guid || jQuery.guid++;
 
-		// So proxy can be declared as an argument
 		return proxy;
 	},
 
 	// Mutifunctional method to get and set values to a collection
-	// The value/s can be optionally by executed if its a function
+	// The value/s can optionally be executed if it's a function
 	access: function( elems, key, value, exec, fn, pass ) {
 		var length = elems.length;
 
@@ -791,156 +833,7 @@ jQuery.extend({
 	},
 
 	now: function() {
-		return (new Date()).getTime();
-	},
-
-	// Create a simple deferred (one callbacks list)
-	_Deferred: function() {
-		var // callbacks list
-			callbacks = [],
-			// stored [ context , args ]
-			fired,
-			// to avoid firing when already doing so
-			firing,
-			// flag to know if the deferred has been cancelled
-			cancelled,
-			// the deferred itself
-			deferred  = {
-
-				// done( f1, f2, ...)
-				done: function() {
-					if ( !cancelled ) {
-						var args = arguments,
-							i,
-							length,
-							elem,
-							type,
-							_fired;
-						if ( fired ) {
-							_fired = fired;
-							fired = 0;
-						}
-						for ( i = 0, length = args.length; i < length; i++ ) {
-							elem = args[ i ];
-							type = jQuery.type( elem );
-							if ( type === "array" ) {
-								deferred.done.apply( deferred, elem );
-							} else if ( type === "function" ) {
-								callbacks.push( elem );
-							}
-						}
-						if ( _fired ) {
-							deferred.resolveWith( _fired[ 0 ], _fired[ 1 ] );
-						}
-					}
-					return this;
-				},
-
-				// resolve with given context and args
-				resolveWith: function( context, args ) {
-					if ( !cancelled && !fired && !firing ) {
-						firing = 1;
-						try {
-							while( callbacks[ 0 ] ) {
-								callbacks.shift().apply( context, args );
-							}
-						}
-						finally {
-							fired = [ context, args ];
-							firing = 0;
-						}
-					}
-					return this;
-				},
-
-				// resolve with this as context and given arguments
-				resolve: function() {
-					deferred.resolveWith( jQuery.isFunction( this.promise ) ? this.promise() : this, arguments );
-					return this;
-				},
-
-				// Has this deferred been resolved?
-				isResolved: function() {
-					return !!( firing || fired );
-				},
-
-				// Cancel
-				cancel: function() {
-					cancelled = 1;
-					callbacks = [];
-					return this;
-				}
-			};
-
-		return deferred;
-	},
-
-	// Full fledged deferred (two callbacks list)
-	Deferred: function( func ) {
-		var deferred = jQuery._Deferred(),
-			failDeferred = jQuery._Deferred(),
-			promise;
-		// Add errorDeferred methods, then and promise
-		jQuery.extend( deferred, {
-			then: function( doneCallbacks, failCallbacks ) {
-				deferred.done( doneCallbacks ).fail( failCallbacks );
-				return this;
-			},
-			fail: failDeferred.done,
-			rejectWith: failDeferred.resolveWith,
-			reject: failDeferred.resolve,
-			isRejected: failDeferred.isResolved,
-			// Get a promise for this deferred
-			// If obj is provided, the promise aspect is added to the object
-			promise: function( obj , i /* internal */ ) {
-				if ( obj == null ) {
-					if ( promise ) {
-						return promise;
-					}
-					promise = obj = {};
-				}
-				i = promiseMethods.length;
-				while( i-- ) {
-					obj[ promiseMethods[ i ] ] = deferred[ promiseMethods[ i ] ];
-				}
-				return obj;
-			}
-		} );
-		// Make sure only one callback list will be used
-		deferred.then( failDeferred.cancel, deferred.cancel );
-		// Unexpose cancel
-		delete deferred.cancel;
-		// Call given func if any
-		if ( func ) {
-			func.call( deferred, deferred );
-		}
-		return deferred;
-	},
-
-	// Deferred helper
-	when: function( object ) {
-		var args = arguments,
-			length = args.length,
-			deferred = length <= 1 && object && jQuery.isFunction( object.promise ) ?
-				object :
-				jQuery.Deferred(),
-			promise = deferred.promise(),
-			resolveArray;
-
-		if ( length > 1 ) {
-			resolveArray = new Array( length );
-			jQuery.each( args, function( index, element ) {
-				jQuery.when( element ).then( function( value ) {
-					resolveArray[ index ] = arguments.length > 1 ? slice.call( arguments, 0 ) : value;
-					if( ! --length ) {
-						deferred.resolveWith( promise, resolveArray );
-					}
-				}, deferred.reject );
-			} );
-		} else if ( deferred !== object ) {
-			deferred.resolve( object );
-		}
-		return promise;
+		return ( new Date() ).getTime();
 	},
 
 	// Use of jQuery.browser is frowned upon.
@@ -958,31 +851,28 @@ jQuery.extend({
 	},
 
 	sub: function() {
-		function jQuerySubclass( selector, context ) {
-			return new jQuerySubclass.fn.init( selector, context );
+		function jQuerySub( selector, context ) {
+			return new jQuerySub.fn.init( selector, context );
 		}
-		jQuery.extend( true, jQuerySubclass, this );
-		jQuerySubclass.superclass = this;
-		jQuerySubclass.fn = jQuerySubclass.prototype = this();
-		jQuerySubclass.fn.constructor = jQuerySubclass;
-		jQuerySubclass.subclass = this.subclass;
-		jQuerySubclass.fn.init = function init( selector, context ) {
-			if ( context && context instanceof jQuery && !(context instanceof jQuerySubclass) ) {
-				context = jQuerySubclass(context);
+		jQuery.extend( true, jQuerySub, this );
+		jQuerySub.superclass = this;
+		jQuerySub.fn = jQuerySub.prototype = this();
+		jQuerySub.fn.constructor = jQuerySub;
+		jQuerySub.sub = this.sub;
+		jQuerySub.fn.init = function init( selector, context ) {
+			if ( context && context instanceof jQuery && !(context instanceof jQuerySub) ) {
+				context = jQuerySub( context );
 			}
 
-			return jQuery.fn.init.call( this, selector, context, rootjQuerySubclass );
+			return jQuery.fn.init.call( this, selector, context, rootjQuerySub );
 		};
-		jQuerySubclass.fn.init.prototype = jQuerySubclass.fn;
-		var rootjQuerySubclass = jQuerySubclass(document);
-		return jQuerySubclass;
+		jQuerySub.fn.init.prototype = jQuerySub.fn;
+		var rootjQuerySub = jQuerySub(document);
+		return jQuerySub;
 	},
 
 	browser: {}
 });
-
-// Create readyList deferred
-readyList = jQuery._Deferred();
 
 // Populate the class2type map
 jQuery.each("Boolean Number String Function Array Date RegExp Object".split(" "), function(i, name) {
@@ -998,12 +888,6 @@ if ( browserMatch.browser ) {
 // Deprecated, use jQuery.browser.webkit instead
 if ( jQuery.browser.webkit ) {
 	jQuery.browser.safari = true;
-}
-
-if ( indexOf ) {
-	jQuery.inArray = function( elem, array ) {
-		return indexOf.call( array, elem );
-	};
 }
 
 // IE doesn't match non-breaking spaces with \s
@@ -1051,7 +935,20 @@ function doScrollCheck() {
 	jQuery.ready();
 }
 
-// Expose jQuery to the global object
-return (window.jQuery = window.$ = jQuery);
+// Expose jQuery as an AMD module, but only for AMD loaders that
+// understand the issues with loading multiple versions of jQuery
+// in a page that all might call define(). The loader will indicate
+// they have special allowances for multiple jQuery versions by
+// specifying define.amd.jQuery = true. Register as a named module,
+// since jQuery can be concatenated with other files that may use define,
+// but not use a proper concatenation script that understands anonymous
+// AMD modules. A named AMD is safest and most robust way to register.
+// Lowercase jquery is used because AMD module names are derived from
+// file names, and jQuery is normally delivered in a lowercase file name.
+if ( typeof define === "function" && define.amd && define.amd.jQuery ) {
+	define( "jquery", [], function () { return jQuery; } );
+}
+
+return jQuery;
 
 })();

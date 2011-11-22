@@ -1,7 +1,7 @@
 (function( jQuery ) {
 
 var jsc = jQuery.now(),
-	jsre = /(\=)\?(&|$)|()\?\?()/i;
+	jsre = /(\=)\?(&|$)|\?\?/i;
 
 // Default jsonp settings
 jQuery.ajaxSetup({
@@ -12,15 +12,14 @@ jQuery.ajaxSetup({
 });
 
 // Detect, normalize options and install callbacks for jsonp requests
-jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString /* internal */ ) {
+jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, jqXHR ) {
 
-	dataIsString = ( typeof s.data === "string" );
+	var inspectData = s.contentType === "application/x-www-form-urlencoded" &&
+		( typeof s.data === "string" );
 
 	if ( s.dataTypes[ 0 ] === "jsonp" ||
-		originalSettings.jsonpCallback ||
-		originalSettings.jsonp != null ||
 		s.jsonp !== false && ( jsre.test( s.url ) ||
-				dataIsString && jsre.test( s.data ) ) ) {
+				inspectData && jsre.test( s.data ) ) ) {
 
 		var responseContainer,
 			jsonpCallback = s.jsonpCallback =
@@ -33,7 +32,7 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString 
 		if ( s.jsonp !== false ) {
 			url = url.replace( jsre, replace );
 			if ( s.url === url ) {
-				if ( dataIsString ) {
+				if ( inspectData ) {
 					data = data.replace( jsre, replace );
 				}
 				if ( s.data === data ) {
@@ -46,32 +45,24 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString 
 		s.url = url;
 		s.data = data;
 
+		// Install callback
 		window[ jsonpCallback ] = function( response ) {
 			responseContainer = [ response ];
 		};
 
-		s.complete = [ function() {
-
+		// Clean-up function
+		jqXHR.always(function() {
 			// Set callback back to previous value
 			window[ jsonpCallback ] = previous;
-
 			// Call if it was a function and we have a response
-			if ( previous) {
-				if ( responseContainer && jQuery.isFunction( previous ) ) {
-					window[ jsonpCallback ] ( responseContainer[ 0 ] );
-				}
-			} else {
-				// else, more memory leak avoidance
-				try{
-					delete window[ jsonpCallback ];
-				} catch( e ) {}
+			if ( responseContainer && jQuery.isFunction( previous ) ) {
+				window[ jsonpCallback ]( responseContainer[ 0 ] );
 			}
-
-		}, s.complete ];
+		});
 
 		// Use data converter to retrieve json after script execution
 		s.converters["script json"] = function() {
-			if ( ! responseContainer ) {
+			if ( !responseContainer ) {
 				jQuery.error( jsonpCallback + " was not called" );
 			}
 			return responseContainer[ 0 ];
@@ -83,6 +74,6 @@ jQuery.ajaxPrefilter( "json jsonp", function( s, originalSettings, dataIsString 
 		// Delegate to script
 		return "script";
 	}
-} );
+});
 
 })( jQuery );
