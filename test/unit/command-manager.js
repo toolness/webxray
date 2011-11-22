@@ -80,8 +80,8 @@ test("jQuery.commandManager()", function() {
   function makeCommandManager() {
     var cmdMgr = jQuery.commandManager();
   
-    cmdMgr.register(cmdA);
-    cmdMgr.register(cmdB);
+    cmdMgr.register(cmdA, "cmdA");
+    cmdMgr.register(cmdB, "cmdB");
 
     return cmdMgr;
   }

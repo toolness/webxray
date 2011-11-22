@@ -24,7 +24,7 @@
     function deserializeCommand(state) {
       // The fallback here is just for backwards compatibility
       // with old-style serializations.
-      var name = state.__cmd__ || ReplaceWithCmd.name;      
+      var name = state.__cmd__ || "ReplaceWithCmd";      
       return createCommand(name, {state: state});
     }
     
@@ -32,7 +32,6 @@
     
     var self = jQuery.eventEmitter({
       register: function(constructor, name) {
-        name = name || constructor.name;
         registry[name] = constructor;
       },
       run: function(name, options) {
@@ -113,8 +112,8 @@
       }
     });
 
-    self.register(ReplaceWithCmd);
-    self.register(ChangeAttributeCmd);
+    self.register(ReplaceWithCmd, "ReplaceWithCmd");
+    self.register(ChangeAttributeCmd, "ChangeAttributeCmd");
     
     return self;
   }

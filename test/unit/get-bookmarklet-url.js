@@ -2,8 +2,13 @@
 
 module("get-bookmarklet-url");
 
+test("Webxray._getBaseURI()", function() {
+  ok(Webxray._getBaseURI().match(/^https?:.*\/$/),
+     "returns an absolute URL to a directory: " + Webxray._getBaseURI());
+});
+
 test("Webxray.getBookmarkletURL()", function() {
-  ok(Webxray.getBookmarkletURL().indexOf(document.baseURI) != -1,
+  ok(Webxray.getBookmarkletURL().indexOf("undefined") == -1,
      "works with no arg");
   ok(Webxray.getBookmarkletURL("blargy").indexOf("blargy") != -1,
      "works with URL arg");

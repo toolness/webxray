@@ -4,8 +4,11 @@
   "compiledFile": "/webxray.js",
   "compiledFileParts": [
     "src/intro.js"
+  , "src/json2.js"
   , "src/json.js"
   , "jquery/src/core.js"
+  , "jquery/src/callbacks.js"
+  , "jquery/src/deferred.js"
   , "jquery/src/support.js"
   , "jquery/src/data.js"
   , "jquery/src/queue.js"
@@ -22,6 +25,7 @@
   , "jquery/src/effects.js"
   , "jquery/src/offset.js"
   , "jquery/src/dimensions.js"
+  , "src/monkeypatch-msie.js"
   , "src/get-bookmarklet-url.js"
   , "src/localization.js"
   , "src/locale/*.js"

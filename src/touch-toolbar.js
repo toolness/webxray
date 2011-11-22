@@ -45,7 +45,7 @@
         return function() {
           input.handleEvent(makeFakeEvent({
             type: "keydown",
-            keyCode: jQuery.keys[key],            
+            keyCode: jQuery.keys[key]
           }));
         }
       }
@@ -58,7 +58,7 @@
           $(this).toggleClass('webxray-toolbar-button-toggled');
           input.handleEvent(makeFakeEvent({
             type: isPressed ? "keydown" : "keyup",
-            keyCode: jQuery.keys[key],            
+            keyCode: jQuery.keys[key]
           }));
         }
       }

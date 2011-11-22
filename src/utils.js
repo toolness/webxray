@@ -52,8 +52,13 @@
     },
     // Like console.warn(), but only does anything if console exists.
     warn: function warn() {
-      if (window.console && window.console.warn)
-        window.console.warn.apply(window.console, arguments);
+      if (window.console && window.console.warn) {
+        if (window.console.warn.apply)
+          window.console.warn.apply(window.console, arguments);
+        else
+          // IE9's console.warn doesn't have an apply method...
+          window.console.warn(arguments[0] + " " + arguments[1]);
+      }
     }
   });
   
