@@ -160,17 +160,38 @@
     // Create and return a div that floats above the first
     // matched element.
     overlay: function overlay() {
-      var pos = this.offset();
-      var body = this.get(0).ownerDocument.body;
+      var document = this.get(0).ownerDocument;
       var overlay = $('<div class="webxray-base webxray-overlay">' +
                       '&nbsp;</div>');
-      overlay.css({
-        top: pos.top,
-        left: pos.left,
-        height: this.outerHeight(),
-        width: this.outerWidth()
-      });
-      $(body).append(overlay);
+      var bounds;
+
+      try {
+        var rect = this.get(0).getBoundingClientRect();
+        bounds = {
+          top: rect.top + document.defaultView.pageYOffset,
+          left: rect.left + document.defaultView.pageXOffset,
+          height: rect.height,
+          width: rect.width
+        };
+      } catch (e) {
+        // Not sure if this will ever get called, but there's code in
+        // Tilt that deals with this kind of situation, and we'd like to
+        // gracefully fallback to code that we know works if the above
+        // fails. For more discussion, see bug #98:
+        //
+        // http://hackasaurus.lighthouseapp.com/projects/81472/tickets/98
+
+        var pos = this.offset();
+        bounds = {
+          top: pos.top,
+          left: pos.left,
+          height: this.outerHeight(),
+          width: this.outerWidth()
+        };
+      }
+
+      overlay.css(bounds);
+      $(document.body).append(overlay);
 
       return overlay;
     },
