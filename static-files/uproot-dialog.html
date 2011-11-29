@@ -104,13 +104,32 @@ function DeferredTimeout(ms) {
 }
 
 function DeferredPublish(html, originalURL, hackpubURL) {
+  var method = 'POST';
+  var url = hackpubURL + "publish";
+  var data = {
+    'html': html,
+    'original-url': originalURL
+  };
+  
+  // If we're on MSIE, use their funky way of doing things.
+  if (typeof(XDomainRequest) == "function") {
+    var deferred = new jQuery.Deferred();
+    var req = new XDomainRequest();
+    req.open(method.toLowerCase(), url);
+    req.onerror = function() {
+      deferred.reject();
+    };
+    req.onload = function() {
+      deferred.resolve([JSON.parse(req.responseText)]);
+    };
+    req.send(jQuery.param(data));
+    return deferred;
+  }
+
   return jQuery.ajax({
-    type: 'POST',
-    url: hackpubURL + "publish",
-    data: {
-      'html': html,
-      'original-url': originalURL
-    },
+    type: method,
+    url: url,
+    data: data,
     crossDomain: true,
     dataType: 'json'
   });
@@ -162,7 +181,7 @@ if (top === self) {
   $(window).ready(function() {
     var html = $("#sample-html").html();
     loadLocalization(["en", "es"], function() {
-      init(html, "http://foo.com/", "http://localhost:8001/");
+      init(html, "http://foo.com/", "http://hackpub.hackasaurus.org/");
     });
   });
 } else
