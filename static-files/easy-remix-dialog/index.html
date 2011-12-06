@@ -289,14 +289,13 @@ jQuery.extend({
 function createDialog(data) {
   var previewDoc = $("#preview").contents();
   var stylesheet = $('<link rel="stylesheet"></link>');
-
-  // TODO: We need to be able to set the doctype too,
-  // for full fidelity to the original page.
-  previewDoc.find("head").html(data.startHTML.head);
   stylesheet.attr('href', $("link#webxray").get(0).href);
+
+  previewDoc[0].open();
+  previewDoc[0].write(data.startHTML.html);
+  previewDoc[0].close();
   previewDoc.find("head").append(stylesheet);
-  previewDoc.find("body").html(data.startHTML.body);
-  
+
   // The selector has to be relative to the body element;
   // for some reason, the nth-of-type CSS selector doesn't
   // work for html and body elements in iframes.
@@ -399,20 +398,15 @@ $(window).ready(function() {
       window.parent.postMessage(JSON.stringify(data), "*");
     }
   } else {
-    var iframe = $('<iframe src="sample.html"></iframe>');
-    $(document.body).append(iframe);
-    iframe.hide();
-    iframe.load(function() {
-      var doc = iframe.contents();
+    var req = jQuery.get("sample.html", function(data) {
       onMessage({
         languages: ["en", "es"],
         startHTML: {
           selector: "#sample",
-          head: doc.find("head").html(),
-          body: doc.find("body").html()
+          html: data
         }
       });
-    });
+    }, "text");
 
     sendMessage = function fakeSendMessage(data) {
       alert("Sending the following to parent window: " +

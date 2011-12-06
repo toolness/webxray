@@ -74,11 +74,9 @@
           var doctype = makeDoctypeTag(document.doctype);
           var html = doctype + '\n<html>' +
                      document.documentElement.innerHTML + '</html>';
-          var head = document.head.innerHTML;
-          var body = document.body.innerHTML;
           removal.undo();
           $(base).remove();
-          cb.call(elem, html, head, body);
+          cb.call(elem, html);
         }, 0);
     }
   });
