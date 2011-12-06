@@ -105,7 +105,7 @@
             setTimeout(function() {
               input.activate();
               input = null;
-              $(window).focus();
+              window.focus();
               if (cb)
                 cb();
             }, 50);
