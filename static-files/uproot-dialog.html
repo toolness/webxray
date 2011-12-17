@@ -94,6 +94,7 @@ div.publish-option p {
 </div>
 </div>
 <script src="jquery.min.js"></script>
+<script src="yepnope.1.0.2-min.js"></script>
 <script src="src/localization.js"></script>
 <script>
 function DeferredTimeout(ms) {
@@ -104,38 +105,19 @@ function DeferredTimeout(ms) {
 }
 
 function DeferredPublish(html, originalURL, hackpubURL) {
-  var method = 'POST';
-  var url = hackpubURL + "publish";
-  var data = {
-    'html': html,
-    'original-url': originalURL
-  };
-  
-  // If we're on MSIE, use their funky way of doing things.
-  if (typeof(XDomainRequest) == "function") {
-    var deferred = new jQuery.Deferred();
-    var req = new XDomainRequest();
-    req.open(method.toLowerCase(), url);
-    req.onerror = function() {
-      deferred.reject();
-    };
-    req.onload = function() {
-      deferred.resolve([JSON.parse(req.responseText)]);
-    };
-    req.send(jQuery.param(data));
-    return deferred;
-  }
-
   return jQuery.ajax({
-    type: method,
-    url: url,
-    data: data,
+    type: 'POST',
+    url: hackpubURL + "publish",
+    data: {
+      'html': html,
+      'original-url': originalURL
+    },
     crossDomain: true,
     dataType: 'json'
   });
 }
 
-function init(html, originalURL, hackpubURL) {
+function setupUI(html, originalURL, hackpubURL) {
   $(".to-internet.big-button").click(function() {
     $("#choose-publish-method").fadeOut(function() {
       $("#to-internet").fadeIn(function() {
@@ -162,6 +144,20 @@ function init(html, originalURL, hackpubURL) {
       $("#view-html textarea").val(html).focus().select();
       $("#view-html").fadeIn();
     });
+  });
+}
+
+function init(html, originalURL, hackpubURL) {
+  var ppxURL = "http://toolness.github.com/postmessage-proxied-xhr/";
+
+  yepnope({
+    test: jQuery.support.cors,
+    nope: [ppxURL + 'ppx.min.js', ppxURL + 'ppx.jquery.min.js'],
+    complete: function() {
+      if (!jQuery.support.cors)
+        jQuery.proxyAjaxThroughPostMessage(hackpubURL + 'ppx-server');
+      setupUI(html, originalURL, hackpubURL);
+    }
   });
 }
 
