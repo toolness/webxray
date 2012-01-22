@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <meta charset="utf-8">
 <title>Simple Easy Remix</title>
+<link rel="stylesheet" href="../codemirror2/lib/codemirror.css">
+<link rel="stylesheet" href="../dialog-common/stylesheets/jsbin-codemirror-theme.css">
 <style>
 html, body {
   height: 100%;
@@ -15,20 +17,31 @@ div.editor {
   -moz-box-sizing: border-box;
 }
 
-textarea {
+.CodeMirror {
   width: 100%;
   height: 100%;
-  padding: 10px;
+  border: 1px solid black;
+  background: rgba(255, 255, 255, 0.95);
   -moz-box-sizing: border-box;
 }
+
+.CodeMirror-scroll {
+  height: 100%;
+}
 </style>
-<div class="editor"><textarea></textarea></div>
+<div class="editor"></div>
+<script src="../codemirror2/lib/codemirror.js"></script>
+<script src="../codemirror2/mode/xml/xml.js"></script>
+<script src="../codemirror2/mode/javascript/javascript.js"></script>
+<script src="../codemirror2/mode/css/css.js"></script>
+<script src="../codemirror2/mode/htmlmixed/htmlmixed.js"></script>
 <script src="../jquery.min.js"></script>
 <script>
 var parentWindow = (top != window && top);
+var editor = null;
 
 function sendContent() {
-  var content = $("textarea").val();
+  var content = editor.getValue();
   parentWindow.postMessage(JSON.stringify({
     currentHTML: content
   }), "*");
@@ -37,7 +50,7 @@ function sendContent() {
 function onMessage(event) {
   var data = JSON.parse(event.data);
   if (data.startHTML) {
-    $("textarea").val(data.startHTML);
+    editor.setValue(data.startHTML);
   }
 }
 
@@ -46,6 +59,19 @@ onmessage = onMessage;
 $(window).ready(function() {
   var DELAY_MS = 300;
   var delay = null;
+
+  editor = CodeMirror(function(element) {
+    $(".editor").append(element);
+  }, {
+    mode: "text/html",
+    theme: "jsbin",
+    tabMode: "indent",
+    lineWrapping: true,
+    onChange: function() {
+      clearTimeout(delay);
+      setTimeout(sendContent, DELAY_MS);      
+    }
+  });
 
   if (!parentWindow) {
     parentWindow = {
@@ -58,9 +84,5 @@ $(window).ready(function() {
       source: parentWindow
     });
   }
-  $("textarea").keyup(function() {
-    clearTimeout(delay);
-    setTimeout(sendContent, DELAY_MS);
-  });
 });
 </script>
