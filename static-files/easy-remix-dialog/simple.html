@@ -32,7 +32,7 @@ textarea {
 <div class="editor"><textarea></textarea></div>
 <script src="../jquery.min.js"></script>
 <script>
-var parentWindow = window.opener;
+var parentWindow = (top != window && top);
 
 function sendContent() {
   var content = $("textarea").val();

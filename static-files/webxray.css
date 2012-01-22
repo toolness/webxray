@@ -435,3 +435,40 @@ div.webxray-toolbar-button-glyph-tiny {
   background: white;
   cursor: pointer;
 }
+
+.webxray-tiny-dialog {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 320px;
+  z-index: 2147483646;
+  background: rgba(0, 0, 0, 0.75);
+  color: white;
+  -moz-box-sizing: border-box;
+}
+
+.webxray-tiny-dialog .webxray-commit {
+  margin-left: 5px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+  height: 20px;
+  cursor: pointer;
+  font-size: 10px;
+  padding-top: 4px;
+  background: green;
+  border-radius: 2px;
+  text-align: center;
+  -moz-box-sizing: border-box;
+}
+
+.webxray-tiny-dialog .webxray-commit:hover {
+  background: white;
+  color: black;
+}
+
+.webxray-tiny-dialog iframe {
+  border: none;
+  width: 100%;
+  height: 240px;
+  -moz-box-sizing: border-box;
+}

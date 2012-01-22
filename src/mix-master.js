@@ -168,32 +168,49 @@
           return;
         }
         
-        var dialog = window.open(dialogURL, "_blank", "width=512,height=348");
-
+        var currentHTML = focusedHTML;
+        var dialogHolder = $('<div class="webxray-base webxray-tiny-dialog"><div class="webxray-commit">Commit Changes</div></div>');
+        var dialog = $('<iframe></iframe>');
+        dialog.attr("src", dialogURL);
+        dialogHolder.prepend(dialog);
+        $(document.body).append(dialogHolder);
+        focused.unfocus();
+        input.deactivate();
+        
         var focusedParent = focusedElement.parentNode;
 
         var doppelganger = $(focusedHTML)[0];
         focusedParent.replaceChild(doppelganger, focusedElement);
 
+        $(".webxray-toolbar").hide();
+        
+        dialogHolder.find(".webxray-commit").click(function() {
+          $(".webxray-toolbar").show();
+          focusedParent.replaceChild(focusedElement, doppelganger);
+          if (currentHTML != focusedHTML)
+            self.replaceElement(focusedElement, currentHTML);
+          dialogHolder.remove();
+          input.activate();
+        });
+        
         function onMessage(event) {
-          if (event.source == dialog) {
+          if (event.source == dialog[0].contentWindow) {
             var data = JSON.parse(event.data);
             if (data.currentHTML) {
-              var newDoppelganger = self.htmlToJQuery(data.currentHTML)[0];
+              currentHTML = data.currentHTML;
+              var newDoppelganger = self.htmlToJQuery(currentHTML)[0];
               focusedParent.replaceChild(newDoppelganger, doppelganger);
               doppelganger = newDoppelganger;
-              //self.replaceElement(focusedElement, '<p>lol</p>');
             }
           }
         }
         
         window.addEventListener("message", onMessage, false);
-        dialog.addEventListener("load", function(event) {
-          dialog.postMessage(JSON.stringify({
+        dialog.load(function(event) {
+          dialog[0].contentWindow.postMessage(JSON.stringify({
             startHTML: focusedHTML
           }), "*");
-        }, false);
-        dialog.focus();
+        });
       }
     };
     return self;
