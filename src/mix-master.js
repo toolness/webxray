@@ -169,7 +169,7 @@
         }
         
         var currentHTML = focusedHTML;
-        var dialogHolder = $('<div class="webxray-base webxray-tiny-dialog"><div class="webxray-commit">Commit Changes</div></div>');
+        var dialogHolder = $('<div class="webxray-base webxray-tiny-dialog"><div class="webxray-commit">Close</div></div>');
         var dialog = $('<iframe></iframe>');
         dialog.attr("src", dialogURL);
         dialogHolder.prepend(dialog);
@@ -198,6 +198,11 @@
             var data = JSON.parse(event.data);
             if (data.currentHTML) {
               currentHTML = data.currentHTML;
+              if (currentHTML == focusedHTML) {
+                dialogHolder.find(".webxray-commit").text("Close");
+              } else {
+                dialogHolder.find(".webxray-commit").text("Commit Changes");
+              }
               var newDoppelganger = self.htmlToJQuery(currentHTML)[0];
               focusedParent.replaceChild(newDoppelganger, doppelganger);
               doppelganger = newDoppelganger;
@@ -211,6 +216,7 @@
             startHTML: focusedHTML
           }), "*");
         });
+        dialog.focus();
       }
     };
     return self;

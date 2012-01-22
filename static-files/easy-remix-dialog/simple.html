@@ -51,6 +51,7 @@ function onMessage(event) {
   var data = JSON.parse(event.data);
   if (data.startHTML) {
     editor.setValue(data.startHTML);
+    editor.focus();
   }
 }
 
