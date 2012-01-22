@@ -167,63 +167,33 @@
           jQuery.transparentMessage($(msg));
           return;
         }
+        
+        var dialog = window.open(dialogURL, "_blank", "width=512,height=348");
 
-        if (sendFullDocument) {
-          $(document).uprootIgnoringWebxray(function (html) {
-            begin({
-              html: html,
-              selector: $(document.body).pathTo(focused.getPrimaryElement())
-            });
-          });
-        } else
-          begin(focusedHTML);
+        var focusedParent = focusedElement.parentNode;
 
-        function begin(startHTML) {
-          focused.unfocus();
-          $(focusedElement).addClass('webxray-hidden');
+        var doppelganger = $(focusedHTML)[0];
+        focusedParent.replaceChild(doppelganger, focusedElement);
 
-          jQuery.morphElementIntoDialog({
-            input: input,
-            body: options.body,
-            url: dialogURL,
-            element: focusedElement,
-            onLoad: function(dialog) {
-              dialog.iframe.postMessage(JSON.stringify({
-                languages: jQuery.locale.languages,
-                startHTML: startHTML,
-                mods: dialogPageMods,
-                baseURI: document.location.href
-              }), "*");
-              dialog.iframe.fadeIn();
-              dialog.iframe.bind("message", function onMessage(event, data) {
-                if (data && data.length && data[0] == '{') {
-                  var data = JSON.parse(data);
-                  if (data.msg == "ok") {
-                    // The dialog may have decided to replace all our spaces
-                    // with non-breaking ones, so we'll undo that.
-                    var html = data.endHTML.replace(/\u00a0/g, " ");
-                    var newContent = self.replaceElement(focusedElement, html);
-
-                    newContent.addClass('webxray-hidden');
-                    $(focusedElement).removeClass('webxray-hidden');
-                    jQuery.morphDialogIntoElement({
-                      dialog: dialog,
-                      input: input,
-                      element: newContent,
-                      onDone: function() {
-                        newContent.reallyRemoveClass('webxray-hidden');
-                      }
-                    });
-                  } else {
-                    // TODO: Re-focus previously focused elements?
-                    $(focusedElement).reallyRemoveClass('webxray-hidden');
-                    dialog.close();
-                  }
-                }
-              });
+        function onMessage(event) {
+          if (event.source == dialog) {
+            var data = JSON.parse(event.data);
+            if (data.currentHTML) {
+              var newDoppelganger = self.htmlToJQuery(data.currentHTML)[0];
+              focusedParent.replaceChild(newDoppelganger, doppelganger);
+              doppelganger = newDoppelganger;
+              //self.replaceElement(focusedElement, '<p>lol</p>');
             }
-          });
+          }
         }
+        
+        window.addEventListener("message", onMessage, false);
+        dialog.addEventListener("load", function(event) {
+          dialog.postMessage(JSON.stringify({
+            startHTML: focusedHTML
+          }), "*");
+        }, false);
+        dialog.focus();
       }
     };
     return self;

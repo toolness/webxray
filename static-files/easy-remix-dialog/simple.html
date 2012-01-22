@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Simple Easy Remix</title>
+<style>
+html, body {
+  height: 100%;
+  margin: 0px;
+  padding: 0px;
+}
+
+div.instructions {
+  height: 10%;
+  padding: 10px;
+  -moz-box-sizing: border-box;
+}
+
+div.editor {
+  width: 100%;
+  height: 90%;
+  padding: 10px;
+  -moz-box-sizing: border-box;
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  -moz-box-sizing: border-box;
+}
+</style>
+<div class="instructions">hello.</div>
+<div class="editor"><textarea></textarea></div>
+<script src="../jquery.min.js"></script>
+<script>
+var parentWindow = window.opener;
+
+function sendContent() {
+  var content = $("textarea").val();
+  parentWindow.postMessage(JSON.stringify({
+    currentHTML: content
+  }), "*");
+}
+
+function onMessage(event) {
+  var data = JSON.parse(event.data);
+  if (data.startHTML) {
+    $("textarea").val(data.startHTML);
+  }
+}
+
+onmessage = onMessage;
+
+$(window).ready(function() {
+  var DELAY_MS = 300;
+  var delay = null;
+
+  if (!parentWindow) {
+    parentWindow = {
+      postMessage: function(content, target) {
+        console.log("POSTMESSAGE", content, target);
+      }      
+    };
+    onMessage({
+      data: JSON.stringify({startHTML: "<p>hi</p>"}),
+      source: parentWindow
+    });
+  }
+  $("textarea").keyup(function() {
+    clearTimeout(delay);
+    setTimeout(sendContent, DELAY_MS);
+  });
+});
+</script>
