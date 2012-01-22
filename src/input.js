@@ -330,6 +330,28 @@
       
       self.addSimpleKeyBindings([
         {
+          key: 'SPACE',
+          cmd: 'command-entry',
+          execute: function() {
+            self.deactivate();
+            var input = $('<div class="webxray-base webxray-cmd-mode"><form><input type="text"></input></form></div>');
+            function remove() {
+              $(input).remove();
+              self.activate();
+            }
+            
+            input.appendTo(document.body).find("input")
+              .focus().keyup(function(event) {
+              if (event.keyCode == 27)
+                remove();
+            }).blur(remove);
+            input.find("form").submit(function() {
+              remove();
+              return false;
+            });
+          }
+        },
+        {
           key: 'H',
           cmd: 'help',
           execute: function() {
