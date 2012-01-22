@@ -16,7 +16,7 @@
       glyphDiv.addClass('webxray-toolbar-button-glyph-tiny');
     $('.webxray-toolbar-button-text', button).text(text);
     button.find('*').andSelf().addClass('webxray-base');
-    button.bind('touchstart touchmove', function(event) {
+    button.bind('touchstart touchmove click', function(event) {
       event.preventDefault();
       cb.call(this);
     });
@@ -68,7 +68,8 @@
       var shortDescriptions = locale.scope('short-command-descriptions');
 
       input.keyboardHelp.forEach(function(binding) {
-        if (binding.cmd == 'help')
+        if (["dom-descend", "dom-ascend", "remove", "css-quasimode",
+             "remix"].indexOf(binding.cmd) != -1)
           return;
         makeButton(jQuery.nameForKey(binding.key, locale, platform),
                    shortDescriptions(binding.cmd),

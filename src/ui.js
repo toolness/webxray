@@ -30,7 +30,7 @@
   }
   
   function canBeTouched() {
-    return ('ontouchstart' in window);
+    return true;
   }
   
   jQuery.extend({
