@@ -255,29 +255,48 @@
         'click',
         'mouseout',
         'mouseover',
+        'mousedown',
+        'mouseup',
         'touchstart',
         'touchmove',
         'touchend'
       ], eventSource);
+
+      var mouseIsDown = false;
+      var contextMenu = null;
       
       self.add({
-        click: function(event) {
-          if ($(event.target).closest('a').length) {
-            if (!touchesReceived) {
-              // This is just the result of a tap, which we can assume
-              // was intended to set the focus, not to click on a link,
-              // so don't bother with the transparent message.
-              var msg = jQuery.locale.get("input:link-click-blocked");
-              jQuery.transparentMessage($('<div></div>').text(msg));
-            }
-            return true;
+        mousedown: function(event) {
+          contextMenu = $('<div class="webxray-base webxray-context-menu">' +
+          '<div class="webxray-item" data-cmd="remix">Remix</div>' +
+          '<div class="webxray-item" data-cmd="remove">Delete</div>' +
+          '</div>');
+          contextMenu.css({
+            top: event.pageY + 1 + 'px',
+            left: event.pageX + 1 + 'px'
+          });
+          $(document.body).append(contextMenu);
+          return true;
+        },
+        mouseup: function(event) {
+          contextMenu.remove();
+          contextMenu = null;
+          if ($(event.target).hasClass('webxray-item')) {
+            var cmd = $(event.target).attr("data-cmd");
+            self.commands[cmd].execute();
           }
+          return true;
+        },
+        click: function(event) {
+          return true;
         },
         touchmove: function(event) {
           touchesReceived = true;
           return false;
         },
         mouseout: function(event) {
+          if (contextMenu)
+            return false;
           if (touchesReceived)
             // We're likely on a tablet, so this is probably a simulated
             // mouse event that we want to ignore.
@@ -291,6 +310,8 @@
           }
         },
         mouseover: function(event) {
+          if (contextMenu)
+            return false;
           if (touchesReceived)
           // We're likely on a tablet, so this is probably a simulated
           // mouse event that we want to ignore.
@@ -308,17 +329,20 @@
       self.extend({
         simpleKeyBindings: jQuery.simpleKeyBindings(),
         keyboardHelp: [],
+        commands: {},
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
           jQuery.transparentMessage(help);
         },
         addSimpleKeyBindings: function(bindings) {
           bindings.forEach(function(binding) {
-            if (binding.cmd)
+            if (binding.cmd) {
               self.keyboardHelp.push({
                 key: binding.key,
                 cmd: binding.cmd
               });
+              self.commands[binding.cmd] = binding;
+            }
             if (binding.execute) {
               var simpleBinding = {};
               simpleBinding[binding.key] = binding.execute;
@@ -329,28 +353,6 @@
       });
       
       self.addSimpleKeyBindings([
-        {
-          key: 'SPACE',
-          cmd: 'command-entry',
-          execute: function() {
-            self.deactivate();
-            var input = $('<div class="webxray-base webxray-cmd-mode"><form><input type="text"></input></form></div>');
-            function remove() {
-              $(input).remove();
-              self.activate();
-            }
-            
-            input.appendTo(document.body).find("input")
-              .focus().keyup(function(event) {
-              if (event.keyCode == 27)
-                remove();
-            }).blur(remove);
-            input.find("form").submit(function() {
-              remove();
-              return false;
-            });
-          }
-        },
         {
           key: 'H',
           cmd: 'help',
