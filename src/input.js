@@ -267,7 +267,7 @@
       
       self.add({
         mousedown: function(event) {
-          if ($(event.target).closest('.webxray-base').length)
+          if ($(event.target).closest('.webxray-toolbar').length)
             return false;
           contextMenu = $('<div class="webxray-base webxray-context-menu">' +
           '<div class="webxray-item" data-cmd="remix">Remix</div>' +
@@ -281,7 +281,7 @@
           return true;
         },
         mouseup: function(event) {
-          if ($(event.target).closest('.webxray-base').length)
+          if ($(event.target).closest('.webxray-toolbar').length)
             return false;
           contextMenu.remove();
           contextMenu = null;
@@ -292,7 +292,7 @@
           return true;
         },
         click: function(event) {
-          if ($(event.target).closest('.webxray-base').length)
+          if ($(event.target).closest('.webxray-toolbar').length)
             return false;
           return true;
         },
