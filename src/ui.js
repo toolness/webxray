@@ -30,6 +30,7 @@
   }
   
   function canBeTouched() {
+    return true;
     return ('ontouchstart' in window);
   }
   

@@ -262,6 +262,14 @@
       
       self.add({
         click: function(event) {
+            if ($(event.target).closest('.webxray-base').length)
+              return;
+            mixMaster.replaceFocusedElementWithDialog({
+              input: self,
+              dialogURL: jQuery.webxraySettings.url("easyRemixDialogURL"),
+              sendFullDocument: true
+            });          
+          return true;
           if ($(event.target).closest('a').length) {
             if (!touchesReceived) {
               // This is just the result of a tap, which we can assume
