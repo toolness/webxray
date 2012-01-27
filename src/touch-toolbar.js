@@ -26,46 +26,11 @@
     });
     return button;
   }
-  
-  function makeFakeEvent(props) {
-    var fakeEvent = {
-      altKey: false,
-      ctrlKey: false,
-      altGraphKey: false,
-      metaKey: false,
-      preventDefault: function() {},
-      stopPropagation: function() {}      
-    };
-    jQuery.extend(fakeEvent, props);
-    return fakeEvent;
-  }
-  
+    
   jQuery.extend({
     touchToolbar: function(input, locale, platform) {
       locale = locale || jQuery.locale;
       platform = platform || navigator.platform;
-
-      function makeKeydown(key) {
-        return function() {
-          input.handleEvent(makeFakeEvent({
-            type: "keydown",
-            keyCode: jQuery.keys[key]
-          }));
-        }
-      }
-
-      function makeKeyToggle(key) {
-        var isPressed = false;
-        
-        return function() {
-          isPressed = !isPressed;
-          $(this).toggleClass('webxray-toolbar-button-toggled');
-          input.handleEvent(makeFakeEvent({
-            type: isPressed ? "keydown" : "keyup",
-            keyCode: jQuery.keys[key]
-          }));
-        }
-      }
 
       var toolbar = $('<div class="webxray-base webxray-toolbar"></div>');
       var keyNames = locale.scope('key-names');
@@ -74,8 +39,9 @@
       input.keyboardHelp.forEach(function(binding) {
         if (canBeTouched() || binding.alwaysInToolbar)
           makeButton(jQuery.nameForKey(binding.key, locale, platform),
-                     shortDescriptions(binding.cmd),
-                     makeKeydown(binding.key)).appendTo(toolbar);
+                     shortDescriptions(binding.cmd), function() {
+                       binding.execute();
+                     }).appendTo(toolbar);
       });
       
       toolbar.appendTo(document.body);
