@@ -51,4 +51,13 @@
     <a><span></span></a>
     <span data-target="true" id="funky24" class=" blarg  "></span>
   </div>
+  <div class="test-case" data-expect=" > span.blarg:nth-of-type(1)">
+    <a><span></span></a>
+    <span data-target="true" class=" blarg 'lol' "></span>
+  </div>
+  <div class="test-case" data-expect=" > span.blarg:nth-of-type(1)">
+    <a><span></span></a>
+    <!-- Actually a real class name from gamespot.com! -->
+    <span data-target="true" class=" blarg {'p':'0','g':'0','tab_on_class':'active_tab','list_mode':'simple_table','has_hovercard':'1'} "></span>
+  </div>
 </div>

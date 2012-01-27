@@ -106,14 +106,26 @@
         var n = $(node).prevAll(node.nodeName.toLowerCase()).length + 1;
         var id = $(node).attr("id");
         var className = $(node).attr("class");
+        var classNames = [];
         var selector = node.nodeName.toLowerCase();
 
         // Class and id parts are based on jQuery-GetPath code.
         if (typeof(id) != "undefined" && id.length)
           selector += "#" + id;
-        if (typeof(className) != "undefined" && className.length)
-          selector += "." + jQuery.trim(className).split(/[\s\n]+/).join('.');
 
+        if (typeof(className) != "undefined" && className.length)
+          jQuery.each(jQuery.trim(className).split(/[\s\n]+/), function() {
+            // Only keep the sane-looking class names. The CSS standard
+            // does prescribe escape patterns for odd characters in
+            // selectors, but jQuery's selector parser isn't completely
+            // standards-compliant, so we'll stick with the safe ones.
+            if (/^[A-Za-z0-9_\-]+$/.test(this))
+              classNames.push(this);
+          });
+        
+        if (classNames.length)
+          selector += "." + classNames.join('.');
+        
         selector += ':nth-of-type(' + n + ')';
         parts.push(selector);
       }
