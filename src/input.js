@@ -315,11 +315,7 @@
         addSimpleKeyBindings: function(bindings) {
           bindings.forEach(function(binding) {
             if (binding.cmd)
-              self.keyboardHelp.push({
-                key: binding.key,
-                cmd: binding.cmd,
-                alwaysInToolbar: binding.alwaysInToolbar
-              });
+              self.keyboardHelp.push(binding);
             if (binding.execute) {
               var simpleBinding = {};
               simpleBinding[binding.key] = binding.execute;
