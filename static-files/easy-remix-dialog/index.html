@@ -214,7 +214,13 @@ function startContinuousDynamicScale(selected, parentIframe, maxWidthElem) {
     }, options);
   }
   
-  scaleAndPan(true);
+  try {
+    scaleAndPan(true);
+  } catch (e) {
+    if (window.console && window.console.error)
+      window.console.error(e);
+  }
+  
   return setInterval(scaleAndPan, 500);
 }
 
