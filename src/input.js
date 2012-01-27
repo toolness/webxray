@@ -317,7 +317,8 @@
             if (binding.cmd)
               self.keyboardHelp.push({
                 key: binding.key,
-                cmd: binding.cmd
+                cmd: binding.cmd,
+                alwaysInToolbar: binding.alwaysInToolbar
               });
             if (binding.execute) {
               var simpleBinding = {};
@@ -339,6 +340,7 @@
         {
           key: 'ESC',
           cmd: 'quit',
+          alwaysInToolbar: true,
           execute: function() {
             if (onQuit) onQuit();
           }
@@ -368,11 +370,13 @@
         {
           key: 'LEFT',
           cmd: 'undo',
+          alwaysInToolbar: true,
           execute: function() { mixMaster.undo(); }
         },
         {
           key: 'RIGHT',
           cmd: 'redo',
+          alwaysInToolbar: true,
           execute: function() { mixMaster.redo(); }
         },
         {
@@ -390,6 +394,7 @@
         {
           key: 'P',
           cmd: 'uproot',
+          alwaysInToolbar: true,
           execute: function() {
             persistence.saveHistoryToDOM();
             jQuery.openUprootDialog(self);

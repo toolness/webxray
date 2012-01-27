@@ -382,6 +382,12 @@ div#webxray-wait-for-css-to-load {
   height: 48px;
   text-align: center;
   padding: 10px;
+  cursor: pointer;
+}
+
+.webxray-toolbar-button:hover {
+  background: white;
+  color: black;
 }
 
 .webxray-toolbar-button-glyph {
