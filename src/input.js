@@ -262,14 +262,8 @@
       
       self.add({
         click: function(event) {
-          if ($(event.target).closest('a').length) {
-            if (!touchesReceived) {
-              // This is just the result of a tap, which we can assume
-              // was intended to set the focus, not to click on a link,
-              // so don't bother with the transparent message.
-              var msg = jQuery.locale.get("input:link-click-blocked");
-              jQuery.transparentMessage($('<div></div>').text(msg));
-            }
+          if (isValidFocusTarget(event.target)) {
+            self.commandBindings['remix'].execute();
             return true;
           }
         },
@@ -308,14 +302,17 @@
       self.extend({
         simpleKeyBindings: jQuery.simpleKeyBindings(),
         keyboardHelp: [],
+        commandBindings: {},
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
           jQuery.transparentMessage(help);
         },
         addSimpleKeyBindings: function(bindings) {
           bindings.forEach(function(binding) {
-            if (binding.cmd)
+            if (binding.cmd) {
               self.keyboardHelp.push(binding);
+              self.commandBindings[binding.cmd] = binding;
+            }
             if (binding.execute) {
               var simpleBinding = {};
               simpleBinding[binding.key] = binding.execute;
