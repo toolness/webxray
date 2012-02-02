@@ -179,8 +179,19 @@
 
         var spotlight = (function spotlightElement() {
           var borderSize = 4000;
+          var ovrContainer = $('<div class="webxray-base"></div>');
+          ovrContainer.css({
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            width: $(document).width(),
+            height: $(document).height(),
+            overflow: 'hidden'
+          });
+          $(document.body).append(ovrContainer);
           var ovr = $(focusedElement).overlay();
           var ovrPos = ovr.offset();
+          ovrContainer.append(ovr);
           ovr.css({
             top: ovrPos.top - borderSize,
             left: ovrPos.left - borderSize,
@@ -210,7 +221,7 @@
         $(".webxray-toolbar").hide();
         
         dialogHolder.find(".webxray-commit").click(function() {
-          spotlight.fadeOut(function() { spotlight.remove(); });
+          spotlight.fadeOut(function() { spotlight.parent().remove(); });
           $(".webxray-toolbar").show();
           focusedParent.replaceChild(focusedElement, doppelganger);
           if (currentHTML != focusedHTML)
