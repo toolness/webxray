@@ -187,19 +187,13 @@
             overflow: 'hidden'
           });
           $(document.body).append(ovrContainer);
-          ovrContainer.width($(document).width());
-          ovrContainer.height($(document).height());
           var ovr = $(focusedElement).overlay();
-          var ovrPos = ovr.offset();
           ovrContainer.append(ovr);
           ovr.css({
-            top: ovrPos.top - borderSize,
-            left: ovrPos.left - borderSize,
             border: borderSize + 'px solid rgba(0, 0, 0, 0.5)'
           });
-          ovr.hide();
-          ovr.fadeIn();
-          return {
+
+          var self = {
             remove: function() {
               ovr.fadeOut(function() {
                 ovrContainer.remove();
@@ -219,6 +213,12 @@
               ovrContainer.height($(document).height());
             }
           };
+
+          self.focusOn(focusedElement);
+          ovr.hide();
+          ovr.fadeIn();
+
+          return self;
         })();
 
         (function morphElementIntoDialog() {
