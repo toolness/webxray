@@ -177,6 +177,20 @@
         focused.unfocus();
         input.deactivate();
 
+        var spotlight = (function spotlightElement() {
+          var borderSize = 4000;
+          var ovr = $(focusedElement).overlay();
+          var ovrPos = ovr.offset();
+          ovr.css({
+            top: ovrPos.top - borderSize,
+            left: ovrPos.left - borderSize,
+            border: borderSize + 'px solid rgba(0, 0, 0, 0.5)'
+          });
+          ovr.hide();
+          ovr.fadeIn();
+          return ovr;
+        })();
+
         (function morphElementIntoDialog() {
           var dialogBounds = dialogHolder.bounds();
           var ovr = $(focusedElement).overlayWithTagColor(1.0);
@@ -196,6 +210,7 @@
         $(".webxray-toolbar").hide();
         
         dialogHolder.find(".webxray-commit").click(function() {
+          spotlight.fadeOut(function() { spotlight.remove(); });
           $(".webxray-toolbar").show();
           focusedParent.replaceChild(focusedElement, doppelganger);
           if (currentHTML != focusedHTML)
@@ -216,6 +231,8 @@
               }
               var newDoppelganger = self.htmlToJQuery(currentHTML)[0];
               focusedParent.replaceChild(newDoppelganger, doppelganger);
+              spotlight.width($(newDoppelganger).width());
+              spotlight.height($(newDoppelganger).height());
               doppelganger = newDoppelganger;
             }
           }
