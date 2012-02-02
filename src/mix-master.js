@@ -194,11 +194,15 @@
           });
 
           var self = {
-            remove: function() {
+            remove: function(cb) {
               ovr.fadeOut(function() {
                 ovrContainer.remove();
                 ovr = null;
                 ovrContainer = null;
+                // Ignore input events for long enough that we don't
+                // display a focus overlay over whatever the user's
+                // mouse happens to be over in Firefox.
+                setTimeout(cb, 100);
               });
             },
             focusOn: function(element) {
@@ -240,13 +244,12 @@
         $(".webxray-toolbar").hide();
         
         dialogHolder.find(".webxray-commit").click(function() {
-          spotlight.remove();
+          spotlight.remove(input.activate);
           $(".webxray-toolbar").show();
           focusedParent.replaceChild(focusedElement, doppelganger);
           if (currentHTML != focusedHTML)
             self.replaceElement(focusedElement, currentHTML);
           dialogHolder.remove();
-          input.activate();
         });
         
         function onMessage(event) {
