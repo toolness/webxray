@@ -383,6 +383,11 @@ div#webxray-wait-for-css-to-load {
   text-align: center;
   padding: 10px;
   cursor: pointer;
+  border-top: 1px dotted gray;
+}
+
+.webxray-toolbar-button:first-child {
+  border-top: none;
 }
 
 .webxray-toolbar-button:hover {
@@ -398,6 +403,7 @@ div#webxray-wait-for-css-to-load {
 
 div.webxray-toolbar-button-glyph-tiny {
   font-size: 15px;
+  line-height: 27px;
 }
 
 .webxray-toolbar-button-text {
