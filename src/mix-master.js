@@ -184,11 +184,11 @@
             position: 'absolute',
             top: 0,
             left: 0,
-            width: $(document).width(),
-            height: $(document).height(),
             overflow: 'hidden'
           });
           $(document.body).append(ovrContainer);
+          ovrContainer.width($(document).width());
+          ovrContainer.height($(document).height());
           var ovr = $(focusedElement).overlay();
           var ovrPos = ovr.offset();
           ovrContainer.append(ovr);
@@ -199,7 +199,21 @@
           });
           ovr.hide();
           ovr.fadeIn();
-          return ovr;
+          return {
+            remove: function() {
+              ovr.fadeOut(function() {
+                ovrContainer.remove();
+                ovr = null;
+                ovrContainer = null;
+              });
+            },
+            focusOn: function(element) {
+              ovr.width($(element).width());
+              ovr.height($(element).height());
+              ovrContainer.width($(document).width());
+              ovrContainer.height($(document).height());
+            }
+          };
         })();
 
         (function morphElementIntoDialog() {
@@ -221,7 +235,7 @@
         $(".webxray-toolbar").hide();
         
         dialogHolder.find(".webxray-commit").click(function() {
-          spotlight.fadeOut(function() { spotlight.parent().remove(); });
+          spotlight.remove();
           $(".webxray-toolbar").show();
           focusedParent.replaceChild(focusedElement, doppelganger);
           if (currentHTML != focusedHTML)
@@ -242,8 +256,7 @@
               }
               var newDoppelganger = self.htmlToJQuery(currentHTML)[0];
               focusedParent.replaceChild(newDoppelganger, doppelganger);
-              spotlight.width($(newDoppelganger).width());
-              spotlight.height($(newDoppelganger).height());
+              spotlight.focusOn(newDoppelganger);
               doppelganger = newDoppelganger;
             }
           }
