@@ -176,6 +176,17 @@
         $(document.body).append(dialogHolder);
         focused.unfocus();
         input.deactivate();
+
+        (function morphElementIntoDialog() {
+          var dialogBounds = dialogHolder.bounds();
+          var ovr = $(focusedElement).overlayWithTagColor(1.0);
+          ovr.addClass('webxray-topmost');
+          ovr.animate(dialogBounds, function() {
+            ovr.fadeOut(function() { ovr.remove(); });
+            dialogHolder.show();
+          });
+          dialogHolder.hide();
+        })();
         
         var focusedParent = focusedElement.parentNode;
 
