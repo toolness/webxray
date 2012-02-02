@@ -208,8 +208,13 @@
               });
             },
             focusOn: function(element) {
-              ovr.width($(element).width());
-              ovr.height($(element).height());
+              var elementBounds = $(element).bounds();
+              ovr.css({
+                top: elementBounds.top - borderSize,
+                left: elementBounds.left - borderSize,
+                width: elementBounds.width,
+                height: elementBounds.height
+              });
               ovrContainer.width($(document).width());
               ovrContainer.height($(document).height());
             }
