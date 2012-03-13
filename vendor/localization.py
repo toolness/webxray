@@ -15,7 +15,7 @@ def process_locale_json(data):
     for locale in data:
         for scope in data[locale]:
             lines.append("jQuery.localization.extend(%s, %s, %s);" % (
-                json.dumps(locale),
+                json.dumps(hyphenate(locale)),
                 json.dumps(scope),
                 json.dumps(data[locale][scope])
             ))
@@ -42,6 +42,9 @@ def locale_exists(locale, dirname, domain):
                           '%s.po' % domain)
     return os.path.exists(pofile)
 
+def hyphenate(locale):
+    return locale.replace('_', '-')
+
 def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
                     default_locale):
     "convert message files into binary and JS formats"
@@ -56,7 +59,7 @@ def compilemessages(json_dir, js_locale_dir, locale_dir, locale_domain,
                locale_domain])
     locales = found_locales + [default_locale]
     for locale in locales:
-        nice_locale = locale.replace('_', '-')
+        nice_locale = hyphenate(locale)
         print "processing localization '%s'" % nice_locale
         if locale == default_locale:
             trans = gettext.NullTranslations()
