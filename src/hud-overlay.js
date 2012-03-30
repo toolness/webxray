@@ -10,7 +10,8 @@
 
     var hudContainer = $('<div class="webxray-base webxray-hud-box"></div>');
     var hud = $('<div class="webxray-base webxray-hud"></div>');
-    var l10n = (options.locale || jQuery.locale).scope("hud-overlay");
+    var locale = options.locale || jQuery.locale;
+    var l10n = locale.scope("hud-overlay");
 
     hudContainer.append(hud);
     
@@ -54,8 +55,15 @@
         function elementDesc(element) {
           var span = $("<span></span>");
           var info = elementInfo(element);
-      
-          span.emit(code(info.tagName), " ", l10n("element"));
+          var shortDescKey = "short-element-descriptions:" +
+                             element.nodeName.toLowerCase();
+
+          if (locale.has(shortDescKey))
+            span.emit(code(info.tagName),
+                      " (" + locale.get(shortDescKey) + ") ",
+                      l10n("element"));
+          else
+            span.emit(code(info.tagName), " ", l10n("element"));
           if (info.id)
             span.emit(" ", l10n("with"), " ", l10n("id"), " ",
                       code(info.id));
