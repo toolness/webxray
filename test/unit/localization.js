@@ -41,6 +41,10 @@ test("createLocale() inherits from non-region locales", function() {
     "u": "3"
   });
   var locale = jQuery.localization.createLocale(["en-CA"]);
+  ok(locale.has("l10nTests:u"), "locale has 'l10nTests:u'");
+  ok(locale.has("l10nTests:hey"), "locale has 'l10nTests:hey'");
+  ok(!locale.has("l10nTests:heyblahblah"),
+     "locale does not have 'l10nTests:heyblahblah'");
   equal(locale.get("l10nTests:hey"), "there",
         "fallback to non-region-specific l10n works");
   equal(locale.get("l10nTests:u"), "3",

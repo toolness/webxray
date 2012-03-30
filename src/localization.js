@@ -47,6 +47,9 @@
 
       var locale = {
         languages: languages,
+        has: function has(scopedName) {
+          return (scopedName in locale);
+        },
         get: function get(scopedName) {
           return locale[scopedName] || "unable to find locale string " + 
                  scopedName;
