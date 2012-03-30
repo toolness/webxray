@@ -385,6 +385,14 @@
           }
         },
         {
+          key: 'B',
+          cmd: 'bug-report',
+          alwaysInToolbar: true,
+          execute: function() {
+            jQuery.openBugReportDialog(self);
+          }
+        },
+        {
           key: 'P',
           cmd: 'uproot',
           alwaysInToolbar: true,

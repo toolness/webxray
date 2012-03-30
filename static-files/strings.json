@@ -52,6 +52,15 @@
     "success": "Here is the URL for your remix that anyone can view.",
     "html-source": "Here's the HTML source code of your remix."
   },
+  "bug-report-dialog": {
+    "header": "Report A Bug",
+    "intro": "Enter a description for the bug you're experiencing below. Note that your description, as well as the current page you're using the goggles on, will be made public, as Hackasaurus is an open-source project.",
+    "to-internet": "Publish To Internet",
+    "to-internet-desc": "Instantly publish your bug to a URL that anyone can view.",
+    "publishing": "Publishing...",
+    "error": "Sorry, an error occurred. Please try again later.",
+    "success": "Here is the URL for your bug that anyone can view."
+  },
   "style-info": {
     "tap-space-html": "Tap <div class=\"webxray-kbd\">space bar</div> to edit this style.",
     "style-change": "style change"
@@ -75,7 +84,8 @@
     "redo": "Redo",
     "dom-ascend": "Ascend to parent element",
     "dom-descend": "Descend to child element",
-    "uproot": "Publish your remix"
+    "uproot": "Publish your remix",
+    "bug-report": "Report a bug"
   },
   "short-command-descriptions": {
     "help": "help",
@@ -87,6 +97,7 @@
     "redo": "redo",
     "dom-ascend": "ascend",
     "dom-descend": "descend",
-    "uproot": "publish"
+    "uproot": "publish",
+    "bug-report": "report bug"
   }
 }
