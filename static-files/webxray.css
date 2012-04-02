@@ -459,7 +459,8 @@ div.webxray-toolbar-button-glyph-tiny {
   cursor: pointer;
   font-size: 10px;
   padding-top: 4px;
-  background: green;
+  background: black;
+  border: 1px dotted gray;
   border-radius: 2px;
   text-align: center;
   -moz-box-sizing: border-box;
