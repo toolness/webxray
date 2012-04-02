@@ -10,13 +10,57 @@ html, body {
   padding: 0px;
 }
 
+.development-mode {
+  background: black;
+}
+
 div.editor {
-  width: 100%;
+  width: 50%;
   height: 100%;
   padding: 10px;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+}
+
+div.hacktionary {
+  width: 50%;
+  height: 100%;
+  padding: 10px;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  display: inline-block;
+  vertical-align: top;
+  color: white;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+}
+
+div.hacktionary .content code {
+  font-family: "MenschRegular";
+}
+
+div.hacktionary .heading {
+  padding: 4px;
+  margin-top: 1px;
+  background: slateblue;
+  font-size: 10px;
+}
+
+div.hacktionary .heading .tag {
+  font-family: "MenschRegular";
+}
+
+div.hacktionary .heading .learn {
+  float: right;
+}
+
+div.hacktionary .heading .learn a {
+  color: inherit;
+  text-transform: lowercase;
 }
 
 .CodeMirror {
@@ -35,14 +79,30 @@ div.editor {
   height: 100%;
 }
 </style>
-<div class="editor"></div>
+<div class="editor"></div><div class="hacktionary">
+  <div class="heading">
+    <span class="tag"></span>
+    <span class="learn"><a href="" target="_blank">Learn More...</a></span>
+  </div>
+  <div class="content"></div>
+</div>
 <script src="../codemirror2/lib/codemirror.js"></script>
 <script src="../codemirror2/mode/xml/xml.js"></script>
 <script src="../codemirror2/mode/javascript/javascript.js"></script>
 <script src="../codemirror2/mode/css/css.js"></script>
 <script src="../codemirror2/mode/htmlmixed/htmlmixed.js"></script>
 <script src="../jquery.min.js"></script>
+<script src="hacktionary-data.js"></script>
 <script>
+var TAG_SYNONYMS = {
+  "h1": "h1-h6",
+  "h2": "h1-h6",
+  "h3": "h1-h6",
+  "h4": "h1-h6",
+  "h5": "h1-h6",
+  "h6": "h1-h6"
+};
+
 var parentWindow = (top != window && top);
 var editor = null;
 
@@ -58,14 +118,41 @@ function onMessage(event) {
   if (data.startHTML) {
     editor.setValue(data.startHTML);
     editor.focus();
+    showHacktionary();
   }
 }
 
 onmessage = onMessage;
 
+function showHacktionary() {
+  var hacktionary = $(".hacktionary");
+  var content = hacktionary.find(".content");
+  var cursor = editor.getCursor();
+  var token = editor.getTokenAt({
+    line: cursor.line,
+    ch: cursor.ch + 1
+  });
+  
+  if (token.state.htmlState) {
+    var tagName = token.state.htmlState.tagName;
+    var mdnURL = "https://developer.mozilla.org/en/HTML/Element/" + tagName;
+    if (tagName in TAG_SYNONYMS)
+      tagName = TAG_SYNONYMS[tagName];
+    if (tagName != hacktionary.find(".heading .tag").text() &&
+        tagName in hacktionaryData) {
+      hacktionary.find(".heading .tag").text(tagName);
+      hacktionary.find(".heading .learn a").attr("href", mdnURL);
+      content.html(hacktionaryData[tagName]);
+      content.find(".code").remove();
+      content.find(".link").remove();
+    }
+  }
+}
+
 $(window).ready(function() {
   var DELAY_MS = 300;
   var delay = null;
+  var hacktionaryDelay = null;
 
   editor = CodeMirror(function(element) {
     $(".editor").append(element);
@@ -76,11 +163,16 @@ $(window).ready(function() {
     lineWrapping: true,
     onChange: function() {
       clearTimeout(delay);
-      setTimeout(sendContent, DELAY_MS);      
+      delay = setTimeout(sendContent, DELAY_MS);      
+    },
+    onCursorActivity: function() {
+      clearTimeout(hacktionaryDelay);
+      hacktionaryDelay = setTimeout(showHacktionary, DELAY_MS);
     }
   });
 
   if (!parentWindow) {
+    $(document.documentElement).addClass("development-mode");
     parentWindow = {
       postMessage: function(content, target) {
         console.log("POSTMESSAGE", content, target);
