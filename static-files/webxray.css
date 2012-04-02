@@ -444,8 +444,6 @@ div.webxray-toolbar-button-glyph-tiny {
 
 .webxray-tiny-dialog {
   position: fixed;
-  top: 0px;
-  left: 0px;
   width: 320px;
   z-index: 2147483646;
   background: rgba(0, 0, 0, 0.75);

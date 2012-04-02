@@ -176,6 +176,35 @@
         $(document.body).append(dialogHolder);
         focused.unfocus();
         input.deactivate();
+        
+        (function positionDialog() {
+          var focusedBounds = $(focusedElement).bounds();
+          
+          function rectsIntersect(r1, r2) {
+            return !(r2.left > (r1.left + r1.width) || 
+                     (r2.left + r2.width) < r1.left || 
+                     r2.top > (r1.top + r1.height) ||
+                     (r2.top + r2.height) < r1.top);
+          }
+
+          var corners = [
+            {top: "0px", left: "0px"},
+            {top: "0px", right: "0px"},
+            {bottom: "0px", left: "0px"},
+            {bottom: "0px", right: "0px"}
+          ];
+
+          for (var i = 0; i < corners.length; i++) {
+            dialogHolder.css({
+              top: "auto",
+              left: "auto",
+              right: "auto",
+              bottom: "auto"
+            }).css(corners[i]);
+            if (!rectsIntersect(dialogHolder.bounds(), focusedBounds))
+              return;
+          }
+        })();
 
         var spotlight = (function spotlightElement() {
           var borderSize = 4000;
