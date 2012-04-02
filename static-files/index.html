@@ -27,49 +27,38 @@ a:hover {
   border: 1px dotted black;
   width: 100%;
 }
+
+#bookmarklet-link:hover {
+  color: black;
+}
+
+#bookmarklet-link {
+  text-decoration: none;
+  display: inline-block;
+  background: #FF9900;
+  border-radius: 4px;
+  box-shadow: 2px 2px 1px black;
+  color: white;
+  padding: 6px;
+}
 </style>
 <a href="https://github.com/toolness/webxray/tree/style-info-experiment"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
 <div id="try-goggles">
 <h2>Getting Started</h2>
-<p>If you've never used the goggles before, you should start out with the <a href="http://toolness.github.com/hackasaurus-parable/">Parable of The Hackasaurus</a>.</p>
+<p>If you've never used the goggles before, you should start out with the <a href="http://hackasaurus.org/goggles/">tutorial</a> or the <a href="http://toolness.github.com/hackasaurus-parable/">Parable of The Hackasaurus</a>.</p>
 <h2>Reference</h2>
-<p>Here's the bookmarklet: <a href="" id="bookmarklet-link">Web X-Ray Goggles</a>.</p>
+<p>Here's the bookmarklet: <a href="" id="bookmarklet-link">X-Ray Goggles</a>.</p>
 <p>Note that if you're on a mobile browser, you may need to manually create a bookmark to the following URL:</p>
 <input type="text" id="bookmarklet-url">
 <p>Once the goggles are activated, you can press <kbd>H</kbd> for help.</p>
 <h2>Troubleshooting</h2>
 <p>If the goggles don't seem to be working, try running the <a href="test/">test suite</a>. Then <a href="http://hackasaurus.lighthouseapp.com/projects/81472-goggles/overview">report a bug</a> and be sure to mention whether the test suite failed.</p>
-<h2>History</h2>
-<h3>May 2011</h3>
-<p>On May 12, a new experimental <em>Tear-Out Page</em> feature was added to the goggles, which provides the user with HTML source code for the current DOM state of the page being viewed/remixed.</p>
-<p>This source code is "relocatable" in that all links have been made absolute, so the page can be hosted on any website. It's also "tranquilized" so that only the appearance and content of the page is preserved, and all script tags are removed.</p>
-<p>This feature is intended to make it easier to bridge the gap between the goggles and full-on HTML editing using sites like <a href="http://htmlpad.org/">HTMLpad</a> and <a href="http://jsbin.com/">JS Bin</a>. It also makes it easier to share one's hacks.</p>
-<h3>April 2011</h3>
-<p>On April 21, a new Firefox add-on making it easy to share screenshots and replicas of hacks made with the goggles was created for use at the <a href="http://jessicaklein.blogspot.com/2011/04/earth-day-my-carbon-footprint-3d-design.html">NYSCI</a> and Maker Faire Toronto Jams. An example of such a shared hack is <a href="http://hackasaurus.github.com/hackasaurus-print/?photo_id=5644398032">Failbook</a>. The add-on is located at the github repository <a href="https://github.com/hackasaurus/hackasaurus-sharing-addon">hackasaurus-sharing-addon</a>.</p>
-<p>The remix interface's source code was also refactored and made public at a new github repository called <a href="https://github.com/hackasaurus/mix-master-dialog">mix-master-dialog</a>.</p>
-<h3>March 2011</h3>
-<p>On March 21, a third solo mission was added to the website for the goggles, which introduces users to HTML and guides them through the process of writing their first HTML snippet.</p>
-<p>On March 10, two scaffolded solo missions designed for the <a href="http://dmlcentral.net/conference2011">Digital Media and Learning Conference</a> were added to the website for the goggles.</p>
-<h3>February 2011</h3>
-<p>On February 22, during a hack jam at the <a href="http://www.bavc.org/">Bay Area Video Coalition</a>, the remix interface was improved to provide syntax highlighting via the <a href="http://ace.ajax.org/">Ace</a> code editor, DOM visualization, and HTML preview on a per-keystroke basis.</p>
-<p>On February 17, prior to a hack jam at <a href="http://youmediachicago.org/">YouMedia Chicago</a>, primitive remix and element deletion functionality was added to the goggles, as well as undo/redo.</p>
-<h3>December 2010</h3>
-<p>In late December, a <a href="http://www.flickr.com/photos/jessicaklein/5290697410/in/pool-1590086@N21/">palette</a> was created and integrated into the goggles so that each HTML element type would be highlighted in a different color, making them easier to differentiate.</p>
-<p>On December 3, the following screencast was made to introduce the prototype goggles to Drumbeat community members.</p>
-<video width="512" height="384" controls>
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.webm" type="video/webm">
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.ogv" type="video/ogg">
-  <source src="https://secure.toolness.com/webxray/webxray-video-take-2.m4v" type="video/mp4">
-  Your browser does not support the <code>video</code> element. Alas!
-</video>
-<h3>November 2010</h3>
-<p>After the <a href="http://learningfreedomandtheweb.org/">Drumbeat Festival</a> in Barcelona, work on the goggles began.</p>
-</div>
 <script>
 "use strict";
 
 $(window).ready(function() {
-  $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL());
+  $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL())
+    .text(window.location.hostname + " " + $("#bookmarklet-link").text());
   $("#bookmarklet-url").val(Webxray.getBookmarkletURL());
 });
 </script>
