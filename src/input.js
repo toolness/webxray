@@ -316,8 +316,12 @@
           }
         },
         mouseover: function(event) {
-          if (contextMenu)
+          if (contextMenu) {
+            contextMenu.children().removeClass("webxray-item-selected")
+            if (contextMenu.has(event.target).length)
+              $(event.target).addClass("webxray-item-selected");
             return false;
+          }
           if (touchesReceived)
           // We're likely on a tablet, so this is probably a simulated
           // mouse event that we want to ignore.

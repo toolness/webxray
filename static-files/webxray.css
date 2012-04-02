@@ -430,16 +430,16 @@ div.webxray-toolbar-button-glyph-tiny {
 .webxray-context-menu .webxray-item {
   padding: 0.5em;
   border-top: 1px dotted gray;
+  cursor: pointer;
 }
 
 .webxray-context-menu .webxray-item:first-child {
   border-top: none;
 }
 
-.webxray-context-menu .webxray-item:hover {
+.webxray-context-menu .webxray-item-selected {
   color: black;
   background: white;
-  cursor: pointer;
 }
 
 .webxray-tiny-dialog {
