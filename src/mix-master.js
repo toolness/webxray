@@ -279,8 +279,15 @@
           if (currentHTML != focusedHTML)
             self.replaceElement(focusedElement, currentHTML);
           dialogHolder.remove();
+          window.removeEventListener("message", onMessage, false);
+          window.removeEventListener("keyup", onKeyup, true);
         });
-        
+
+        function onKeyup(event) {
+          if (event.keyCode == 27)
+            dialogHolder.find(".webxray-commit").click();
+        }
+
         function onMessage(event) {
           if (event.source == dialog[0].contentWindow) {
             var data = JSON.parse(event.data);
@@ -295,13 +302,16 @@
               focusedParent.replaceChild(newDoppelganger, doppelganger);
               spotlight.focusOn(newDoppelganger);
               doppelganger = newDoppelganger;
+            } else if (data.command == "close") {
+              dialogHolder.find(".webxray-commit").click();
             }
           }
         }
         
+        window.addEventListener("keyup", onKeyup, true);
         window.addEventListener("message", onMessage, false);
         dialog.load(function(event) {
-          dialog[0].contentWindow.postMessage(JSON.stringify({
+          this.contentWindow.postMessage(JSON.stringify({
             startHTML: focusedHTML
           }), "*");
         });

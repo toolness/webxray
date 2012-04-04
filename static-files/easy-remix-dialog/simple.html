@@ -124,6 +124,13 @@ function onMessage(event) {
 
 onmessage = onMessage;
 
+window.addEventListener("keyup", function(event) {
+  if (event.keyCode == 27)
+    parentWindow.postMessage(JSON.stringify({
+      command: "close"
+    }), "*");
+}, true);
+
 function showHacktionary() {
   var hacktionary = $(".hacktionary");
   var content = hacktionary.find(".content");
