@@ -273,7 +273,10 @@
         $(".webxray-toolbar").hide();
         
         dialogHolder.find(".webxray-commit").click(function() {
-          spotlight.remove(input.activate);
+          spotlight.remove(function() {
+            input.activate();
+            window.focus();
+          });
           $(".webxray-toolbar").show();
           focusedParent.replaceChild(focusedElement, doppelganger);
           if (currentHTML != focusedHTML)
