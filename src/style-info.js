@@ -219,6 +219,12 @@
         }
         break;
 
+        case $.keys.ESC:
+        event.preventDefault();
+        event.stopPropagation();
+        self.close();
+        break;
+        
         case $.keys.LEFT:
         case $.keys.RIGHT:
         input.handleEvent(event);
