@@ -284,7 +284,7 @@
         });
 
         function onKeyup(event) {
-          if (event.keyCode == 27)
+          if (event.keyCode == $.keys.ESC)
             dialogHolder.find(".webxray-commit").click();
         }
 
