@@ -277,7 +277,7 @@
           });
           $(document.body).append(contextMenu);
           contextMenuProcessors.forEach(function(processor) {
-            processor(contextMenu, event.target);
+            processor(contextMenu, focused.getPrimaryElement());
           });
           return true;
         },
