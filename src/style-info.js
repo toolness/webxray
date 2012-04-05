@@ -99,8 +99,10 @@
     
     textField.blur(confirmChange);
     textField.keydown(function(event) {
-      if (event.keyCode == $.keys.ESC)
+      if (event.keyCode == $.keys.ESC) {
         revertToOriginal();
+        return false;
+      }
     });
     textField.keyup(function(event) {
       widget.previewValue(textField.val());
