@@ -81,7 +81,7 @@ div.webxray-help:hover {
 }
 
 .webxray-hud {
-  display: inline-block;
+  display: inline;
   pointer-events: none;
 }
 
