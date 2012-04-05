@@ -178,6 +178,14 @@
     };
     
     row.data("propertyWidget", self);
+    row.mouseover(function() {
+      var docKey = "css-property-docs:" + name;
+      if (jQuery.locale.has(docKey)) {
+        $(".webxray-hud").html(jQuery.locale.get(docKey))
+          .append("<span> Press <code>i</code> for more information.</span>")
+          .find("a").css({textDecoration: "none"});
+      }
+    });
     self.refresh();
   }
 
