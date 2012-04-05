@@ -65,10 +65,15 @@
       };
   });
 
-  function makeCssValueEditable() {
+  function makeCssValueEditable(event) {
     var row = $(this);
     var widget = row.data("propertyWidget");
 
+    if (event.shiftKey) {
+      open('https://developer.mozilla.org/en/CSS/' + widget.name, 'info');
+      return;
+    }
+    
     if (widget.isBeingEdited())
       return;
 
@@ -182,7 +187,7 @@
       var docKey = "css-property-docs:" + name;
       if (jQuery.locale.has(docKey)) {
         $(".webxray-hud").html(jQuery.locale.get(docKey))
-          .append("<span> Press <code>i</code> for more information.</span>")
+          .append("<span> Shift-click for more information.</span>")
           .find("a").css({textDecoration: "none"});
       }
     });
@@ -218,17 +223,6 @@
       if (self.isBeingEdited())
         return;
       switch (event.keyCode) {
-        case $.keys.I:
-        var hover = overlay.find('.webxray-row:hover');
-        if (hover.length) {
-          var property = hover.data('propertyWidget').name;
-          var url = 'https://developer.mozilla.org/en/CSS/' + property;
-          open(url, 'info');
-          event.preventDefault();
-          event.stopPropagation();
-        }
-        break;
-
         case $.keys.ESC:
         event.preventDefault();
         event.stopPropagation();
