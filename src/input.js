@@ -477,6 +477,44 @@
         });
       });
 
+      self.addContextMenuProcessor(function(contextMenu, element) {
+        function styleChange(element, styles, name) {
+          var oldAttr = $(element).attr("style") || "";
+          $(element).css(styles);
+          var newAttr = $(element).attr("style");
+          if (oldAttr != newAttr) {
+            $(element).attr("style", oldAttr);
+            commandManager.run("ChangeAttributeCmd", {
+              name: name || jQuery.locale.get("style-info:style-change"),
+              attribute: "style",
+              value: newAttr,
+              element: element
+            });
+          }
+        }
+
+        var isImage = (element.nodeName == "IMG");
+        var item = $('<div class="webxray-item"></div>')
+          .text("Placekitten " + (isImage ? "img src" : "background-image"))
+          .appendTo(contextMenu);
+        item.bind("execute", function() {
+          var width = $(element).width();
+          var height = $(element).height();
+          var url = "http://placekitten.com/" + width + "/" + height;
+          
+          if (isImage)
+            commandManager.run("ChangeAttributeCmd", {
+              name: "img src change (" + url + ")",
+              attribute: "src",
+              value: url,
+              element: element
+            });
+          else
+            styleChange(element, {backgroundImage: "url(" + url + ")"},
+                        "background-image change (" + url + ")");
+        });
+      });
+      
       return self;
     }
   });
