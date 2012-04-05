@@ -511,13 +511,13 @@
               element: element
             });
             msg = "<code>&lt;img&gt;</code>'s <code>src</code> attribute " +
-                  "set to '" + url + "'.";
+                  'set to <span class="webxray-url">' + url + "</span>.";
           } else {
             styleChange(element, {backgroundImage: "url(" + url + ")"},
                         "background-image change (" + url + ")");
             msg = "<code>&lt;" + element.nodeName.toLowerCase() + "&gt;" +
-                  "</code>'s <code>background-image</code> CSS set to '" +
-                  url + "'.";
+                  "</code>'s <code>background-image</code> CSS set to " +
+                  '<span class="webxray-url">' + url + "</span>.";
           }
           jQuery.transparentMessage($("<div></div>").html(msg));
         });
