@@ -264,31 +264,30 @@
 
       var mouseIsDown = false;
       var contextMenu = null;
+      var contextMenuProcessors = [];
       
       self.add({
         mousedown: function(event) {
           if ($(event.target).closest('.webxray-toolbar').length)
             return false;
-          contextMenu = $('<div class="webxray-base webxray-context-menu">' +
-          '<div class="webxray-item" data-cmd="remix">Remix</div>' +
-          '<div class="webxray-item" data-cmd="remove">Delete</div>' +
-          '</div>');
-          contextMenu.css({
+          contextMenu = $('<div class="webxray-base"></div></div>');
+          contextMenu.addClass("webxray-context-menu").css({
             top: event.pageY + 1 + 'px',
             left: event.pageX + 1 + 'px'
           });
           $(document.body).append(contextMenu);
+          contextMenuProcessors.forEach(function(processor) {
+            processor(contextMenu, event.target);
+          });
           return true;
         },
         mouseup: function(event) {
           if ($(event.target).closest('.webxray-toolbar').length)
             return false;
+          if ($(event.target).hasClass('webxray-item'))
+            $(event.target).trigger("execute");
           contextMenu.remove();
           contextMenu = null;
-          if ($(event.target).hasClass('webxray-item')) {
-            var cmd = $(event.target).attr("data-cmd");
-            self.commands[cmd].execute();
-          }
           return true;
         },
         click: function(event) {
@@ -340,6 +339,9 @@
         simpleKeyBindings: jQuery.simpleKeyBindings(),
         keyboardHelp: [],
         commands: {},
+        addContextMenuProcessor: function(cb) {
+          contextMenuProcessors.push(cb);
+        },
         showKeyboardHelp: function() {
           var help = jQuery.createKeyboardHelpReference(self.keyboardHelp);
           jQuery.transparentMessage(help);
@@ -445,6 +447,27 @@
         quasimodeKey: 'C'
       }));
       
+      self.addContextMenuProcessor(function(contextMenu, element) {
+        function executeCmd(event) {
+          var cmd = $(this).attr("data-cmd");
+          self.commands[cmd].execute();
+        }
+
+        // http://stackoverflow.com/questions/1026069/capitalize-the-first-letter-of-string-in-javascript
+        function capitalize(string) {
+          return string.charAt(0).toUpperCase() + string.slice(1);
+        }
+        
+        var l10n = jQuery.locale.scope("short-command-descriptions");
+
+        ["remix", "remove"].forEach(function(cmd) {
+          var item = $('<div class="webxray-item"></div>');
+          item.attr("data-cmd", cmd).text(capitalize(l10n(cmd)));
+          contextMenu.append(item);
+          item.bind("execute", executeCmd);
+        });
+      });
+
       return self;
     }
   });
