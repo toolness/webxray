@@ -501,17 +501,25 @@
           var width = $(element).width();
           var height = $(element).height();
           var url = "http://placekitten.com/" + width + "/" + height;
+          var msg;
           
-          if (isImage)
+          if (isImage) {
             commandManager.run("ChangeAttributeCmd", {
               name: "img src change (" + url + ")",
               attribute: "src",
               value: url,
               element: element
             });
-          else
+            msg = "<code>&lt;img&gt;</code>'s <code>src</code> attribute " +
+                  "set to '" + url + "'.";
+          } else {
             styleChange(element, {backgroundImage: "url(" + url + ")"},
                         "background-image change (" + url + ")");
+            msg = "<code>&lt;" + element.nodeName.toLowerCase() + "&gt;" +
+                  "</code>'s <code>background-image</code> CSS set to '" +
+                  url + "'.";
+          }
+          jQuery.transparentMessage($("<div></div>").html(msg));
         });
       });
       
