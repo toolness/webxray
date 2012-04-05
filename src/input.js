@@ -468,6 +468,15 @@
         });
       });
 
+      self.addContextMenuProcessor(function(contextMenu, element) {
+        var item = $('<div class="webxray-item">Edit CSS</div>')
+          .appendTo(contextMenu);
+        item.bind("execute", function() {
+          styleInfo.show();
+          styleInfo.lock(self);
+        });
+      });
+
       return self;
     }
   });
