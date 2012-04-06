@@ -120,7 +120,7 @@
   }
 
   function buildPropertyWidget(element, row, style, parentStyle, name,
-                               locale) {
+                               locale, hud) {
     var nameCell = $('<div class="webxray-name"></div>');
     var valueCell = $('<div class="webxray-value"></div>');
 
@@ -189,8 +189,7 @@
       if (locale.has(docKey)) {
         var moreInfo = $('<span class="webxray-more-info"></span>')
           .text(locale.get("style-info:more-info"));
-        // TODO: the HUD should be passed in as an argument, really.
-        $(".webxray-hud").html(locale.get(docKey))
+        $(hud.overlay).html(locale.get(docKey))
           .append(moreInfo)
           .find("a").css({textDecoration: "none"});
       }
@@ -307,6 +306,7 @@
       var locale = options.locale || jQuery.locale;
       var propertyNames = options.propertyNames;
       var mouseMonitor = options.mouseMonitor;
+      var hud = options.hud;
       var body = options.body || document.body;
       var isVisible = false;
       var l10n = locale.scope("style-info");
@@ -326,7 +326,7 @@
         overlay.empty();
         
         if (primary) {
-          var info = $(primary).getStyleInfo(propertyNames, locale);
+          var info = $(primary).getStyleInfo(propertyNames, locale, hud);
           var instructions = $('<div class="webxray-instructions"></div>');
           var close = $('<div class="webxray-close-button"></div>');
           instructions.html(l10n("tap-space-html"));
@@ -427,7 +427,7 @@
   });
   
   jQuery.fn.extend({
-    getStyleInfo: function getStyleInfo(propertyNames, locale) {
+    getStyleInfo: function getStyleInfo(propertyNames, locale, hud) {
       var names = propertyNames || DEFAULT_PROPERTIES;
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
@@ -445,7 +445,7 @@
         var row = $('<div class="webxray-row"></div>');
         for (var j = 0; j < NUM_COLS; j++)
           buildPropertyWidget(element, row, style, parentStyle, names[i+j],
-                              locale);
+                              locale, hud);
         info.append(row);
       }
 

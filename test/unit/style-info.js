@@ -3,17 +3,27 @@ module("style-info");
 test("jQuery.fn.getStyleInfo()", function() {
   var $ = jQuery;
   var info = $(document.documentElement).getStyleInfo();
+  var fakeHud = $("<div></div>");
+  jQuery.localization.extend("en", "css-property-docs", {
+    "background-color": "HI THERE"
+  });
+  var locale = jQuery.localization.createLocale(["en"]);
   equal(info.find(".webxray-value-different-from-parent").length, 0,
         "HTML element has no 'value different from parent' class");
 
   var element = $('<p style="background-color: firebrick"></p>');
   $(document.body).append(element);
-  info = element.getStyleInfo();
+  info = element.getStyleInfo(null, locale, {overlay: fakeHud});
   var diff = info.find(".webxray-value-different-from-parent")
                  .prev(":contains('background\u2011color')");
   equal(diff.length, 1,
         "values different from parent have expected class");
   element.remove();
+  
+  equal(fakeHud.html(), "", "HUD should have nothing by default");
+  diff.parent().trigger("mouseover");
+  ok(fakeHud.html().indexOf("HI THERE") != -1,
+     "HUD should have CSS docs on mouseover");
 });
 
 test("jQuery.cssHooks", function() {

@@ -47,7 +47,8 @@
       var styleInfo = jQuery.styleInfoOverlay({
         focused: focused,
         commandManager: commandManager,
-        mouseMonitor: mouseMonitor
+        mouseMonitor: mouseMonitor,
+        hud: hud
       });
       var input = jQuery.xRayInput({
         focusedOverlay: focused,
