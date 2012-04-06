@@ -143,6 +143,10 @@ span.sample {
 .mdn-link {
   cursor: pointer !important;
 }
+
+.mdn-link:hover {
+  text-decoration: underline !important;
+}
 </style>
 <div class="container">
 <div id="buttons">
@@ -247,7 +251,7 @@ function makeEditableDom(selected, parent) {
   var editables = rendered.find(".text, .attributes .value");
   editables.makeTextEditable();
   
-  rendered.find(".start > .name").tipsy({
+  rendered.find(".start > .name, .end > .name").tipsy({
     html: false,
     title: function() {
       var keyName = "short-element-descriptions:" + $(this).text();
