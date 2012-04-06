@@ -22,6 +22,7 @@
 <script src="../src/tag-colors.js"></script>
 <script src="../src/event-emitter.js"></script>
 <script src="../src/localization.js"></script>
+<script src="html-documentation.js"></script>
 <style>
 h2 {
   font-weight: normal;
@@ -242,6 +243,68 @@ jQuery.fn.extend({
   }
 });
 
+function addDocumentation(rendered) {
+  var BASE_MDN_HTML_URL = "https://developer.mozilla.org/en/HTML/";
+  var BASE_MDN_HTML_ELEM_URL = BASE_MDN_HTML_URL + "Element/";
+
+  function getElementDocs() {
+    var keyName = "html-element-docs:" + $(this).text();
+    if (jQuery.locale.has(keyName))
+      return jQuery.locale.get(keyName);
+    return "";
+  }
+  
+  function getAttrInfo(element) {
+    var attr = {
+      name: $(element).text(),
+      elementName: $(element).closest(".start").children(".name").text(),
+      docs: "",
+      mdnLink: ""
+    };
+    var globalAttrKeyName = "html-attribute-docs:" + attr.name;
+    var elementSpecificKeyName = "html-attribute-docs:" +
+                                 attr.elementName + "." + attr.name;
+    if (jQuery.locale.has(elementSpecificKeyName)) {
+      attr.docs = jQuery.locale.get(elementSpecificKeyName);
+      attr.mdnLink = BASE_MDN_HTML_ELEM_URL + attr.elementName + "#attr-" +
+                     attr.name;
+    } else if (jQuery.locale.has(globalAttrKeyName)) {
+      attr.docs = jQuery.locale.get(globalAttrKeyName);
+      attr.mdnLink = BASE_MDN_HTML_URL + "Global_attributes#attr-" +
+                     attr.name;
+    }
+    return attr;
+  }
+  
+  rendered.find("ul.attributes > li > .name").tipsy({
+    html: false,
+    gravity: 'nw',
+    title: function() {
+      return getAttrInfo(this).docs;
+    }
+  }).click(function() {
+    var url = getAttrInfo(this).mdnLink;
+    if (url)
+      window.open(url, "info");
+  }).addClass("mdn-link");
+  
+  rendered.find(".start > .name").tipsy({
+    html: true,
+    gravity: 'w',
+    title: getElementDocs
+  });
+
+  rendered.find(".end > .name").tipsy({
+    html: true,
+    gravity: 'e',
+    title: getElementDocs
+  });
+  
+  rendered.find(".start > .name, .end > .name").click(function() {
+    window.open(BASE_MDN_HTML_ELEM_URL + $(this).text(), "info");
+  }).addClass("mdn-link");
+}
+
 function makeEditableDom(selected, parent) {
   var rendered = selected.renderDom();
 
@@ -250,20 +313,7 @@ function makeEditableDom(selected, parent) {
 
   var editables = rendered.find(".text, .attributes .value");
   editables.makeTextEditable();
-  
-  rendered.find(".start > .name, .end > .name").tipsy({
-    html: false,
-    title: function() {
-      var keyName = "short-element-descriptions:" + $(this).text();
-      if (jQuery.locale.has(keyName))
-        return jQuery.locale.get(keyName);
-      return "";
-    }
-  }).click(function() {
-    var url = "https://developer.mozilla.org/en/HTML/Element/" +
-              $(this).text();
-    window.open(url, "info");
-  }).addClass("mdn-link");
+  addDocumentation(rendered);
 }
 
 function makeHtmlEditor(container, selected) {
