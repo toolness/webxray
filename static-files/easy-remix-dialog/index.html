@@ -2,11 +2,13 @@
 <meta charset="utf-8">
 <link rel="stylesheet" href="hierarchic-source-code.css">
 <link rel="stylesheet" id="webxray" href="../webxray.css">
+<link rel="stylesheet" href="../tipsy.css">
 <link rel="stylesheet" href="../dialog-common/stylesheets/base.css">
 <link rel="stylesheet" href="../codemirror2/lib/codemirror.css">
 <link rel="stylesheet" href="../dialog-common/stylesheets/jsbin-codemirror-theme.css">
 <title>Remix Dialog</title>
 <script src="../jquery.min.js"></script>
+<script src="../jquery.tipsy.js"></script>
 <script src="../jquery.scrollTo-min.js"></script>
 <script src="../codemirror2/lib/codemirror.js"></script>
 <script src="../codemirror2/mode/xml/xml.js"></script>
@@ -137,6 +139,10 @@ span.sample {
   background: transparent;
   border: inherit;
 }
+
+.mdn-link {
+  cursor: pointer !important;
+}
 </style>
 <div class="container">
 <div id="buttons">
@@ -240,6 +246,20 @@ function makeEditableDom(selected, parent) {
 
   var editables = rendered.find(".text, .attributes .value");
   editables.makeTextEditable();
+  
+  rendered.find(".start > .name").tipsy({
+    html: false,
+    title: function() {
+      var keyName = "short-element-descriptions:" + $(this).text();
+      if (jQuery.locale.has(keyName))
+        return jQuery.locale.get(keyName);
+      return "";
+    }
+  }).click(function() {
+    var url = "https://developer.mozilla.org/en/HTML/Element/" +
+              $(this).text();
+    window.open(url, "info");
+  }).addClass("mdn-link");
 }
 
 function makeHtmlEditor(container, selected) {
@@ -358,6 +378,7 @@ $(window).ready(function() {
       path: "../src/locale/",
       languages: data.languages,
       complete: function(locale) {
+        jQuery.locale = locale;
         $(document.body).localize(locale, "mix-master-dialog");
         loadDialog(data);
       }
