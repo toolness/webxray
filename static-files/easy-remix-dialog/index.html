@@ -276,7 +276,19 @@ function addDocumentation(rendered) {
     return attr;
   }
   
-  rendered.find("ul.attributes > li > .name").tipsy({
+  // Ugh, our CSS styling makes space before and the '=' after
+  // an attribute acquire the same hover style as the attribute
+  // name itself, which looks nasty, so we'll wrap the attribute
+  // name's text in an additional span and put our hover/click
+  // styling/handlers on that.
+  // TODO: Make it an anchor tag, not a span!
+  rendered.find("ul.attributes > li > .name").each(function() {
+    var name = $(this).text();
+    var wrappedName = $("<span></span>").text(name);
+    $(this).empty().append(wrappedName);
+  });
+  
+  rendered.find("ul.attributes > li > .name span").tipsy({
     html: false,
     gravity: 'nw',
     title: function() {
@@ -300,6 +312,7 @@ function addDocumentation(rendered) {
     title: getElementDocs
   });
   
+  // TODO: These should really be anchor tags, not click handlers.
   rendered.find(".start > .name, .end > .name").click(function() {
     window.open(BASE_MDN_HTML_ELEM_URL + $(this).text(), "info");
   }).addClass("mdn-link");
