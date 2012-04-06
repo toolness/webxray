@@ -254,9 +254,14 @@ jQuery.fn.extend({
 function addDocumentation(rendered) {
   var BASE_MDN_HTML_URL = "https://developer.mozilla.org/en/HTML/";
   var BASE_MDN_HTML_ELEM_URL = BASE_MDN_HTML_URL + "Element/";
-
+  
   function getElementDocs() {
-    var keyName = "html-element-docs:" + $(this).text();
+    var elementName = $(this).text();
+
+    if (elementName.match(/^h[1-6]$/))
+      elementName = "h1";
+
+    var keyName = "html-element-docs:" + elementName;
     if (jQuery.locale.has(keyName))
       return jQuery.locale.get(keyName);
     return "";
