@@ -119,7 +119,8 @@
     });
   }
 
-  function buildPropertyWidget(element, row, style, parentStyle, name) {
+  function buildPropertyWidget(element, row, style, parentStyle, name,
+                               locale) {
     var nameCell = $('<div class="webxray-name"></div>');
     var valueCell = $('<div class="webxray-value"></div>');
 
@@ -185,9 +186,12 @@
     row.data("propertyWidget", self);
     row.mouseover(function() {
       var docKey = "css-property-docs:" + name;
-      if (jQuery.locale.has(docKey)) {
-        $(".webxray-hud").html(jQuery.locale.get(docKey))
-          .append("<span> Shift-click for more information.</span>")
+      if (locale.has(docKey)) {
+        var moreInfo = $('<span class="webxray-more-info"></span>')
+          .text(locale.get("style-info:more-info"));
+        // TODO: the HUD should be passed in as an argument, really.
+        $(".webxray-hud").html(locale.get(docKey))
+          .append(moreInfo)
           .find("a").css({textDecoration: "none"});
       }
     });
@@ -322,7 +326,7 @@
         overlay.empty();
         
         if (primary) {
-          var info = $(primary).getStyleInfo(propertyNames);
+          var info = $(primary).getStyleInfo(propertyNames, locale);
           var instructions = $('<div class="webxray-instructions"></div>');
           var close = $('<div class="webxray-close-button"></div>');
           instructions.html(l10n("tap-space-html"));
@@ -423,13 +427,14 @@
   });
   
   jQuery.fn.extend({
-    getStyleInfo: function getStyleInfo(propertyNames) {
+    getStyleInfo: function getStyleInfo(propertyNames, locale) {
       var names = propertyNames || DEFAULT_PROPERTIES;
       var element = this.get(0);
       var window = element.ownerDocument.defaultView;
       var style = window.getComputedStyle(element);
       var parentStyle = null;
-      
+
+      locale = locale || jQuery.locale;
       if (element.nodeName != "HTML")
         parentStyle = window.getComputedStyle(element.parentNode);
 
@@ -439,7 +444,8 @@
       for (var i = 0; i < names.length + (NUM_COLS-1); i += NUM_COLS) {
         var row = $('<div class="webxray-row"></div>');
         for (var j = 0; j < NUM_COLS; j++)
-          buildPropertyWidget(element, row, style, parentStyle, names[i+j]);
+          buildPropertyWidget(element, row, style, parentStyle, names[i+j],
+                              locale);
         info.append(row);
       }
 

@@ -93,8 +93,12 @@ div.webxray-help:hover {
   display: inline;
 }
 
-.webxray-hud span.webxray-url {
+span.webxray-url, span.webxray-more-info {
   color: #aaaaaa;
+}
+
+span.webxray-more-info {
+  padding-left: 1em;
 }
 
 /* Style for the tag label */
