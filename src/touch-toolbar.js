@@ -78,6 +78,8 @@
       });
       
       toolbar.appendTo(document.body);
+      input.on('activate', function() { toolbar.fadeIn(); });
+      input.on('deactivate', function() { toolbar.fadeOut(); });
       
       return {
         unload: function() {
