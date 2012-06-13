@@ -22,15 +22,21 @@ div.big-button {
   padding: 20px;
 }
 
+div.big-button.disabled {
+  opacity: 0.25;
+  cursor: default;
+}
+
 div.big-button:after {
   content: ' »';
 }
 
-div.big-button:hover {
+div.big-button:not(.disabled):hover {
   background-color: #ffc833;
 }
 
 div.publish-option {
+  position: relative;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
 }
@@ -55,6 +61,28 @@ div.publish-option p {
 .published-url a:hover {
   background-color: #f0f0f0;
 }
+
+.coming-soon {
+  position: absolute;
+  top: 18px;
+  left: 15px;
+  font-size: 30px;
+  z-index: 1000;
+  color: red;
+  padding: 2px;
+  border: 1px solid red;
+  cursor: default;
+  font-weight: bold;
+  font-variant: small-caps;
+  background: rgba(255, 0, 0, 0.1);
+  -moz-transform: rotate(-8deg);
+  -webkit-transform: rotate(-8deg);
+  -o-transform: rotate(-8deg);
+  -moz-user-select: none;  
+  -webkit-user-select: none;  
+  -ms-user-select: none;
+  user-select: none;
+}
 </style>
 <div class="container">
 <div id="buttons">
@@ -64,8 +92,9 @@ div.publish-option p {
 <div id="header"><h1 class="title"><span data-l10n="dialog-common:product-name">X-Ray Goggles</span> <span class="subtitle" data-l10n="header">Publish Your Remix</span></h1></div>
 <div id="choose-publish-method">
   <p data-l10n="intro">There are two ways you can publish your remix and share it with others.</p>
-  <div class="publish-option">
-    <div class="big-button to-internet" data-l10n="to-internet">Publish To Internet</div>
+  <div class="publish-option to-internet">
+    <div class="coming-soon">Coming Soon</div>
+    <div class="big-button to-internet disabled" data-l10n="to-internet">Publish To Internet</div>
     <p data-l10n="to-internet-desc">Instantly publish your remix to a URL that anyone can view.</p>
   </div>
   <div class="publish-option">
@@ -117,7 +146,7 @@ function DeferredPublish(html, originalURL, hackpubURL) {
 }
 
 function init(html, originalURL, hackpubURL) {
-  $(".to-internet.big-button").click(function() {
+  $(".to-internet.big-button:not(.disabled)").click(function() {
     $("#choose-publish-method").fadeOut(function() {
       $("#to-internet").fadeIn(function() {
         var timeout = DeferredTimeout(1000);
