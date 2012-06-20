@@ -70,6 +70,7 @@
       var indicator = jQuery.blurIndicator(input, window);
       var modalUnloadBlocker = ModalUnloadBlocker(commandManager,
                                                   saveRecording);
+      var RECORDING_KEY = "recording-" + window.location.href;
 
       function saveRecording() {
         // Store emergency rescue data for 5 minutes.
@@ -77,10 +78,10 @@
 
         if (commandManager.canUndo()) {
           var recording = commandManager.getRecording();
-          lscache.set("recording", JSON.parse(recording),
+          lscache.set(RECORDING_KEY, JSON.parse(recording),
                       RECORDING_PERSIST_TIME);
         } else
-          lscache.remove("recording");
+          lscache.remove(RECORDING_KEY);
       }
 
       var self = jQuery.eventEmitter({
@@ -94,14 +95,14 @@
           $(window).focus();
           if (!commandManager.canUndo()) {
             // See if we can emergency-restore the user's previous session.
-            var recording = lscache.get("recording");
+            var recording = lscache.get(RECORDING_KEY);
             if (recording)
               try {
                 commandManager.playRecording(JSON.stringify(recording));
               } catch (e) {
                 // Corrupt recording, or page has changed in a way
                 // that we can't replay the recording, so get rid of it.
-                lscache.remove("recording");
+                lscache.remove(RECORDING_KEY);
                 if (window.console && window.console.error)
                   console.error(e);
               }
