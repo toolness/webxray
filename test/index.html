@@ -34,8 +34,10 @@ jQuery.noConflict(true);
 
 <script src="qunit.js"></script>
 
-<!-- This is for TestSwarm only. -->
-<script src="/js/inject.js"></script>
+<script>
+if (location.search.match(/externalreporter=1/))
+  document.write('<script src="/externalreporter.js"></' + 'script>');
+</script>
 
 <script src="run-tests.js"></script>
 
