@@ -12,9 +12,10 @@
   // If the user has made changes to the page, we don't want them
   // to be able to navigate away from it without facing a modal
   // dialog.
-  function ModalUnloadBlocker(commandManager) {
+  function ModalUnloadBlocker(commandManager, cb) {
     function beforeUnload(event) {
       if (commandManager.canUndo()) {
+        cb();
         event.preventDefault();
         return jQuery.locale.get("input:unload-blocked");
       }
@@ -67,8 +68,21 @@
       });
       var touchToolbar = canBeTouched() ? jQuery.touchToolbar(input) : null;
       var indicator = jQuery.blurIndicator(input, window);
-      var modalUnloadBlocker = ModalUnloadBlocker(commandManager);
-      
+      var modalUnloadBlocker = ModalUnloadBlocker(commandManager,
+                                                  saveRecording);
+
+      function saveRecording() {
+        // Store emergency rescue data for 5 minutes.
+        var RECORDING_PERSIST_TIME = 5 * 60;
+
+        if (commandManager.canUndo()) {
+          var recording = commandManager.getRecording();
+          lscache.set("recording", JSON.parse(recording),
+                      RECORDING_PERSIST_TIME);
+        } else
+          lscache.remove("recording");
+      }
+
       var self = jQuery.eventEmitter({
         persistence: persistence,
         start: function() {
@@ -78,10 +92,25 @@
           focused.on('change', hud.onFocusChange);
           input.activate();
           $(window).focus();
+          if (!commandManager.canUndo()) {
+            // See if we can emergency-restore the user's previous session.
+            var recording = lscache.get("recording");
+            if (recording)
+              try {
+                commandManager.playRecording(JSON.stringify(recording));
+              } catch (e) {
+                // Corrupt recording, or page has changed in a way
+                // that we can't replay the recording, so get rid of it.
+                lscache.remove("recording");
+                if (window.console && window.console.error)
+                  console.error(e);
+              }
+          }
         },
         unload: function() {
           if (!isUnloaded) {
             isUnloaded = true;
+            saveRecording();
             focused.destroy();
             focused = null;
             input.deactivate();
