@@ -16,8 +16,13 @@
     function beforeUnload(event) {
       if (commandManager.canUndo()) {
         cb();
-        event.preventDefault();
-        return jQuery.locale.get("input:unload-blocked");
+        
+        // Since we are saving the user's work before they leave and
+        // auto-restoring it if they come back, don't bother them
+        // with a modal dialog.
+        
+        //event.preventDefault();
+        //return jQuery.locale.get("input:unload-blocked");
       }
     }
 
