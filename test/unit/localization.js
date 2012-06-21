@@ -17,20 +17,23 @@ test("jQuery.fn.localize() works", function() {
   equal(div.find("p").text(), "baz");
 });
 
-test("loadLocale() always triggers completion", function() {
-  jQuery.localization.loadLocale({
-    path: "../src/locale/",
-    languages: ["en", "zz"],
-    complete: function(locale, loadResults) {
-      ok(locale && locale.languages, "locale object is passed through");
-      equal(loadResults.length, 2);
-      deepEqual(loadResults[0], ["en", "success"]);
-      deepEqual(loadResults[1], ["zz", "error"]);
-      start();
-    }
+// Only run this test if we're not being served from a simple
+// clone of the repository (i.e. simplesauce).
+if (!location.search.match(/externalreporter=1/))
+  test("loadLocale() always triggers completion", function() {
+    jQuery.localization.loadLocale({
+      path: "../src/locale/",
+      languages: ["en", "zz"],
+      complete: function(locale, loadResults) {
+        ok(locale && locale.languages, "locale object is passed through");
+        equal(loadResults.length, 2);
+        deepEqual(loadResults[0], ["en", "success"]);
+        deepEqual(loadResults[1], ["zz", "error"]);
+        start();
+      }
+    });
+    stop();
   });
-  stop();
-});
 
 test("createLocale() inherits from non-region locales", function() {
   jQuery.localization.extend("en", "l10nTests", {
