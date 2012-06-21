@@ -44,6 +44,7 @@ if (!location.search.match(/externalreporter=1/))
 , 'complex-doctype'
 , 'no-doctype'
 ].forEach(function(name) {
+  var $ = jQuery;
   asyncTest(name, function() {
     var prefix = 'unit/uproot/';
     var iframe = jQuery("<iframe></iframe>");
@@ -53,7 +54,7 @@ if (!location.search.match(/externalreporter=1/))
       function(expected) {
         var docElem = iframe.get(0).contentDocument.documentElement;
         var startHTML = docElem.innerHTML;
-        var baseURI = document.location.href + iframe.attr('src');
+        var baseURI = $('<a></a>').attr('href', iframe.attr('src'))[0].href;
         expected = expected.replace("{{ BASE_HREF }}", baseURI);
         iframe.uproot(function(actual) {
           equal(jQuery.trim(actual), jQuery.trim(expected),
