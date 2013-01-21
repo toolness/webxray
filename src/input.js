@@ -454,6 +454,7 @@
                   }, "*");
                 else if (event.data == "set_done") {
                   window.removeEventListener("message", onMessage, false);
+                  document.body.removeChild(iframe);
                   onQuit();
                   window.top.location = baseURL;
                 }
