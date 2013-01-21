@@ -26,7 +26,7 @@
     uprootDialogURL: "uproot-dialog.html",
     hackpubURL: "http://hackpub.hackasaurus.org/",
     hackpubInjectionURL: "published-hack/injector.js",
-    friendlycodeURL: "http://localhost:8001/",
+    friendlycodeURL: "deepdive/",
     pluginURLs: []
   };
 })(jQuery);

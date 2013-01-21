@@ -1,0 +1,3 @@
+[submodule "static-files/deepdive/friendlycode"]
+	path = static-files/deepdive/friendlycode
+	url = git://github.com/toolness/friendlycode.git

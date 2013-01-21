@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Injector Page</title>
+<p>You should never see this.</p>
+<script>
+if (window.parent !== window) {
+  window.addEventListener("message", function(event) {
+    window.localStorage["set_by_remote"] = JSON.stringify({
+      payload: event.data,
+      origin: event.origin
+    });
+    window.parent.postMessage("set_done", "*");
+  }, false);
+  window.parent.postMessage("set_ready", "*");
+}
+</script>
