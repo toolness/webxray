@@ -443,9 +443,25 @@
           execute: function() {
             $(document).uprootIgnoringWebxray(function(html) {
               var baseURL = $.webxraySettings.url("friendlycodeURL");
-              var url = baseURL + "?html=" + encodeURIComponent(html);
-              onQuit();
-              window.location = url;
+              var iframe = document.createElement("iframe");
+              var onMessage = function(event) {
+                if (event.source !== iframe.contentWindow)
+                  return;
+                if (event.data == "set_ready")
+                  iframe.contentWindow.postMessage({
+                    html: html,
+                    url: window.location.href
+                  }, "*");
+                else if (event.data == "set_done") {
+                  window.removeEventListener("message", onMessage, false);
+                  onQuit();
+                  window.location = baseURL;
+                }
+              };
+              iframe.src = baseURL + "set.html";
+              document.body.appendChild(iframe);
+              iframe.style.display = "none";
+              window.addEventListener("message", onMessage, false);
             });
           }
         }
