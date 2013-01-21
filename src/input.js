@@ -455,7 +455,7 @@
                 else if (event.data == "set_done") {
                   window.removeEventListener("message", onMessage, false);
                   onQuit();
-                  window.location = baseURL;
+                  window.top.location = baseURL;
                 }
               };
               iframe.src = baseURL + "set.html";
