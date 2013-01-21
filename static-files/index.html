@@ -1,64 +1,343 @@
 <!DOCTYPE html>
-<meta charset="utf-8">
-<title>Web X-Ray Goggles</title>
-<script src="jquery.min.js"></script>
-<script src="src/get-bookmarklet-url.js"></script>
+<html><!--<![endif]--><head><base href="https://webmaker.org/en-US/">
+        <title>Mozilla Webmaker</title>
+        <meta content="text/html; charset=UTF-8" http-equiv="Content-Type">
+        <meta name="viewport" content="initial-scale=1.0, width=device-width">
+        <link rel="shortcut icon" href="/media/img/favicon.ico" type="image/x-icon">
+        <link rel="icon" href="/media/img/favicon.ico" type="image/x-icon">
+        <link rel="stylesheet" href="//www.mozilla.org/tabzilla/media/css/tabzilla.css">
+                    <link rel="stylesheet" media="screen,projection,tv" href="/media/css/make_devices-min.css?build=5356e3c">
+                <link rel="stylesheet" media="all and (min-width: 30em)" href="/media/css/make_desktop-min.css?build=5356e3c">
+        <!--[if lt IE 9]>
+            <script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script>
+            <link rel="stylesheet" media="screen,projection,tv" href="/media/css/make_desktop-min.css?build=5356e3c" />
+        <![endif]-->
+        
+                
+            </head>
+    <body data-twttr-rendered="true" id="generic-page" class="section-homepage"><div tabindex="-1" class="tabzilla-closed" id="tabzilla-panel"><div id="tabzilla-contents">  <div id="tabzilla-promo">    <div class="snippet" id="tabzilla-promo-mobile">    <a href="https://www.mozilla.org/firefox/fx/?WT.mc_id=tzfxmobile&amp;WT.mc_ev=click#mobile">     <h4>Fast. Smart. Safe.</h4>     <p>Get Firefox for Android »</p></a>    </div>  </div>  <div id="tabzilla-nav">    <ul>      <li><h2>Mozilla</h2>        <ul>          <li><a href="https://www.mozilla.org/mission/">Mission</a></li>          <li><a href="https://www.mozilla.org/about/">About</a></li>          <li><a href="https://www.mozilla.org/projects/">Projects</a></li>          <li><a href="https://support.mozilla.org/">Support</a></li>          <li><a href="https://developer.mozilla.org">Developer Network</a></li>        </ul>      </li>      <li><h2>Products</h2>        <ul>          <li><a href="https://www.mozilla.org/firefox">Firefox</a></li>          <li><a href="https://www.mozilla.org/thunderbird">Thunderbird</a></li>          <li><a href="https://www.mozilla.org/firefoxos">Firefox OS</a></li>        </ul>      </li>      <li><h2>Innovations</h2>        <ul>          <li><a href="https://webfwd.org/">WebFWD</a></li>          <li><a href="https://mozillalabs.com/">Labs</a></li>          <li><a href="https://webmaker.org/">Webmaker</a></li>        </ul>      </li>      <li><h2>Get Involved</h2>        <ul>          <li><a href="https://www.mozilla.org/contribute/">Volunteer</a></li>          <li><a href="https://www.mozilla.org/en-US/about/careers.html">Careers</a></li>          <li><a href="https://www.mozilla.org/en-US/about/mozilla-spaces/">Find us</a></li>          <li><a href="https://donate.mozilla.org/">Join us</a></li>        </ul>      </li>      <li id="tabzilla-search">        <a href="https://www.mozilla.org/community/directory.html">Website Directory</a>        <form title="Search Mozilla sites" role="search" action="http://www.google.com/cse">          <input value="002443141534113389537:ysdmevkkknw" name="cx" type="hidden">          <input value="FORID:0" name="cof" type="hidden">          <label for="q">Search</label>          <input placeholder="Search" id="q" name="q" type="search">        </form>      </li>    </ul>  </div></div></div>
+        
+                <div id="header">
+    <div class="constrained">
+        <h1><a href="/en-US/"><img src="/media/img/header_logo.png" alt="Mozilla Webmaker" height="64" width="218"></a></h1>
+        <a title="Mozilla links" aria-controls="tabzilla-panel" aria-expanded="false" role="button" class="tabzilla-closed" id="tabzilla" href="http://www.mozilla.org/">from Mozilla</a>
+        <ul>
+            <li class="projects"><a href="/en-US/projects/">Projects</a></li>
+            <li class="tools"><a href="/en-US/tools/">Tools</a></li>
+            <li class="events"><a href="/en-US/events/">Events</a></li>
+            <li class="about"><a href="/en-US/about/">About</a></li>
+        </ul>
+    </div>
+</div>        <div id="content">
+            <div class="constrained">
+                <div class="amuse pager pager-with-tabs pager-auto-rotate pager-no-history" id="home-promo">
+    <div style="opacity: 1;" class="default-page pager-content pager-selected-promo-guides">
+        <div style="display: none;" class="pager-page" id="page-promo-popcorn">
+            <a href="https://popcorn.webmaker.org/">
+                <img src="/media/img/carousel/december_2012/popcorn.jpg" alt="" height="488" width="1400">
+                <div class="pager-text">
+                    <!-- <h2 class="pager-title">Try Popcorn Maker</h2> -->
+                    <p>NEW! Make your videos pop with links, interactivity and the magic of the web.</p>  
+                </div>
+            </a>
+        </div>
+        <div style="display: none;" class="pager-page" id="page-promo-donate">
+            <a href="https://donate.mozilla.org/page/contribute/the-mozilla-story?source=20121217_moz2012_a">
+                <img src="/media/img/carousel/december_2012/donate.jpg" alt="" height="488" width="1400">
+                <div class="pager-text">
+                    <!-- <h2 class="pager-title">Make a donation</h2> -->
+                    <p>Help make the Web – and the world – a better place in 2013.</p>
+                </div>
+            </a>
+        </div>
+        <div style="display: block;" class="pager-page" id="page-promo-guides"></div>
+        <div style="display: none;" class="pager-page" id="page-promo-videos">
+            <a href="/en-US/videos/">
+                <img src="/media/img/carousel/december_2012/meet.jpg" alt="" height="488" width="1400">
+                <div class="pager-text">
+                    <!-- <h2 class="pager-title">Meet the Webmakers</h2> -->
+                    <p>Together we're building a more web literate planet. Meet the people making it happen.</p>
+                </div>
+            </a>
+        </div>
+        <ul class="pager-tabs pager-selected-promo-guides">
+        </ul>
+    </div>
+</div>
+<div class="veg">
+    <section class="wrap tools">
+        <ul>
+            <li>
+                <a href="/en-US/tools/#thimble">
+                    <h2 class="list-title">Thimble</h2>
+                    <img src="/media/img/tools/thimble-icon.png" alt="">
+                </a>
+                <p>Make and share your own web page</p>
+            </li>
+            <li>
+                <a href="/en-US/tools/#x-ray-goggles">
+                    <h2 class="list-title">X-Ray Goggles</h2>
+                    <img src="/media/img/tools/goggles-icon.png" alt="">
+                </a>
+                <p>Explore and remix any web page</p>
+            </li>
+            <li>
+                <a href="/en-US/tools/#popcorn-maker">
+                    <h2 class="list-title">Popcorn Maker</h2>
+                    <img src="/media/img/tools/popcorn-icon.png" alt="">
+                </a>
+                <p>Supercharge web video</p>
+            </li>
+        </ul>
+    </section>
+    <section class="wrap social">
+    <form action="https://donate.mozilla.org/page/s/webmaker" method="post">
+        <h2 class="side-title">Get Mozilla Webmaker updates</h2>
+        <div class="form-fields">
+            <input name="email" id="email" placeholder="Your email here" type="text">
+            <div class="extra">
+            <p><input name="custom-1216" id="custom-1216" type="checkbox">
+            <label class="help" for="custom-1216">I'm okay with you handling this info as you explain in your <a href="http://www.mozilla.org/en-US/privacy-policy.html">Privacy Policy</a></label></p>
+            </div>
+        </div>
+        <input name="submit-btn" class="button find" value="Sign me up" type="submit">
+    </form> 
+    <section class="share">
+                <h2 class="side-title">Follow</h2>
+                
+                <ul>
+                    <li>
+                        <iframe data-twttr-rendered="true" title="Twitter Follow Button" style="width: 108px; height: 20px;" class="twitter-follow-button" src="https://platform.twitter.com/widgets/follow_button.1358555536.html#_=1358804378678&amp;id=twitter-widget-0&amp;lang=en&amp;screen_name=mozilla&amp;show_count=false&amp;show_screen_name=true&amp;size=m" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+                    </li>
+                    <li>
+                        <iframe src="//www.facebook.com/plugins/like.php?href=https%3A%2F%2Ffacebook.com/mozilla/&amp;send=false&amp;layout=button_count&amp;width=160&amp;show_faces=false&amp;action=like&amp;colorscheme=light&amp;font&amp;height=21" style="border:none; overflow:hidden; width:160px; height:21px;" allowtransparency="true" frameborder="0" scrolling="no"></iframe>
+                    </li>
+                </ul>
+            </section>
+    </section>
+</div>
+<div class="meat">
+	<div class="wrap columns">
+		<div class="col main">
+			<section class="projects">
+				<header>
+					<h2><a href="/en-US/projects/">Webmaker Projects</a></h2>
+					<p>Make something amazing with the web</p>
+				</header>
+                <div class="featured">
+				<ul>
+                    					<li>
+						<a href="/projects/become-citizen-open-webville/">
+							<img src="/media/partner_media/projects/coverimages_mega_boss_1.featured.png" alt="">
+							<h3 class="list-title">Become a citizen of Open Webville</h3>
+						</a>
+                        						<footer><p>Contributed by School of Open</p></footer>
+                        					</li>
+                    					<li>
+						<a href="/projects/make-your-own-animal/">
+							<img src="/media/partner_media/projects/zoo-large.featured.jpg" alt="">
+							<h3 class="list-title">Make your own animal</h3>
+						</a>
+                        						<footer><p>Contributed by the Zoological Society of London</p></footer>
+                        					</li>
+                    					<li>
+						<a href="/projects/make-your-own-meme/">
+							<img src="/media/partner_media/projects/meme-large.featured.jpg" alt="">
+							<h3 class="list-title">Make your own meme</h3>
+						</a>
+                        						<footer><p>Contributed by Mozilla</p></footer>
+                        					</li>
+                    					<li>
+						<a href="/projects/learn-html-fast-making-your-own-web-page/">
+							<img src="/media/partner_media/projects/wrangler-510.featured.png" alt="">
+							<h3 class="list-title">Learn HTML fast by making your own web page</h3>
+						</a>
+                        						<footer><p>Contributed by Mozilla</p></footer>
+                        					</li>
+                    					<li>
+						<a href="/projects/customize-your-tumblr-theme/">
+							<img src="/media/partner_media/projects/tumblog-large.featured.jpg" alt="">
+							<h3 class="list-title">Customize your Tumblr theme</h3>
+						</a>
+                        						<footer><p>Contributed by Tumblr</p></footer>
+                        					</li>
+                                    </ul>
+				<a href="/en-US/projects/" class="more">See all Webmaker projects</a>
+                </div>
+			</section>
+		</div>
+		<div class="col aside">
+			<section class="news">
+				<h2 class="side-title"><a href="/en-US/news/">Webmaker News</a></h2>
+                <ol>
+                                    </ol>
+                <p><a href="http://planet.webmaker.org/">Planet Webmaker Blog</a> | <a href="http://planet.webmaker.org/rss20.xml">RSS</a></p>
+			</section>
+			<section class="tweets">
+				<h2 class="side-title"><a href="https://twitter.com/mozilla/">@mozilla</a></h2>
+                <div class="tweet"><ul class="tweet_list"><li class="tweet_first tweet_odd"><p><span class="tweet_text">Miss last week's <a href="http://search.twitter.com/search?q=&amp;tag=Webmaker&amp;lang=all" class="tweet_hashtag">#Webmaker</a> call? Catch up here TL;DR: <a href="http://ow.ly/gZ2y9">ow.ly/gZ2y9</a> Join us tomorrow - here's how: <a href="http://ow.ly/gZ3AY">ow.ly/gZ3AY</a></span></p><span class="tweet_time"><a href="http://twitter.com/mozilla/status/293357423836684290" title="view tweet on twitter">about 7 hours ago</a></span></li></ul></div>
+			</section>
+            <section class="events">
+                <header>
+                    <h2><a href="/en-US/events/">Events</a></h2>
+                </header>
+                <ol>
+                                    </ol>
+                <a class="button find" href="/en-US/events/search/">Find an event near you</a>
+            </section>
+		</div>
+	</div>
+</div>
+<div class="cheese">
+    <section class="wrap all-mozilla">
+        <h2>Building a generation of webmakers</h2>
+        <blockquote>
+            <p>"Mozillians are people who make things. Moving people from consumption to creation is Mozilla's goal."</p>
+            <cite><img src="/media/img/mitchell-photo.jpg" alt=""><em>Mitchell Baker</em>, Mozilla Chair and Chief Lizard Wrangler</cite>
+        </blockquote>
+        <a class="lozenge" href="/en-US/about/">Learn more</a>
+        <div class="other-makers">
+            <h3>Other Mozilla Webmaker websites:</h3>
+            <div id="mozilla-carousel" class="carousel slide">
+            <div class="carousel_inner">
+            <ul class="maker_partners">
+                <li class="active item">
+                <ul>
+                    <li><a href="http://www.hackasaurus.org/"><img src="/media/img/logos/webmaker/Hackasaurus.png" alt="Hackasaurus"></a></li>
+                    <li><a href="http://www.mozillaopennews.org/"><img src="/media/img/logos/webmaker/Opennews.png" alt="Mozilla Opennews"></a></li>
+                    <li><a href="http://www.openbadges.org/"><img src="/media/img/logos/webmaker/OpenBadges.png" alt="Mozilla Openbadges"></a></li>
+                    <li><a href="https://mozillafestival.org/"><img src="/media/img/logos/webmaker/Festival.png" alt="Mozilla Festival"></a></li>
+                </ul>
+                </li>
+                <li class="item">
+                <ul>
+                    <li><a href="https://mozillaignite.org/"><img src="/media/img/logos/webmaker/Ignite.png" alt="Ignite"></a></li>
+                    <li><a href="http://explorecreateshare.org/"><img src="/media/img/logos/webmaker/Hive.png" alt="Hive NYC"></a></li>
+                    <li><a href="http://www.mozilla.org/en-US/collusion/"><img src="/media/img/logos/webmaker/Collusion.png" alt="Collusion"></a></li>
+                </ul>
+                </li>
+            </ul>
+            <a class="carousel-control left" href="#mozilla-carousel" data-slide="prev">‹</a>
+            <a class="carousel-control right" href="#mozilla-carousel" data-slide="next">›</a>
+            </div>
+            </div>
+        </div>
+    </section>
+</div>
+<div class="fish">
+    <section class="wrap partners">
+        <h2>Mozilla Webmaker is <a href="/en-US/partners/">generously supported</a> by the following:</h2>
+        <div id="partner-carousel" class="carousel slide">
+            <div class="carousel_inner">
+                <ul class="maker_partners">
+                    <li class="item">
+                        <ul>
+                            <li><a href="http://www.citf.org/"><img src="/media/img/logos/funding/citf.png" alt="Chicago Instructional Technology Foundation"></a></li>
+                            <li><a href="http://cpb.org/"><img src="/media/img/logos/funding/cpb.png" alt="Corporation for Public Broadcasting"></a></li>
+                            <li><a href="http://energy.gov/"><img src="/media/img/partners/doe.png" alt="Department of Energy"></a></li>
+                            <li><a href="http://www.fordfoundation.org/"><img src="/media/img/logos/funding/ford-foundation.png" alt="Ford Foundation"></a></li>
+                            <li><a href="http://www.knightfoundation.org/"><img src="/media/img/logos/funding/Knight.png" alt="Knight Foundation"></a></li>
+                        </ul>
+                    </li>
+                    <li class="item">
+                        <ul>
+                            <li><a href="http://www.macfound.org/"><img src="/media/img/logos/funding/Macarthur.png" alt="MacArthur Foundation"></a></li>
+                            <li><a href="http://www.nesta.org.uk/"><img src="/media/img/logos/funding/nesta.png" alt="NESTA"></a></li>
+                            <li><a href="http://www.nominettrust.org.uk/"><img src="/media/img/partners/nominet.png" alt="Nominet Trust"></a></li>
+                            <li><a href="http://www.nea.gov/"><img src="/media/img/logos/funding/nea.png" alt="National Endowment for the Arts"></a></li>
+                            <li><a href="http://www.otf.ca/"><img src="/media/img/partners/otf.png" alt="Ontario Trillium Foundation"></a></li>
+                        </ul>
+                    </li>
+                    <li class="item active">
+                        <ul>
+                            <li><a href="http://www.nsf.gov/"><img src="/media/img/logos/funding/NSF.png" alt="National Science Foundation"></a></li>
+                            <li><a href="http://www.sloan.org/"><img src="/media/img/logos/funding/Sloan.png" alt="Sloan Foundation"></a></li>
+                            <li><a href="http://www.zerodivide.org/"><img src="/media/img/logos/funding/zerodivide.png" alt="ZeroDivide"></a></li>
+                        </ul>
+                    </li>
+                </ul>
+                <a class="carousel-control left" href="#partner-carousel" data-slide="prev">‹</a>
+                <a class="carousel-control right" href="#partner-carousel" data-slide="next">›</a>
+            </div>
+        </div>
+        <p class="shout">and <a href="https://donate.mozilla.org/page/contribute/join-mozilla?source=webmaker_home">Mozillians like you</a></p>
+	</section>
+</div>
+            </div>
+        </div>                    <div id="footer">
+            <div class="constrained">
+                <div class="col">
+                    <h2><img src="/media/img/footer_logo.png" alt="Mozilla Webmaker" height="39" width="129"></h2>
+                    <h3>Admin</h3>
+                    <ul>
+                                            <li><a href="/users/login/?next=/en-US/">Log in</a></li>
+                                                                                                                            </ul>
+                </div>
+                <div class="col">
+                    <h3>About</h3>
+                                        <ul>
+                        <li><a href="/en-US/about/">About Us</a></li>
+                        <li><a href="mailto:mozparty@mozilla.org">Contact Us</a></li>
+                        <li><a href="http://www.mozilla.org/en-US/privacy-policy.html">Privacy Policy</a></li>
+                        <li><a href="http://www.mozilla.org/en-US/about/legal.html">Legal Notices</a></li>
+                    </ul>
+                                    </div>
+                <div class="col">
+                    <h3>Connect with us</h3>
+                    <ul>
+                        <li><a href="/en-US/news/">News</a></li>
+                        <li><a href="/en-US/support/">Support</a></li>
+                        <li><a href="http://twitter.com/mozilla/">Twitter</a></li>
+                        <li><a href="https://www.facebook.com/mozilla/">Facebook</a></li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>Make something</h3>
+                    <ul>
+                        <li><a href="/en-US/projects/">Projects</a></li>
+                        <li><a href="/en-US/tools/">Tools</a></li>
+                        <li><a href="/en-US/events/">Events</a></li>
+                    </ul>
+                </div>
+                <div class="col">
+                    <h3>Support our work</h3>
+                    <ul>
+                        <li><a href="https://donate.mozilla.org/page/contribute/join-mozilla?source=join_link">Donate</a></li>
+                        <li><a href="https://mozillalabs.com/en-US/">Contribute</a></li>
+                        <li><a href="https://donate.mozilla.org/page/contribute/firefoxtshirt">Buy a t-shirt</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+            
+            
+                <!-- START OF SmartSource Data Collector TAG v10.2.0 -->
+        <!-- Copyright (c) 2012 Webtrends Inc.  All rights reserved. -->
+        
+        <noscript><img alt="dcsimg" id="dcsimg" width="1" height="1" src="//statse.webtrendslive.com/dcskwfzfcvz5bdn0s9jvut4xm_7u5b/njs.gif?dcsuri=/nojavascript&amp;WT.js=No&amp;WT.tv=10.2.0&amp;dcssip=www.webmaker.org"/></noscript>
+    <!-- END OF SmartSource Data Collector TAG v10.2.0 -->
+
 <style>
-body {
-  background-color: #f0f0f0;
-  color: black;
-  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-  font-size: 10pt;
-  width: 40em;
-  margin: 0 auto;
-  padding: 0;
-}
-
-a {
-  color: inherit;
-  text-decoration: underline;
-}
-
-a:hover {
-  background: yellow;
-}
-
-#bookmarklet-url {
-  border: 1px dotted black;
+iframe.project {
   width: 100%;
+  border: none;
+  height: 400px;
 }
 
-#bookmarklet-link:hover {
-  color: black;
-}
-
-#bookmarklet-link {
-  text-decoration: none;
-  display: inline-block;
-  background: #FF9900;
-  border-radius: 4px;
-  box-shadow: 2px 2px 1px black;
-  color: white;
-  padding: 6px;
+div.veg section.wrap.tools {
+  visibility: hidden;
 }
 </style>
-<a href="https://github.com/toolness/webxray/tree/style-info-experiment"><img style="position: absolute; top: 0; right: 0; border: 0;" src="github-ribbon.png" alt="Fork me on GitHub"></a>
-<div id="try-goggles">
-<h2>Getting Started</h2>
-<p>If you've never used the goggles before, you should start out with the <a href="http://hackasaurus.org/goggles/">tutorial</a> or the <a href="http://toolness.github.com/hackasaurus-parable/">Parable of The Hackasaurus</a>.</p>
-<h2>Reference</h2>
-<p>Here's the bookmarklet: <a href="" id="bookmarklet-link">X-Ray Goggles</a>.</p>
-<p>Note that if you're on a mobile browser, you may need to manually create a bookmark to the following URL:</p>
-<input type="text" id="bookmarklet-url">
-<p>Once the goggles are activated, you can press <kbd>H</kbd> for help.</p>
-<h2>Troubleshooting</h2>
-<p>If the goggles don't seem to be working, try running the <a href="test/">test suite</a>. Then <a href="http://hackasaurus.lighthouseapp.com/projects/81472-goggles/overview">report a bug</a> and be sure to mention whether the test suite failed.</p>
 <script>
-"use strict";
+window.addEventListener("DOMContentLoaded", function() {
+  var div = document.getElementById("page-promo-guides");
+  var iframe = document.createElement("iframe");
+  iframe.setAttribute("class", "project");
+  iframe.src = window.location.href + "project.html";
+  div.appendChild(iframe);
+//            <iframe src="http://localhost:8000/" height="488" width="1400" style="width: 100%; border: none;"></iframe>
+}, false);
+</script>                    
 
-$(window).ready(function() {
-  $("#bookmarklet-link").attr("href", Webxray.getBookmarkletURL())
-    .text(window.location.hostname + " " + $("#bookmarklet-link").text());
-  $("#bookmarklet-url").val(Webxray.getBookmarkletURL());
-});
-</script>
+</body></html>

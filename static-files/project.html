@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Sample Project</title>
+    <style>
+    html, body {
+      margin: 0;
+      background: black;
+      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+      color: white;
+      overflow: hidden;
+    }
+    
+    #bg {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+
+    #bg img {
+      width: 100%;
+    }
+    
+    #content {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+    }
+    
+    h1 {
+      text-align: center;
+    }
+    </style>
+  </head>
+  <body>
+    <div id="bg"><img src="http://wall.facebookvideotomp3.com/uploads/Outstanding-black-and-white.jpg"></div>
+    <div id="content">
+      <h1>remix me, yo, because the web is neat.</h1>
+      <h1>
+        <a id="bookmarklet" href="/"><img src="goggles-on.png"></a>
+      </h1>
+    </div>
+    <script src="../src/get-bookmarklet-url.js"></script>
+    <script>
+    window.addEventListener("DOMContentLoaded", function() {
+      var a = document.getElementById("bookmarklet");
+      a.href = Webxray.getBookmarkletURL(a.href);
+    }, false);
+    </script>
+  </body>
+</html>
