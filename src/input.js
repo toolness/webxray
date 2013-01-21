@@ -436,6 +436,18 @@
           execute: function() {
             mixMaster.infoForFocusedElement();
           }
+        },
+        {
+          key: 'D',
+          cmd: 'deepdive',
+          execute: function() {
+            $(document).uprootIgnoringWebxray(function(html) {
+              var baseURL = $.webxraySettings.url("friendlycodeURL");
+              var url = baseURL + "?html=" + encodeURIComponent(html);
+              onQuit();
+              window.location = url;
+            });
+          }
         }
       ]);
 

@@ -76,6 +76,7 @@
     "redo": "Redo",
     "dom-ascend": "Ascend to parent element",
     "dom-descend": "Descend to child element",
+    "deepdive": "Deep-dive (open page in Thimble)",
     "uproot": "Publish your remix"
   },
   "short-command-descriptions": {
@@ -88,6 +89,7 @@
     "redo": "redo",
     "dom-ascend": "ascend",
     "dom-descend": "descend",
+    "deepdive": "deepdive",
     "uproot": "publish"
   },
   "short-element-descriptions": {
