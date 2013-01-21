@@ -10,6 +10,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       color: white;
       overflow: hidden;
+      height: 100%;
     }
     
     #bg {
@@ -17,30 +18,96 @@
       top: 0;
       left: 0;
       width: 100%;
+      height: 100%;
+      font-size: 0;
     }
 
-    #bg img {
-      width: 100%;
+    #bg img.left {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 66%;
+      height: 100%;
+    }
+
+    #bg img.right {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 50%;
+      height: 100%;
     }
     
     #content {
       position: absolute;
-      top: 0;
+      bottom: 0;
       left: 0;
       width: 100%;
+      height: 50%;
+    }
+
+    h1.darker {
+      text-align: center;
     }
     
     h1 {
       text-align: center;
     }
+    
+    h1 span {
+      background: rgba(0, 0, 0, 0.5);
+      padding: 5px;
+    }
+
+    div.button-holder {
+      text-align: center;
+    }
+    
+    #bookmarklet {
+      display: inline-block;
+      background: #43B58A;
+      font-size: 0;
+      border-radius: 4px;
+      margin-top: 4px;
+      box-shadow: 4px 4px 4px black;
+    }
+    
+    #bookmarklet .icon {
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+      background: url(goggles-off.png);
+      width: 79px;
+      height: 67px;
+    }
+    
+    #bookmarklet {
+      text-decoration: none;
+      color: white;
+    }
+    
+    #bookmarklet label {
+      font-size: 10px;
+      display: block;
+      padding-bottom: 6px;
+      cursor: pointer;
+    }
     </style>
   </head>
   <body>
-    <div id="bg"><img src="http://wall.facebookvideotomp3.com/uploads/Outstanding-black-and-white.jpg"></div>
+    <div id="bg">
+      <img class="left" src="http://seriouscat.com/serious_cat_is_serious.jpg">
+      <img class="right" src="http://labs.toolness.com/temp/gaga.png">
+    </div>
     <div id="content">
-      <h1>remix me, yo, because the web is neat.</h1>
-      <h1>
-        <a id="bookmarklet" href="/"><img src="goggles-on.png"></a>
+      <div class="button-holder">
+        <a id="bookmarklet" href="/">
+          <span class="icon"></span>
+          <label>Get Started</label>
+        </a>
+      </div>
+      <h1 class="darker">
+        <span>remix me, yo, because the web is neat.</span>
       </h1>
     </div>
     <script src="../src/get-bookmarklet-url.js"></script>
