@@ -141,6 +141,29 @@ def cmd_clean(args, cfg):
         os.remove(filename)
     print "removed generated files."
 
+def cmd_update_codemirror_args(parser):
+    parser.add_argument('-c', '--new-codemirror-path',
+                        help='path to new codemirror dir')
+
+def cmd_update_codemirror(args, cfg):
+    "update codemirror"
+
+    OUR_CODEMIRROR_PATH = path("static-files", "codemirror2")
+    
+    if not args.new_codemirror_path:
+        print "please specify a new codemirror path with -c."
+        sys.exit(1)
+
+    for dirpath, dirnames, filenames in os.walk(OUR_CODEMIRROR_PATH):
+        for filename in filenames:
+            ourpath = os.path.join(dirpath, filename)
+            relpath = os.path.relpath(ourpath, OUR_CODEMIRROR_PATH)
+            newpath = os.path.join(args.new_codemirror_path, relpath)
+            if os.path.exists(newpath):
+                print "copying %s" % newpath
+                open(ourpath, "wb").write(open(newpath, "rb").read())
+    
+
 def main():
     cfg = json.loads(open('config.json', 'r').read())
     cfg['compiledFilename'] = cfg['staticFilesDir'] + cfg['compiledFile']
