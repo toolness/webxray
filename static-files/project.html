@@ -10,7 +10,14 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       color: white;
       overflow: hidden;
-      height: 100%;
+    }
+
+    #container {
+      position: relative;
+      width: 100%;
+      width: 900px;
+      height: 400px;
+      margin: 0 auto;
     }
     
     #bg {
@@ -95,20 +102,22 @@
     </style>
   </head>
   <body>
-    <div id="bg">
-      <img class="left" src="http://seriouscat.com/serious_cat_is_serious.jpg">
-      <img class="right" src="http://labs.toolness.com/temp/gaga.png">
-    </div>
-    <div id="content">
-      <div class="button-holder">
-        <a id="bookmarklet" href="/">
-          <span class="icon"></span>
-          <label>Get Started</label>
-        </a>
+    <div id="container">
+      <div id="bg">
+        <img class="left" src="http://seriouscat.com/serious_cat_is_serious.jpg">
+        <img class="right" src="http://labs.toolness.com/temp/gaga.png">
       </div>
-      <h1 class="darker">
-        <span>remix me, yo, because the web is neat.</span>
-      </h1>
+      <div id="content">
+        <div class="button-holder">
+          <a id="bookmarklet" href="/">
+            <span class="icon"></span>
+            <label>Get Started</label>
+          </a>
+        </div>
+        <h1 class="darker">
+          <span>remix me, yo, because the web is neat.</span>
+        </h1>
+      </div>
     </div>
     <script src="../src/get-bookmarklet-url.js"></script>
     <script>
