@@ -3,6 +3,25 @@
   <head>
     <meta charset="utf-8">
     <title>Sample Project</title>
+  </head>
+  <body>
+    <div id="container">
+      <div id="bg">
+        <img class="left" src="http://seriouscat.com/serious_cat_is_serious.jpg">
+        <img class="right" src="http://labs.toolness.com/temp/gaga.png">
+      </div>
+      <div id="content">
+        <div class="button-holder">
+          <a id="bookmarklet" href="/">
+            <span class="icon"></span>
+            <label>Get Started</label>
+          </a>
+        </div>
+        <h1 class="darker">
+          <span>remix me, yo, because the web is neat.</span>
+        </h1>
+      </div>
+    </div>
     <style>
     html, body {
       margin: 0;
@@ -99,25 +118,6 @@
       cursor: pointer;
     }
     </style>
-  </head>
-  <body>
-    <div id="container">
-      <div id="bg">
-        <img class="left" src="http://seriouscat.com/serious_cat_is_serious.jpg">
-        <img class="right" src="http://labs.toolness.com/temp/gaga.png">
-      </div>
-      <div id="content">
-        <div class="button-holder">
-          <a id="bookmarklet" href="/">
-            <span class="icon"></span>
-            <label>Get Started</label>
-          </a>
-        </div>
-        <h1 class="darker">
-          <span>remix me, yo, because the web is neat.</span>
-        </h1>
-      </div>
-    </div>
     <script src="../src/get-bookmarklet-url.js"></script>
     <script>
     window.addEventListener("DOMContentLoaded", function() {
