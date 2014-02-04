@@ -33,6 +33,14 @@
     });    
   }
 
+  function loadEnLocale(cb) {
+    $.getJSON("../strings.json", function(strings) {
+      for (var namespace in strings)
+        jQuery.localization.extend("en", namespace, strings[namespace]);
+      cb();
+    });
+  }
+  
   $(window).ready(function() {
     $.getJSON("../config.json", function(obj) {
       var scripts = obj.compiledFileParts;
@@ -45,7 +53,7 @@
         window.jQuery.noConflict();
         $.loadScripts(unitTests, "unit/", function(log) {
           makeTestModuleForLog("unit tests", log);
-          QUnit.start();
+          loadEnLocale(function() { QUnit.start(); });
         });
       });
     });

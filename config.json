@@ -22,6 +22,7 @@
   , "jquery/src/effects.js"
   , "jquery/src/offset.js"
   , "jquery/src/dimensions.js"
+  , "src/lscache.js"
   , "src/get-bookmarklet-url.js"
   , "src/localization.js"
   , "src/locale/*.js"
